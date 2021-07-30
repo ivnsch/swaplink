@@ -1,0 +1,51 @@
+body {
+  font-family: system-ui;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+}
+
+dl {
+  display: grid;
+  grid-template-columns: max-content auto;
+}
+
+dt {
+  grid-column-start: 1;
+}
+
+dd {
+  grid-column-start: 2;
+}
+
+input {
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 4px;
+  border-color: lightgray;
+  float: left;
+  clear: left;
+}
+
+button {
+  float: left;
+  clear: both;
+  display: block;
+  position: relative;
+}
+
+div {
+  float: left;
+  clear: both;
+  display: block;
+  position: relative;
+  word-break: break-word;
+}
+
+.your-address {
+  margin-bottom: 10px;
+}
+
+.form {
+  margin-bottom: 10px;
+}
