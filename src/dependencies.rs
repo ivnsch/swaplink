@@ -1,7 +1,9 @@
+use std::rc::Rc;
+
 use algonaut::algod::{v2::Algod, AlgodBuilder};
 use my_algo::MyAlgo;
 
-use crate::provider::Provider;
+use crate::{generate_swap::logic::GenerateSwapLogic, submit_swap::logic::SubmitSwapLogic};
 
 pub fn algod() -> Algod {
     AlgodBuilder::new()
@@ -18,6 +20,10 @@ pub fn my_algo() -> MyAlgo {
     MyAlgo {}
 }
 
-pub fn provider(algod: Algod, my_algo: MyAlgo) -> Provider {
-    Provider::new(algod, my_algo)
+pub fn generate_swap_logic(algod: Rc<Algod>, my_algo: Rc<MyAlgo>) -> GenerateSwapLogic {
+    GenerateSwapLogic::new(algod, my_algo)
+}
+
+pub fn submit_swap_logic(algod: Rc<Algod>, my_algo: Rc<MyAlgo>) -> SubmitSwapLogic {
+    SubmitSwapLogic::new(algod, my_algo)
 }

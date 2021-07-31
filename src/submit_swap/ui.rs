@@ -1,13 +1,15 @@
 use std::rc::Rc;
 
-use crate::dependencies;
-use crate::provider::{Provider, SwapRequest};
 use algonaut::transaction::{Transaction, TransactionType};
 use log::debug;
 use yew::prelude::*;
 
 use yew::{html, Component, ComponentLink, Html, ShouldRender};
 use yewtil::future::LinkFuture;
+
+use crate::model::SwapRequest;
+
+use super::logic::SubmitSwapLogic;
 
 pub struct SubmitSwap {
     link: ComponentLink<Self>,
@@ -18,7 +20,7 @@ pub struct SubmitSwap {
 
 #[derive(Clone, Properties)]
 pub struct SubmitSwapProps {
-    pub provider: Rc<Provider>,
+    pub logic: Rc<SubmitSwapLogic>,
     pub encoded_swap: String,
 }
 
@@ -45,9 +47,9 @@ impl Component for SubmitSwap {
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
             Msg::Submit(swap_request) => {
-                let provider = self.props.provider.clone();
+                let logic = self.props.logic.clone();
                 self.link
-                    .send_future(async move { Self::submit(provider, swap_request).await })
+                    .send_future(async move { Self::submit(logic, swap_request).await })
             }
             Msg::SetSwapRequest(request) => self.swap_request = Some(request),
             Msg::ShowError(msg) => self.error_msg = Some(msg),
@@ -62,8 +64,9 @@ impl Component for SubmitSwap {
     fn rendered(&mut self, first_render: bool) {
         if first_render {
             let encoded_swap = self.props.encoded_swap.clone();
+            let logic = self.props.logic.clone();
             self.link
-                .send_future(async { Self::process_encoded_swap(encoded_swap).await });
+                .send_future(async { Self::process_encoded_swap(logic, encoded_swap).await });
         }
     }
 
@@ -131,9 +134,8 @@ impl SubmitSwap {
 }
 
 impl SubmitSwap {
-    async fn process_encoded_swap(encoded_swap: String) -> Msg {
-        let provider = dependencies::provider(dependencies::algod(), dependencies::my_algo());
-        let swap_request_res = provider.decode_swap(encoded_swap).await;
+    async fn process_encoded_swap(logic: Rc<SubmitSwapLogic>, encoded_swap: String) -> Msg {
+        let swap_request_res = logic.decode_swap(encoded_swap).await;
         debug!("Decoded swap request: {:?}", swap_request_res);
 
         match swap_request_res {
@@ -142,8 +144,8 @@ impl SubmitSwap {
         }
     }
 
-    async fn submit(provider: Rc<Provider>, swap: SwapRequest) -> Msg {
-        match provider.submit_swap(swap).await {
+    async fn submit(logic: Rc<SubmitSwapLogic>, swap: SwapRequest) -> Msg {
+        match logic.submit_swap(swap).await {
             Ok(tx_id) => Msg::ShowError(format!("Swap success! tx id: {}", tx_id)),
             Err(e) => Msg::ShowError(format!("Swap error: {}", e)),
         }

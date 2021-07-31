@@ -2,13 +2,14 @@
 
 mod dependencies;
 mod generate_swap;
-mod provider;
+mod model;
 mod routing;
 mod submit_swap;
 
 use std::rc::Rc;
 
-use provider::Provider;
+use algonaut::algod::v2::Algod;
+use my_algo::MyAlgo;
 use routing::AppRoute;
 use wasm_bindgen::prelude::*;
 
@@ -16,10 +17,11 @@ use anyhow::Result;
 use wasm_bindgen::JsValue;
 use yew::{html, Component, ComponentLink, Html, ShouldRender};
 
-use crate::{generate_swap::GenerateSwap, routing::AppRouter, submit_swap::SubmitSwap};
+use crate::{generate_swap::ui::GenerateSwap, routing::AppRouter, submit_swap::ui::SubmitSwap};
 
 pub struct Model {
-    provider: Rc<Provider>,
+    algod: Rc<Algod>,
+    my_algo: Rc<MyAlgo>,
 }
 
 #[derive(Clone, Debug)]
@@ -30,9 +32,9 @@ impl Component for Model {
     type Properties = ();
 
     fn create(_props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        let provider = dependencies::provider(dependencies::algod(), dependencies::my_algo());
         Self {
-            provider: Rc::new(provider),
+            algod: Rc::new(dependencies::algod()),
+            my_algo: Rc::new(dependencies::my_algo()),
         }
     }
 
@@ -45,21 +47,26 @@ impl Component for Model {
     }
 
     fn view(&self) -> Html {
-        let provider = self.provider.clone();
+        let algod = self.algod.clone();
+        let my_algo = self.my_algo.clone();
         html! {
-            <AppRouter render=AppRouter::render(move |a| Self::switch(provider.clone(), a)) />
+            <AppRouter render=AppRouter::render(move |a| Self::switch(algod.clone(), my_algo.clone(), a)) />
         }
     }
 }
 
 impl Model {
-    fn switch(provider: Rc<Provider>, switch: AppRoute) -> Html {
+    fn switch(algod: Rc<Algod>, my_algo: Rc<MyAlgo>, switch: AppRoute) -> Html {
         match switch {
             AppRoute::Generate => {
-                html! { <GenerateSwap provider=provider/> }
+                html! { <GenerateSwap
+                    logic=Rc::new(dependencies::generate_swap_logic(algod, my_algo))
+                /> }
             }
             AppRoute::Submit(encoded_swap) => {
-                html! { <SubmitSwap  provider=provider encoded_swap=encoded_swap /> }
+                html! { <SubmitSwap
+                    logic=Rc::new(dependencies::submit_swap_logic(algod, my_algo)) encoded_swap=encoded_swap
+                /> }
             }
         }
     }

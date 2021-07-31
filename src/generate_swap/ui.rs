@@ -1,15 +1,15 @@
 use std::rc::Rc;
 
-use crate::{
-    dependencies,
-    provider::{Provider, SwapLink, Transfer, ValidatedSwapInputs},
-};
 use yew::prelude::*;
 
-use algonaut::core::{Address, MicroAlgos};
-use anyhow::Result;
+use algonaut::core::Address;
 use yew::{html, Component, ComponentLink, Html, ShouldRender};
 use yewtil::future::LinkFuture;
+
+use super::{
+    logic::GenerateSwapLogic,
+    model::{SwapInputUnit, SwapInputs, SwapLink},
+};
 
 pub struct GenerateSwap {
     link: ComponentLink<Self>,
@@ -40,7 +40,7 @@ pub enum Msg {
 
 #[derive(Clone, Properties)]
 pub struct GenerateSwapProps {
-    pub provider: Rc<Provider>,
+    pub logic: Rc<GenerateSwapLogic>,
 }
 
 impl Component for GenerateSwap {
@@ -71,16 +71,17 @@ impl Component for GenerateSwap {
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
             Msg::Connect => {
-                let provider = self.props.provider.clone();
+                let provider = self.props.logic.clone();
                 self.link
                     .send_future(async move { Self::connect_wallet(provider).await })
             }
             Msg::Send => {
                 let address = self.address;
                 let inputs = self.inputs.clone();
+                let logic = self.props.logic.clone();
                 self.link.send_future(async move {
                     match address {
-                        Some(address) => match Self::submit_swap(address, inputs).await {
+                        Some(address) => match logic.generate_swap_link(address, inputs).await {
                             Ok(swap_link) => Msg::ShowLink(swap_link),
                             Err(e) => Msg::ShowError(format!("Error: {}", e)),
                         },
@@ -260,73 +261,12 @@ impl GenerateSwap {
 }
 
 impl GenerateSwap {
-    async fn connect_wallet(provider: Rc<Provider>) -> Msg {
-        match provider.connect_wallet().await {
+    async fn connect_wallet(logic: Rc<GenerateSwapLogic>) -> Msg {
+        match logic.connect_wallet().await {
             Ok(address) => Msg::SetAddress(address),
             Err(e) => Msg::ShowError(format!("Error connecting wallet: {}", e)),
         }
     }
-
-    async fn submit_swap(me: Address, inputs: SwapInputs) -> Result<SwapLink> {
-        let validated_inputs = Self::validate_swap_inputs(inputs)?;
-        let provider = dependencies::provider(dependencies::algod(), dependencies::my_algo());
-        Ok(provider.generate_link(validated_inputs.to_swap(me)).await?)
-    }
-
-    fn validate_swap_inputs(inputs: SwapInputs) -> Result<ValidatedSwapInputs> {
-        let peer = inputs.peer.parse().map_err(anyhow::Error::msg)?;
-
-        let send_amount = inputs.send_amount.parse()?;
-        let receive_amount = inputs.receive_amount.parse()?;
-
-        let send = Self::to_transfer(inputs.send_unit, send_amount, inputs.send_asset_id)?;
-        let receive =
-            Self::to_transfer(inputs.receive_unit, receive_amount, inputs.receive_asset_id)?;
-
-        let my_fee = MicroAlgos(inputs.my_fee.parse()?);
-        let peer_fee = MicroAlgos(inputs.peer_fee.parse()?);
-
-        Ok(ValidatedSwapInputs {
-            peer,
-            send,
-            receive,
-            my_fee,
-            peer_fee,
-        })
-    }
-
-    fn to_transfer(
-        input_unit: SwapInputUnit,
-        amount: u64,
-        asset_id_input: String,
-    ) -> Result<Transfer> {
-        match input_unit {
-            SwapInputUnit::Algos => Ok(Transfer::Algos { amount }),
-            SwapInputUnit::Asset => Ok(Transfer::Asset {
-                id: asset_id_input.parse()?,
-                amount,
-            }),
-        }
-    }
-}
-
-#[derive(Debug, Clone)]
-struct SwapInputs {
-    peer: String,
-    send_amount: String,
-    send_unit: SwapInputUnit,
-    send_asset_id: String,
-    receive_amount: String,
-    receive_unit: SwapInputUnit,
-    receive_asset_id: String,
-    my_fee: String,
-    peer_fee: String,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub enum SwapInputUnit {
-    Algos,
-    Asset,
 }
 
 enum Role {
