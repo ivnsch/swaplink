@@ -6,6 +6,8 @@ use algonaut::core::Address;
 use yew::{html, Component, ComponentLink, Html, ShouldRender};
 use yewtil::future::LinkFuture;
 
+use crate::generate_swap::model::SwapRole;
+
 use super::{
     logic::GenerateSwapLogic,
     model::{SwapInputUnit, SwapInputs, SwapLink},
@@ -132,13 +134,13 @@ impl Component for GenerateSwap {
                     <div>{ "You send" }</div>
 
                     <input
-                        placeholder={ Self::amount_placeholder(&self.inputs.send_unit) }
+                        placeholder={ "Amount" }
                         size=22
                         value=self.inputs.send_amount.clone()
                         oninput=self.link.callback(|e: InputData| Msg::UpdateSendAmountInput(e.value))
                     />
                     <div>
-                        { self.unit_select_box(&self.inputs.send_unit, Role::Sender) }
+                        { self.unit_select_box(&self.inputs.send_unit, SwapRole::Sender) }
                     </div>
                     {
                         if self.inputs.send_unit == SwapInputUnit::Asset {
@@ -155,7 +157,7 @@ impl Component for GenerateSwap {
                     }
                     <div>{ "You receive" }</div>
                     <input
-                        placeholder={ Self::amount_placeholder(&self.inputs.receive_unit) }
+                        placeholder={ "Amount" }
                         size=22
                         value=self.inputs.receive_amount.clone()
                         oninput=self.link.callback(|e: InputData| Msg::UpdateReceiveAmountInput(e.value))
@@ -174,19 +176,19 @@ impl Component for GenerateSwap {
                         else { html! {} }
                     }
                     <div>
-                        { self.unit_select_box(&self.inputs.receive_unit, Role::Receiver) }
+                        { self.unit_select_box(&self.inputs.receive_unit, SwapRole::Receiver) }
                     </div>
 
                     <div>{ "Your fee" }</div>
                     <input
-                        placeholder="Fee (microAlgos)"
+                        placeholder="Fee"
                         size=22
                         value=self.inputs.my_fee.clone()
                         oninput=self.link.callback(|e: InputData| Msg::UpdateMyFeeInput(e.value))
                     />
                     <div>{ "Peer's fee" }</div>
                     <input
-                        placeholder="Fee (microAlgos)"
+                        placeholder="Fee"
                         size=22
                         value=self.inputs.peer_fee.clone()
                         oninput=self.link.callback(|e: InputData| Msg::UpdatePeerFeeInput(e.value))
@@ -211,15 +213,7 @@ impl Component for GenerateSwap {
 }
 
 impl GenerateSwap {
-    fn amount_placeholder(unit: &SwapInputUnit) -> String {
-        match unit {
-            SwapInputUnit::Algos => "Amount (microAlgos)",
-            SwapInputUnit::Asset => "Amount (ASA base units)",
-        }
-        .to_owned()
-    }
-
-    fn unit_select_box(&self, unit: &SwapInputUnit, role: Role) -> Html {
+    fn unit_select_box(&self, unit: &SwapInputUnit, role: SwapRole) -> Html {
         let options = vec![
             Self::option("Algo", *unit == SwapInputUnit::Algos),
             Self::option("ASA", *unit == SwapInputUnit::Asset),
@@ -235,8 +229,8 @@ impl GenerateSwap {
                             _ => panic!("invalid unit str")
                         };
                         match role {
-                            Role::Sender => Msg::UpdateSendUnitInput(unit),
-                            Role::Receiver => Msg::UpdateReceiveUnitInput(unit)
+                            SwapRole::Sender => Msg::UpdateSendUnitInput(unit),
+                            SwapRole::Receiver => Msg::UpdateReceiveUnitInput(unit)
                         }
                     },
                     _ => panic!("Unexpected ChangeData: {:?}", cd)
@@ -267,9 +261,4 @@ impl GenerateSwap {
             Err(e) => Msg::ShowError(format!("Error connecting wallet: {}", e)),
         }
     }
-}
-
-enum Role {
-    Sender,
-    Receiver,
 }

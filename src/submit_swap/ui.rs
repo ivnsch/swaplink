@@ -1,6 +1,5 @@
 use std::rc::Rc;
 
-use algonaut::transaction::{Transaction, TransactionType};
 use log::debug;
 use yew::prelude::*;
 
@@ -10,11 +9,12 @@ use yewtil::future::LinkFuture;
 use crate::model::SwapRequest;
 
 use super::logic::SubmitSwapLogic;
+use super::model::{SubmitSwapViewData, SubmitTransferViewData};
 
 pub struct SubmitSwap {
     link: ComponentLink<Self>,
     props: SubmitSwapProps,
-    swap_request: Option<SwapRequest>,
+    swap: Option<SubmitSwapData>,
     error_msg: Option<String>,
 }
 
@@ -27,7 +27,7 @@ pub struct SubmitSwapProps {
 #[derive(Clone, Debug)]
 pub enum Msg {
     Submit(SwapRequest),
-    SetSwapRequest(SwapRequest),
+    SetAndShowSwap(SubmitSwapData),
     ShowError(String),
 }
 
@@ -39,7 +39,7 @@ impl Component for SubmitSwap {
         Self {
             link,
             props,
-            swap_request: None,
+            swap: None,
             error_msg: None,
         }
     }
@@ -51,7 +51,7 @@ impl Component for SubmitSwap {
                 self.link
                     .send_future(async move { Self::submit(logic, swap_request).await })
             }
-            Msg::SetSwapRequest(request) => self.swap_request = Some(request),
+            Msg::SetAndShowSwap(swap) => self.swap = Some(swap),
             Msg::ShowError(msg) => self.error_msg = Some(msg),
         }
         true
@@ -81,8 +81,8 @@ impl Component for SubmitSwap {
                     }
                 }
                 {
-                    if let Some(request) = &self.swap_request {
-                        Self::request_infos(request)
+                    if let Some(swap) = &self.swap {
+                        Self::swap_infos(&swap.view_data)
                     } else {
                         html! {}
                     }
@@ -94,37 +94,35 @@ impl Component for SubmitSwap {
 }
 
 impl SubmitSwap {
-    fn request_infos(request: &SwapRequest) -> Html {
+    fn swap_infos(view_data: &SubmitSwapViewData) -> Html {
         html! {
             <div>
                 <div>{ "You got a swap request!" }</div>
                 <div>{ "From:" }</div>
-                <div>{ request.signed_tx.transaction.sender().to_string() }</div>
+                <div>{ view_data.peer.clone() }</div>
                 <div>{ "You send:" }</div>
-                <div>{ Self::payment_infos(&request.unsigned_tx) }</div>
+                <div>{ Self::payment_infos(&view_data.send) }</div>
                 <div>{ "You receive:" }</div>
-                <div>{ Self::payment_infos(&request.signed_tx.transaction) }</div>
+                <div>{ Self::payment_infos(&view_data.receive) }</div>
                 <div>{ "Fee:" }</div>
-                <div>{ request.unsigned_tx.fee.to_string() }</div>
+                <div>{ view_data.my_fee.clone() }</div>
             </div>
         }
     }
 
-    fn payment_infos(tx: &Transaction) -> Html {
-        match &tx.txn_type {
-            TransactionType::Payment(p) => html! {
-                <div>{ format!("{} Algos", p.amount) }</div>
+    fn payment_infos(transfer: &SubmitTransferViewData) -> Html {
+        match &transfer {
+            SubmitTransferViewData::Algos { amount } => html! {
+                <div>{ format!("{} Algos", amount) }</div>
             },
-            TransactionType::AssetTransferTransaction(t) => html! {
-                <div>{ format!("Asset id: {}, amount: {}", t.xfer, t.amount) }</div>
+            SubmitTransferViewData::Asset { id, amount } => html! {
+                <div>{ format!("Asset id: {}, amount: {}", id, amount) }</div>
             },
-            _ => panic!("Not supported type"),
         }
     }
 
     fn submit_button(&self) -> Html {
-        let swap_request = self.swap_request.clone();
-        match swap_request {
+        match self.swap.clone().map(|s| s.request) {
             Some(request) => {
                 html! { <button onclick=self.link.callback(move |_| Msg::Submit(request.clone()))>{ "Sign and submit" }</button> }
             }
@@ -135,12 +133,15 @@ impl SubmitSwap {
 
 impl SubmitSwap {
     async fn process_encoded_swap(logic: Rc<SubmitSwapLogic>, encoded_swap: String) -> Msg {
-        let swap_request_res = logic.decode_swap(encoded_swap).await;
-        debug!("Decoded swap request: {:?}", swap_request_res);
+        let res = logic.to_swap_request(encoded_swap).await;
+        debug!("Decoded swap request: {:?}", res);
 
-        match swap_request_res {
-            Ok(swap_request) => Msg::SetSwapRequest(swap_request),
-            Err(e) => Msg::ShowError(format!("Swap error: {}", e)),
+        match res {
+            Ok(request) => match logic.to_view_data(&request).await {
+                Ok(view_data) => Msg::SetAndShowSwap(SubmitSwapData { request, view_data }),
+                Err(e) => Msg::ShowError(format!("Error generating view data: {}", e)),
+            },
+            Err(e) => Msg::ShowError(format!("Error decoding swap request: {}", e)),
         }
     }
 
@@ -150,4 +151,10 @@ impl SubmitSwap {
             Err(e) => Msg::ShowError(format!("Swap error: {}", e)),
         }
     }
+}
+
+#[derive(Debug, Clone)]
+pub struct SubmitSwapData {
+    request: SwapRequest,
+    view_data: SubmitSwapViewData,
 }

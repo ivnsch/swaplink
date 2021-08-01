@@ -8,7 +8,7 @@ mod submit_swap;
 
 use std::rc::Rc;
 
-use algonaut::algod::v2::Algod;
+use algonaut::{algod::v2::Algod, indexer::v2::Indexer};
 use my_algo::MyAlgo;
 use routing::AppRoute;
 use wasm_bindgen::prelude::*;
@@ -22,6 +22,7 @@ use crate::{generate_swap::ui::GenerateSwap, routing::AppRouter, submit_swap::ui
 pub struct Model {
     algod: Rc<Algod>,
     my_algo: Rc<MyAlgo>,
+    indexer: Rc<Indexer>,
 }
 
 #[derive(Clone, Debug)]
@@ -35,6 +36,7 @@ impl Component for Model {
         Self {
             algod: Rc::new(dependencies::algod()),
             my_algo: Rc::new(dependencies::my_algo()),
+            indexer: Rc::new(dependencies::indexer()),
         }
     }
 
@@ -49,23 +51,29 @@ impl Component for Model {
     fn view(&self) -> Html {
         let algod = self.algod.clone();
         let my_algo = self.my_algo.clone();
+        let indexer = self.indexer.clone();
         html! {
-            <AppRouter render=AppRouter::render(move |a| Self::switch(algod.clone(), my_algo.clone(), a)) />
+            <AppRouter render=AppRouter::render(move |a| Self::switch(algod.clone(), my_algo.clone(), indexer.clone(), a)) />
         }
     }
 }
 
 impl Model {
-    fn switch(algod: Rc<Algod>, my_algo: Rc<MyAlgo>, switch: AppRoute) -> Html {
+    fn switch(
+        algod: Rc<Algod>,
+        my_algo: Rc<MyAlgo>,
+        indexer: Rc<Indexer>,
+        switch: AppRoute,
+    ) -> Html {
         match switch {
             AppRoute::Generate => {
                 html! { <GenerateSwap
-                    logic=Rc::new(dependencies::generate_swap_logic(algod, my_algo))
+                    logic=Rc::new(dependencies::generate_swap_logic(algod, my_algo, indexer))
                 /> }
             }
             AppRoute::Submit(encoded_swap) => {
                 html! { <SubmitSwap
-                    logic=Rc::new(dependencies::submit_swap_logic(algod, my_algo)) encoded_swap=encoded_swap
+                    logic=Rc::new(dependencies::submit_swap_logic(algod, my_algo, indexer)) encoded_swap=encoded_swap
                 /> }
             }
         }

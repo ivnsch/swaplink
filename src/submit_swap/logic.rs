@@ -1,25 +1,92 @@
-use std::rc::Rc;
+use std::{convert::TryInto, rc::Rc};
 
-use algonaut::algod::v2::Algod;
+use algonaut::{
+    algod::v2::Algod,
+    core::MicroAlgos,
+    indexer::v2::Indexer,
+    model::indexer::v2::{Asset, QueryAssetsInfo},
+    transaction::{Transaction, TransactionType},
+};
 use anyhow::Result;
 use log::debug;
 use my_algo::MyAlgo;
+use rust_decimal::Decimal;
 
 use crate::model::SwapRequest;
+
+use super::model::{SubmitSwapViewData, SubmitTransferViewData};
 
 pub struct SubmitSwapLogic {
     algod: Rc<Algod>,
     my_algo: Rc<MyAlgo>,
+    indexer: Rc<Indexer>,
 }
 
 impl SubmitSwapLogic {
-    pub fn new(algod: Rc<Algod>, my_algo: Rc<MyAlgo>) -> SubmitSwapLogic {
-        SubmitSwapLogic { algod, my_algo }
+    pub fn new(algod: Rc<Algod>, my_algo: Rc<MyAlgo>, indexer: Rc<Indexer>) -> SubmitSwapLogic {
+        SubmitSwapLogic {
+            algod,
+            my_algo,
+            indexer,
+        }
     }
 
-    /// Process peer's swap request: sign my tx and submit the tx group to the network.
-    pub async fn decode_swap(&self, encoded_swap: String) -> Result<SwapRequest> {
-        SwapRequest::from_url_encoded_str(encoded_swap)
+    pub async fn to_swap_request(&self, encoded_swap: String) -> Result<SwapRequest> {
+        Ok(SwapRequest::from_url_encoded_str(encoded_swap)?)
+    }
+
+    pub async fn to_view_data(&self, request: &SwapRequest) -> Result<SubmitSwapViewData> {
+        let my_tx = request.unsigned_tx.clone();
+        let peer_tx = request.signed_tx.clone();
+
+        Ok(SubmitSwapViewData {
+            peer: peer_tx.transaction.sender().to_string(),
+            send: self.to_tranfer(&my_tx).await?,
+            receive: self.to_tranfer(&peer_tx.transaction).await?,
+            my_fee: format!("{} Algos", Self::micro_algos_to_algos_str(my_tx.fee)?),
+        })
+    }
+
+    async fn to_tranfer(&self, tx: &Transaction) -> Result<SubmitTransferViewData> {
+        match &tx.txn_type {
+            TransactionType::Payment(p) => Ok(SubmitTransferViewData::Algos {
+                amount: Self::micro_algos_to_algos_str(p.amount)?,
+            }),
+            TransactionType::AssetTransferTransaction(a) => {
+                let asset_config = self.asset_infos(a.xfer).await?;
+                let decimal = Decimal::from_i128_with_scale(
+                    a.amount as i128,
+                    asset_config.params.decimals.try_into()?,
+                );
+                Ok(SubmitTransferViewData::Asset {
+                    id: a.xfer.to_string(),
+                    amount: decimal.to_string(),
+                })
+            }
+            // this site only generates payments and asset transfers
+            _ => {
+                panic!("Not supported transaction type");
+            }
+        }
+    }
+
+    fn micro_algos_to_algos_str(micro_algos: MicroAlgos) -> Result<String> {
+        let decimal = Decimal::from_i128_with_scale(micro_algos.0 as i128, 6).normalize();
+        Ok(decimal.to_string())
+    }
+
+    async fn asset_infos(&self, asset_id: u64) -> Result<Asset> {
+        // TODO improve indexer interface in Algonaut
+        let infos = self
+            .indexer
+            .assets_info(
+                &asset_id.to_string(),
+                &QueryAssetsInfo {
+                    include_all: Some(true),
+                },
+            )
+            .await?;
+        Ok(*infos.asset)
     }
 
     /// Process peer's swap request: sign my tx and submit the tx group to the network.

@@ -11,12 +11,6 @@ pub struct SwapIntent {
     pub peer_fee: MicroAlgos,
 }
 
-#[derive(Debug, Clone)]
-pub enum Transfer {
-    Algos { amount: u64 },
-    Asset { id: u64, amount: u64 },
-}
-
 /// Validated form inputs
 #[derive(Debug, Clone)]
 pub struct ValidatedSwapInputs {
@@ -54,12 +48,24 @@ pub struct SwapInputs {
     pub peer_fee: String,
 }
 
+/// Wrapper for the link path containg the encoded swap data.
+#[derive(Debug, Clone)]
+pub struct SwapLink(pub String);
+
+#[derive(Debug, Clone)]
+pub enum SwapRole {
+    Sender,
+    Receiver,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum SwapInputUnit {
     Algos,
     Asset,
 }
 
-/// Wrapper for the link path containg the encoded swap data.
 #[derive(Debug, Clone)]
-pub struct SwapLink(pub String);
+pub enum Transfer {
+    Algos { amount: u64 },
+    Asset { id: u64, amount: u64 },
+}
