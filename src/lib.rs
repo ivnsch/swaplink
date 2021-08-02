@@ -1,5 +1,6 @@
 #![recursion_limit = "1024"]
 
+mod asset_infos;
 mod dependencies;
 mod generate_swap;
 mod model;

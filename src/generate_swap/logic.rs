@@ -4,14 +4,13 @@ use algonaut::{
     algod::v2::Algod,
     core::{Address, MicroAlgos, SuggestedTransactionParams},
     indexer::v2::Indexer,
-    model::indexer::v2::{Asset, QueryAssetsInfo},
     transaction::{tx_group::TxGroup, Pay, Transaction, TransferAsset, TxnBuilder},
 };
 use anyhow::{anyhow, Result};
 use my_algo::MyAlgo;
 use rust_decimal::{prelude::ToPrimitive, Decimal};
 
-use crate::model::SwapRequest;
+use crate::{asset_infos::asset_infos, model::SwapRequest};
 
 use super::model::{
     SwapInputUnit, SwapInputs, SwapIntent, SwapLink, SwapRole, Transfer, ValidatedSwapInputs,
@@ -47,20 +46,6 @@ impl GenerateSwapLogic {
     pub async fn generate_swap_link(&self, me: Address, inputs: SwapInputs) -> Result<SwapLink> {
         let validated_inputs = self.validate_swap_inputs(inputs).await?;
         Ok(self.generate_link(validated_inputs.to_swap(me)).await?)
-    }
-
-    async fn asset_infos(&self, asset_id: u64) -> Result<Asset> {
-        // TODO improve indexer interface in Algonaut
-        let infos = self
-            .indexer
-            .assets_info(
-                &asset_id.to_string(),
-                &QueryAssetsInfo {
-                    include_all: Some(true),
-                },
-            )
-            .await?;
-        Ok(*infos.asset)
     }
 
     async fn validate_swap_inputs(&self, inputs: SwapInputs) -> Result<ValidatedSwapInputs> {
@@ -137,7 +122,7 @@ impl GenerateSwapLogic {
         role: SwapRole,
     ) -> Result<Transfer> {
         let asset_id = asset_id_input.parse()?;
-        let asset_config = self.asset_infos(asset_id).await?;
+        let asset_config = asset_infos(&self.indexer, asset_id).await?;
 
         Self::validate_asset_transfer_with_fractionals(
             asset_config.params.decimals,

@@ -4,7 +4,6 @@ use algonaut::{
     algod::v2::Algod,
     core::MicroAlgos,
     indexer::v2::Indexer,
-    model::indexer::v2::{Asset, QueryAssetsInfo},
     transaction::{Transaction, TransactionType},
 };
 use anyhow::Result;
@@ -12,7 +11,7 @@ use log::debug;
 use my_algo::MyAlgo;
 use rust_decimal::Decimal;
 
-use crate::model::SwapRequest;
+use crate::{asset_infos::asset_infos, model::SwapRequest};
 
 use super::model::{SubmitSwapViewData, SubmitTransferViewData};
 
@@ -53,7 +52,7 @@ impl SubmitSwapLogic {
                 amount: Self::micro_algos_to_algos_str(p.amount)?,
             }),
             TransactionType::AssetTransferTransaction(a) => {
-                let asset_config = self.asset_infos(a.xfer).await?;
+                let asset_config = asset_infos(&self.indexer, a.xfer).await?;
                 let decimal = Decimal::from_i128_with_scale(
                     a.amount as i128,
                     asset_config.params.decimals.try_into()?,
@@ -74,20 +73,6 @@ impl SubmitSwapLogic {
     fn micro_algos_to_algos_str(micro_algos: MicroAlgos) -> Result<String> {
         let decimal = Decimal::from_i128_with_scale(micro_algos.0 as i128, 6).normalize();
         Ok(decimal.to_string())
-    }
-
-    async fn asset_infos(&self, asset_id: u64) -> Result<Asset> {
-        // TODO improve indexer interface in Algonaut
-        let infos = self
-            .indexer
-            .assets_info(
-                &asset_id.to_string(),
-                &QueryAssetsInfo {
-                    include_all: Some(true),
-                },
-            )
-            .await?;
-        Ok(*infos.asset)
     }
 
     /// Process peer's swap request: sign my tx and submit the tx group to the network.
