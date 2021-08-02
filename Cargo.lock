@@ -5,8 +5,7 @@ version = 3
 [[package]]
 name = "algonaut"
 version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c93c70e47d15ae22670b67194428405337d47c03759bd674cddabc98da36276a"
+source = "git+https://github.com/manuelmauro/algonaut?branch=main#7afc87b4af4ec761d7de088c1a9e552d71a01e95"
 dependencies = [
  "algonaut_client",
  "algonaut_core",
@@ -21,8 +20,7 @@ dependencies = [
 [[package]]
 name = "algonaut_client"
 version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "31038fa5678c5ff03231e4ca21ea1fc43966c2810b94ae492c47331444c6c58e"
+source = "git+https://github.com/manuelmauro/algonaut?branch=main#7afc87b4af4ec761d7de088c1a9e552d71a01e95"
 dependencies = [
  "algonaut_core",
  "algonaut_crypto",
@@ -42,8 +40,7 @@ dependencies = [
 [[package]]
 name = "algonaut_core"
 version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2c5f7be9ec0f41e09da300674715b21a5fa515775ae8e506940edf6b36b5b5d9"
+source = "git+https://github.com/manuelmauro/algonaut?branch=main#7afc87b4af4ec761d7de088c1a9e552d71a01e95"
 dependencies = [
  "algonaut_crypto",
  "algonaut_encoding",
@@ -60,8 +57,7 @@ dependencies = [
 [[package]]
 name = "algonaut_crypto"
 version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "68c7d5b6aa450d1dd9c9bd3a66b103c02bf3507176e3840051b5c59aee18eb09"
+source = "git+https://github.com/manuelmauro/algonaut?branch=main#7afc87b4af4ec761d7de088c1a9e552d71a01e95"
 dependencies = [
  "algonaut_encoding",
  "data-encoding",
@@ -78,8 +74,7 @@ dependencies = [
 [[package]]
 name = "algonaut_encoding"
 version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fcb3504a966ffc70dc06a831aea733d51934ed234855bc1d321b64c572635143"
+source = "git+https://github.com/manuelmauro/algonaut?branch=main#7afc87b4af4ec761d7de088c1a9e552d71a01e95"
 dependencies = [
  "data-encoding",
  "serde",
@@ -88,8 +83,7 @@ dependencies = [
 [[package]]
 name = "algonaut_model"
 version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "97b37eaa614e3cd6726ef84b3cc31f421671b4d28e54687171717a8e80c89745"
+source = "git+https://github.com/manuelmauro/algonaut?branch=main#7afc87b4af4ec761d7de088c1a9e552d71a01e95"
 dependencies = [
  "algonaut_core",
  "algonaut_crypto",
@@ -102,8 +96,7 @@ dependencies = [
 [[package]]
 name = "algonaut_transaction"
 version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d4c8f5060d1f6d4735395d1240d38c60b7579ffe417194af5fadbe2dde73ac8d"
+source = "git+https://github.com/manuelmauro/algonaut?branch=main#7afc87b4af4ec761d7de088c1a9e552d71a01e95"
 dependencies = [
  "algonaut_core",
  "algonaut_crypto",
