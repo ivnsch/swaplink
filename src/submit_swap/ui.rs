@@ -16,6 +16,7 @@ pub struct SubmitSwap {
     props: SubmitSwapProps,
     swap: Option<SubmitSwapData>,
     error_msg: Option<String>,
+    success_msg: Option<String>,
 }
 
 #[derive(Clone, Properties)]
@@ -29,6 +30,7 @@ pub enum Msg {
     Submit(SwapRequest),
     SetAndShowSwap(SubmitSwapData),
     ShowError(String),
+    ShowSuccess(String),
 }
 
 impl Component for SubmitSwap {
@@ -41,6 +43,7 @@ impl Component for SubmitSwap {
             props,
             swap: None,
             error_msg: None,
+            success_msg: None,
         }
     }
 
@@ -53,6 +56,7 @@ impl Component for SubmitSwap {
             }
             Msg::SetAndShowSwap(swap) => self.swap = Some(swap),
             Msg::ShowError(msg) => self.error_msg = Some(msg),
+            Msg::ShowSuccess(msg) => self.success_msg = Some(msg),
         }
         true
     }
@@ -73,9 +77,17 @@ impl Component for SubmitSwap {
     fn view(&self) -> Html {
         html! {
             <div>
+                <div class="submit-swap-title">{ "You got a swap request!" }</div>
                 {
                     if let Some(error_msg) = &self.error_msg {
-                        html! {<div>{ "Error: " }{ error_msg }</div>}
+                        html! {<div class="error">{ "Error: " }{ error_msg }</div>}
+                    } else {
+                        html! {}
+                    }
+                }
+                {
+                    if let Some(success_msg) = &self.success_msg {
+                        html! {<div class="success">{ success_msg }</div>}
                     } else {
                         html! {}
                     }
@@ -97,14 +109,13 @@ impl SubmitSwap {
     fn swap_infos(view_data: &SubmitSwapViewData) -> Html {
         html! {
             <div>
-                <div>{ "You got a swap request!" }</div>
-                <div>{ "From:" }</div>
+                <div class="submit-swap-label">{ "From:" }</div>
                 <div>{ view_data.peer.clone() }</div>
-                <div>{ "You send:" }</div>
+                <div class="submit-swap-label">{ "You send:" }</div>
                 <div>{ Self::payment_infos(&view_data.send) }</div>
-                <div>{ "You receive:" }</div>
+                <div class="submit-swap-label">{ "You receive:" }</div>
                 <div>{ Self::payment_infos(&view_data.receive) }</div>
-                <div>{ "Fee:" }</div>
+                <div class="submit-swap-label">{ "Your fee:" }</div>
                 <div>{ view_data.my_fee.clone() }</div>
             </div>
         }
@@ -124,7 +135,8 @@ impl SubmitSwap {
     fn submit_button(&self) -> Html {
         match self.swap.clone().map(|s| s.request) {
             Some(request) => {
-                html! { <button onclick=self.link.callback(move |_| Msg::Submit(request.clone()))>{ "Sign and submit" }</button> }
+                html! {
+                <button class="submit-sign-and-submit-button" onclick=self.link.callback(move |_| Msg::Submit(request.clone()))>{ "Sign and submit" }</button> }
             }
             None => html! { <div/> },
         }
@@ -147,7 +159,7 @@ impl SubmitSwap {
 
     async fn submit(logic: Rc<SubmitSwapLogic>, swap: SwapRequest) -> Msg {
         match logic.submit_swap(swap).await {
-            Ok(tx_id) => Msg::ShowError(format!("Swap success! tx id: {}", tx_id)),
+            Ok(tx_id) => Msg::ShowSuccess(format!("Swap success! transaction id: {}", tx_id)),
             Err(e) => Msg::ShowError(format!("Swap error: {}", e)),
         }
     }

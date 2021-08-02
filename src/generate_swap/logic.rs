@@ -251,7 +251,7 @@ impl GenerateSwapLogic {
         let base_units = (decimal * multiplier).normalize();
         if base_units.scale() != 0 {
             return Err(anyhow!(
-                "Amount: {} has more fractional digits than allowed by exp: {}",
+                "Amount: {} has more fractional digits than allowed: {}",
                 decimal,
                 base_10_exp
             ));

@@ -85,7 +85,7 @@ impl Component for GenerateSwap {
                     match address {
                         Some(address) => match logic.generate_swap_link(address, inputs).await {
                             Ok(swap_link) => Msg::ShowLink(swap_link),
-                            Err(e) => Msg::ShowError(format!("Error: {}", e)),
+                            Err(e) => Msg::ShowError(e.to_string()),
                         },
                         None => Msg::ShowError("Wallet not connected or no addresses".to_owned()),
                     }
@@ -100,8 +100,14 @@ impl Component for GenerateSwap {
             Msg::UpdateReceiveUnitInput(input) => self.inputs.receive_unit = input,
             Msg::UpdateMyFeeInput(input) => self.inputs.my_fee = input,
             Msg::UpdatePeerFeeInput(input) => self.inputs.peer_fee = input,
-            Msg::SetAddress(address) => self.address = Some(address),
-            Msg::ShowLink(link) => self.swap_link = Some(link),
+            Msg::SetAddress(address) => {
+                self.error_msg = None;
+                self.address = Some(address);
+            }
+            Msg::ShowLink(link) => {
+                self.error_msg = None;
+                self.swap_link = Some(link)
+            }
             Msg::ShowError(msg) => self.error_msg = Some(msg),
         }
         true
@@ -113,94 +119,115 @@ impl Component for GenerateSwap {
 
     fn view(&self) -> Html {
         html! {
-            <div>
-                <button onclick=self.link.callback(|_| Msg::Connect)>{ "Connect wallet" }</button>
-                <div class="your-address">{ "Your address: " }{ self.address.map(|a| a.to_string()).unwrap_or_else(|| "".to_owned()) }</div>
+            <div class="form">
+                // <div> { "Peer to peer atomic swaps of Algos, ASAs and NFTs on the Algorand network" }</div>
+                <div> { "Generate a link to swap Algos, ASAs or NFTs with a peer" }</div>
+                <button class="connect-button" onclick=self.link.callback(|_| Msg::Connect)>{ "Connect wallet" }</button>
                 {
-                    if let Some(error_msg) = &self.error_msg {
-                        html! {<div>{ "Error: " }{ error_msg }</div>}
+                    if self.address.is_some() {
+                        html! { <div>{ "Your address:" }</div> }
                     } else {
                         html! {}
                     }
                 }
-                <div class="form">
+                <div class="your-address">{ self.address.map(|a| a.to_string()).unwrap_or_else(|| "".to_owned()) }</div>
+                {
+                    if let Some(error_msg) = &self.error_msg {
+                        html! {<div class="error">{ "Error: " }{ error_msg }</div>}
+                    } else {
+                        html! {}
+                    }
+                }
+                <div>
                     <div>{ "Peer" }</div>
                     <input
                         placeholder="Peer address"
+                        class="address-input"
                         size=64
                         value=self.inputs.peer.clone()
                         oninput=self.link.callback(|e: InputData| Msg::UpdateReceiverInput(e.value))
                     />
                     <div>{ "You send" }</div>
 
-                    <input
-                        placeholder={ "Amount" }
-                        size=22
-                        value=self.inputs.send_amount.clone()
-                        oninput=self.link.callback(|e: InputData| Msg::UpdateSendAmountInput(e.value))
-                    />
-                    <div>
-                        { self.unit_select_box(&self.inputs.send_unit, SwapRole::Sender) }
+                    <div class="input-row">
+
+                        {
+                            if self.inputs.send_unit == SwapInputUnit::Asset {
+                                html! {
+                                    <input
+                                        placeholder="Asset id"
+                                        class="inline"
+                                        size=16
+                                        value=self.inputs.send_asset_id.clone()
+                                        oninput=self.link.callback(|e: InputData| Msg::UpdateSendAssetIdInput(e.value))
+                                    />
+                                }
+                            }
+                            else { html! {} }
+                        }
+                        <input
+                            placeholder={ "Amount" }
+                            class="inline"
+                            size=16
+                            value=self.inputs.send_amount.clone()
+                            oninput=self.link.callback(|e: InputData| Msg::UpdateSendAmountInput(e.value))
+                        />
+                        <div class="inline">
+                            { self.unit_select_box(&self.inputs.send_unit, SwapRole::Sender) }
+                        </div>
                     </div>
-                    {
-                        if self.inputs.send_unit == SwapInputUnit::Asset {
-                            html! {
-                                <input
-                                    placeholder="ASA id"
-                                    size=22
-                                    value=self.inputs.send_asset_id.clone()
-                                    oninput=self.link.callback(|e: InputData| Msg::UpdateSendAssetIdInput(e.value))
-                                />
-                            }
-                        }
-                        else { html! {} }
-                    }
+
                     <div>{ "You receive" }</div>
-                    <input
-                        placeholder={ "Amount" }
-                        size=22
-                        value=self.inputs.receive_amount.clone()
-                        oninput=self.link.callback(|e: InputData| Msg::UpdateReceiveAmountInput(e.value))
-                    />
-                    {
-                        if self.inputs.receive_unit == SwapInputUnit::Asset {
-                            html! {
-                                <input
-                                    placeholder="ASA id"
-                                    size=22
-                                    value=self.inputs.receive_asset_id.clone()
-                                    oninput=self.link.callback(|e: InputData| Msg::UpdateReceiveAssetIdInput(e.value))
-                                />
+                    <div class="input-row">
+                        {
+                            if self.inputs.receive_unit == SwapInputUnit::Asset {
+                                html! {
+                                    <input
+                                        placeholder="Asset id"
+                                        class="inline"
+                                        size=16
+                                        value=self.inputs.receive_asset_id.clone()
+                                        oninput=self.link.callback(|e: InputData| Msg::UpdateReceiveAssetIdInput(e.value))
+                                    />
+                                }
                             }
+                            else { html! {} }
                         }
-                        else { html! {} }
-                    }
-                    <div>
-                        { self.unit_select_box(&self.inputs.receive_unit, SwapRole::Receiver) }
+                        <input
+                            placeholder={ "Amount" }
+                            class="inline"
+                            size=16
+                            value=self.inputs.receive_amount.clone()
+                            oninput=self.link.callback(|e: InputData| Msg::UpdateReceiveAmountInput(e.value))
+                        />
+                        <div class="inline">
+                            { self.unit_select_box(&self.inputs.receive_unit, SwapRole::Receiver) }
+                        </div>
                     </div>
 
                     <div>{ "Your fee" }</div>
                     <input
                         placeholder="Fee"
-                        size=22
+                        size=16
                         value=self.inputs.my_fee.clone()
                         oninput=self.link.callback(|e: InputData| Msg::UpdateMyFeeInput(e.value))
                     />
                     <div>{ "Peer's fee" }</div>
                     <input
                         placeholder="Fee"
-                        size=22
+                        size=16
                         value=self.inputs.peer_fee.clone()
                         oninput=self.link.callback(|e: InputData| Msg::UpdatePeerFeeInput(e.value))
                     />
-                    <button onclick=self.link.callback(|_| Msg::Send)>{ "Generate link" }</button>
+                    <button class="submit-button" onclick=self.link.callback(|_| Msg::Send)>{ "Generate link" }</button>
                 </div>
                 {
                     if let Some(link) = &self.swap_link {
                         html! {
                             <div>
-                                <div>{ "Send this link to your peer! Upon opening, they can confirm and submit the swap. Note that the link expires in ~1 hour." }</div>
-                                <div>{ link.0.clone() } </div>
+                                <div class="submit-msg">{ "Send this link to your peer! Upon opening, they can confirm and submit the swap." }</div>
+                                <div class="submit-msg">{ "⚠️ It expires in ~1 hour" }</div>
+                                <div class="swap-link">{ link.0.clone() } </div>
                             </div>
                         }
                     } else {
@@ -216,7 +243,7 @@ impl GenerateSwap {
     fn unit_select_box(&self, unit: &SwapInputUnit, role: SwapRole) -> Html {
         let options = vec![
             Self::option("Algo", *unit == SwapInputUnit::Algos),
-            Self::option("ASA", *unit == SwapInputUnit::Asset),
+            Self::option("Asset", *unit == SwapInputUnit::Asset),
         ];
 
         html! {
@@ -225,7 +252,7 @@ impl GenerateSwap {
                     ChangeData::Select(e) =>  {
                         let unit = match e.value().as_ref() {
                             "Algo" => SwapInputUnit::Algos,
-                            "ASA" => SwapInputUnit::Asset,
+                            "Asset" => SwapInputUnit::Asset,
                             _ => panic!("invalid unit str")
                         };
                         match role {

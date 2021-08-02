@@ -53,7 +53,11 @@ impl Component for Model {
         let my_algo = self.my_algo.clone();
         let indexer = self.indexer.clone();
         html! {
-            <AppRouter render=AppRouter::render(move |a| Self::switch(algod.clone(), my_algo.clone(), indexer.clone(), a)) />
+            <div id="root">
+                <div id="wrapper">
+                    <AppRouter render=AppRouter::render(move |a| Self::switch(algod.clone(), my_algo.clone(), indexer.clone(), a)) />
+                </div>
+            </div>
         }
     }
 }

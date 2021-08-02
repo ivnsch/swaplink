@@ -57,7 +57,8 @@ impl SubmitSwapLogic {
                 let decimal = Decimal::from_i128_with_scale(
                     a.amount as i128,
                     asset_config.params.decimals.try_into()?,
-                );
+                )
+                .normalize();
                 Ok(SubmitTransferViewData::Asset {
                     id: a.xfer.to_string(),
                     amount: decimal.to_string(),

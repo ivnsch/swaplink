@@ -2,7 +2,8 @@ body {
   font-family: system-ui;
   font-style: normal;
   font-weight: 400;
-  font-size: 12px;
+  font-size: 16px;
+  position: relative;
 }
 
 dl {
@@ -23,29 +24,143 @@ input {
   border-width: 1px;
   border-radius: 4px;
   border-color: lightgray;
-  float: left;
-  clear: left;
+  margin-bottom: 16px;
+  appearance: none;
+  height: 35px;
+  border-radius: 20px;
+  border: 1px solid #d8e1ea;
+  padding: 10px 15px;
+  font-family: inherit;
+  font-size: 16px;
+  outline: 0;
+  box-sizing: border-box;
+  margin-top: 8px;
 }
 
-button {
-  float: left;
-  clear: both;
-  display: block;
-  position: relative;
+.address-input {
+  width: 100%;
 }
 
-div {
-  float: left;
-  clear: both;
+.connect-button {
   display: block;
   position: relative;
+  left: 50%;
+  -ms-transform: translate(-50%, 0%);
+  transform: translate(-50%, 0%);
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.submit-button {
+  display: block;
+  position: relative;
+  margin-top: 8px;
+  margin-bottom: 16px;
+  left: 50%;
+  -ms-transform: translate(-50%, 0%);
+  transform: translate(-50%, 0%);
+}
+
+select {
+  height: 35px;
+  border-radius: 20px;
+  border: 1px solid #d8e1ea;
+  padding: 0px 15px;
+  font-size: 16px;
+}
+
+.form * {
   word-break: break-word;
 }
 
+.input-row input {
+  margin-right: 5px;
+}
+
 .your-address {
-  margin-bottom: 10px;
+  margin-top: 8px;
+  margin-bottom: 16px;
 }
 
 .form {
+  padding-top: 20px;
   margin-bottom: 10px;
+}
+
+#wrapper {
+  max-width: 700px;
+  display: inline-block;
+  padding: 0 20px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+#root {
+  text-align: center;
+}
+
+.inline {
+  display: inline-block;
+}
+
+.error {
+  border-radius: 10px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: red;
+  margin-bottom: 16px;
+  padding: 20px;
+  color: red;
+}
+
+.success {
+  border-radius: 10px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: green;
+  margin-bottom: 16px;
+  padding: 20px;
+  color: green;
+}
+
+button {
+  appearance: none;
+  height: 35px;
+  border-radius: 20px;
+  border: 1px solid #d8e1ea;
+  padding: 0px 15px;
+  font-size: 16px;
+}
+
+.submit-msg {
+  margin-bottom: 8px;
+}
+
+.swap-link {
+  border-radius: 10px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: green;
+  margin-bottom: 16px;
+  padding: 20px;
+  color: green;
+}
+
+.submit-swap-title {
+  margin-bottom: 16px;
+}
+
+.submit-swap-label {
+  margin-top: 16px;
+  margin-bottom: 2px;
+}
+
+.submit-sign-and-submit-button {
+  display: block;
+  position: relative;
+  margin-top: 16px;
+  margin-bottom: 16px;
+  left: 50%;
+  -ms-transform: translate(-50%, 0%);
+  transform: translate(-50%, 0%);
 }
