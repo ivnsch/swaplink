@@ -11,7 +11,7 @@ use std::rc::Rc;
 
 use algonaut::{algod::v2::Algod, indexer::v2::Indexer};
 use my_algo::MyAlgo;
-use routing::AppRoute;
+use routing::{AppRoute, PublicUrlSwitch};
 use wasm_bindgen::prelude::*;
 
 use anyhow::Result;
@@ -56,7 +56,9 @@ impl Component for Model {
         html! {
             <div id="root">
                 <div id="wrapper">
-                    <AppRouter render=AppRouter::render(move |a| Self::switch(algod.clone(), my_algo.clone(), indexer.clone(), a)) />
+                    <AppRouter
+                        render=AppRouter::render(move |a| Self::switch(algod.clone(), my_algo.clone(), indexer.clone(), a))
+                    />
                 </div>
             </div>
         }
@@ -68,9 +70,9 @@ impl Model {
         algod: Rc<Algod>,
         my_algo: Rc<MyAlgo>,
         indexer: Rc<Indexer>,
-        switch: AppRoute,
+        switch: PublicUrlSwitch,
     ) -> Html {
-        match switch {
+        match switch.route() {
             AppRoute::Generate => {
                 html! { <GenerateSwap
                     logic=Rc::new(dependencies::generate_swap_logic(algod, my_algo, indexer))
