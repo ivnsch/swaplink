@@ -110,6 +110,11 @@ export const GenerateLink = () => {
 
   return (
     <div className="form">
+      <div className="warning">
+        {
+          "This site is under development. It operates on TestNet. Use only for testing purposes."
+        }
+      </div>
       <div>{"Generate a link to swap Algos, ASAs or NFTs with a peer"}</div>
       <button
         className="connect-button"

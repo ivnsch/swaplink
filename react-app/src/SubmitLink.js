@@ -76,6 +76,11 @@ export const SubmitLink = () => {
 
   return (
     <div>
+      <div className="warning">
+        {
+          "This site is under development. It operates on TestNet. Use only for testing purposes."
+        }
+      </div>
       <button
         className="connect-button"
         onClick={async (event) => {
