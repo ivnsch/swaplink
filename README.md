@@ -8,28 +8,26 @@ Site to perform peer to peer atomic swaps on the Algorand blockchain
 
 [Rust](https://www.rust-lang.org/tools/install), [wasm-pack](https://rustwasm.github.io/wasm-pack/installer/) and [Node.js](https://nodejs.org/en/)
 
-## Initialize
+## Instructions
+
+Build Rust:
+
+```
+cd wasm
+wasm-pack build --out-dir ../wasm-build
+```
+
+Initialize the React app:
 
 ```
 npm install
 ```
 
-## Run
+Run the React app:
 
 ```
-npm run start:dev
+cd react-app
+npm start
 ```
 
-Url: http://localhost:8000
-
-## Release build
-
-```
-npm run build
-```
-
-The release is in the `dist/` folder
-
-## Template
-
-Based on [algonaut-myalgo-yew-template](https://github.com/ivanschuetz/algonaut-myalgo-yew-template)
+See more instructions for React in the [app folder](https://github.com/ivanschuetz/swaplink/tree/main/react-app)
