@@ -62,7 +62,7 @@ fn private_network_algod() -> Algod {
 #[allow(dead_code)]
 fn private_network_indexer() -> Indexer {
     IndexerBuilder::new()
-        .bind("http://127.0.0.1:53630")
+        .bind("http://127.0.0.1:8980")
         .build_v2()
         // expect: build returns an error if the URL is not provided or has an invalid format,
         // we are passing a verified hardcoded value.
