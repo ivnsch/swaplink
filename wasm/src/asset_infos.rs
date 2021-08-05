@@ -30,7 +30,9 @@ fn map_possible_asset_id_not_found_workaround(
         details: RequestErrorDetails::Client { description },
     }) = &error
     {
-        if description.contains("TypeError: Failed to fetch") {
+        if description.contains("TypeError: Failed to fetch")
+            || description.contains("not allowed by Access-Control-Allow-Origin")
+        {
             anyhow!("Couldn't find asset id: {}", asset_id)
         } else {
             error.into()
