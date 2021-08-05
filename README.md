@@ -4,6 +4,8 @@
 
 Site to perform peer to peer atomic swaps on the Algorand blockchain
 
+Live: http://www.swaplink.xyz
+
 ## Pre-requisites
 
 [Rust](https://www.rust-lang.org/tools/install), [wasm-pack](https://rustwasm.github.io/wasm-pack/installer/) and [Node.js](https://nodejs.org/en/)
