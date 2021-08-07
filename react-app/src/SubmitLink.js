@@ -76,42 +76,53 @@ export const SubmitLink = () => {
 
   return (
     <div>
-      <div className="warning">
-        {
-          "This site is under development. It operates on TestNet. Use only for testing purposes."
-        }
-      </div>
-      <button
-        className="connect-button"
-        onClick={async (event) => {
-          let addresses = await connectWallet();
-          setMyAddress(addresses[0]);
-        }}
-      >
-        {"Connect My Algo wallet"}
-      </button>
-      {yourAddressElement()}
-      <div className="submit-swap-title">{"You got a swap request!"}</div>
-      {successMsgElement()}
-      {errorMsgElement()}
-      {swapViewDataElement(swapViewData)}
-      <button
-        className="submit-sign-and-submit-button"
-        onClick={async () => {
-          const { submit_transactions } = await wasmPromise;
-          setErrorMsg("");
-
-          try {
-            const signed_txns = await signMyTx(swapRequest);
-            const tx_id = await submit_transactions(signed_txns);
-            setSuccessMsg("Swap submitted! Tx id: " + tx_id);
-          } catch (e) {
-            setErrorMsg(e + "");
+      <div>
+        <div className="warning">
+          {
+            "This site is under development. It operates on TestNet. Use only for testing purposes."
           }
-        }}
-      >
-        {"Sign and submit"}
-      </button>
+        </div>
+        <button
+          className="connect-button"
+          onClick={async (event) => {
+            let addresses = await connectWallet();
+            setMyAddress(addresses[0]);
+          }}
+        >
+          {"Connect My Algo wallet"}
+        </button>
+        {yourAddressElement()}
+        <div className="submit-swap-title">{"You got a swap request!"}</div>
+        {successMsgElement()}
+        {errorMsgElement()}
+        {swapViewDataElement(swapViewData)}
+        <button
+          className="submit-sign-and-submit-button"
+          onClick={async () => {
+            const { submit_transactions } = await wasmPromise;
+            setErrorMsg("");
+
+            try {
+              const signed_txns = await signMyTx(swapRequest);
+              const tx_id = await submit_transactions(signed_txns);
+              setSuccessMsg("Swap submitted! Tx id: " + tx_id);
+            } catch (e) {
+              setErrorMsg(e + "");
+            }
+          }}
+        >
+          {"Sign and submit"}
+        </button>
+      </div>
+      <div className="footer">
+        <a
+          href="https://github.com/ivanschuetz/swaplink"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {"Github"}
+        </a>
+      </div>
     </div>
   );
 };

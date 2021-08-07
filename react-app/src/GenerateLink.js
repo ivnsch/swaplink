@@ -109,131 +109,142 @@ export const GenerateLink = () => {
   };
 
   return (
-    <div className="form">
-      <div className="warning">
-        {
-          "This site is under development. It operates on TestNet. Use only for testing purposes."
-        }
-      </div>
-      <div>{"Generate a link to swap Algos, ASAs or NFTs with a peer"}</div>
-      <button
-        className="connect-button"
-        onClick={async (event) => {
-          let addresses = await connectWallet();
-          setMyAddress(addresses[0]);
-        }}
-      >
-        {"Connect My Algo wallet"}
-      </button>
-      {yourAddressElement()}
-      {errorMsgElement()}
-      <div>
-        <div>{"Peer"}</div>
-        <input
-          placeholder="Peer address"
-          className="address-input"
-          size="64"
-          value={peerAddress}
-          onChange={(event) => {
-            setPeerAddress(event.target.value);
-          }}
-        />
-        <div>{"You send"}</div>
-
-        <div className="input-row">
-          {sendAssetIdElement()}
-          <input
-            placeholder={"Amount"}
-            className="inline"
-            size="16"
-            value={sendAmount}
-            onChange={(event) => {
-              setSendAmount(event.target.value);
-            }}
-          />
-          <select
-            value={sendUnit}
-            onChange={(event) => setSendUnit(event.target.value)}
-          >
-            <option value="algo">Algo</option>
-            <option value="asset">Asset</option>
-          </select>
+    <div>
+      <div className="form">
+        <div className="warning">
+          {
+            "This site is under development. It operates on TestNet. Use only for testing purposes."
+          }
         </div>
-
-        <div>{"You receive"}</div>
-        <div className="input-row">
-          {receiveAssetIdElement()}
-          <input
-            placeholder={"Amount"}
-            className="inline"
-            size="16"
-            value={receiveAmount}
-            onChange={(event) => {
-              setReceiveAmount(event.target.value);
-            }}
-          />
-          <select
-            value={receiveUnit}
-            onChange={(event) => setReceiveUnit(event.target.value)}
-          >
-            <option value="algo">Algo</option>
-            <option value="asset">Asset</option>
-          </select>
-        </div>
-
-        <div>{"Your fee"}</div>
-        <input
-          placeholder="Fee"
-          size="16"
-          value={myFee}
-          onChange={(event) => {
-            setMyFee(event.target.value);
-          }}
-        />
-        <div>{"Peer's fee"}</div>
-        <input
-          placeholder="Fee"
-          size="16"
-          value={peerFee}
-          onChange={(event) => {
-            setPeerFee(event.target.value);
-          }}
-        />
+        <div>{"Generate a link to swap Algos, ASAs or NFTs with a peer"}</div>
         <button
-          className="submit-button"
-          onClick={async () => {
-            const { generate_unsigned_swap_transactions, generate_link } =
-              await wasmPromise;
-            setErroMsg("");
-
-            try {
-              let unsignedSwapTransactions =
-                await generate_unsigned_swap_transactions(myAddress, {
-                  peer: peerAddress,
-
-                  send_amount: sendAmount,
-                  send_asset_id: sendAssetId,
-                  send_unit: sendUnit,
-
-                  receive_amount: receiveAmount,
-                  receive_asset_id: receiveAssetId,
-                  receive_unit: receiveUnit,
-
-                  my_fee: myFee,
-                  peer_fee: peerFee,
-                });
-
-              let rawSwapRequest = await signMyTx(unsignedSwapTransactions);
-              let linkRes = await generate_link(rawSwapRequest);
-              setSwapLink(linkRes);
-            } catch (e) {
-              setErroMsg(e + "");
-            }
+          className="connect-button"
+          onClick={async (event) => {
+            let addresses = await connectWallet();
+            setMyAddress(addresses[0]);
           }}
         >
-          {"Generate link"}
+          {"Connect My Algo wallet"}
         </button>
-        {swapLinkElement()}
+        {yourAddressElement()}
+        {errorMsgElement()}
+        <div>
+          <div>{"Peer"}</div>
+          <input
+            placeholder="Peer address"
+            className="address-input"
+            size="64"
+            value={peerAddress}
+            onChange={(event) => {
+              setPeerAddress(event.target.value);
+            }}
+          />
+          <div>{"You send"}</div>
+
+          <div className="input-row">
+            {sendAssetIdElement()}
+            <input
+              placeholder={"Amount"}
+              className="inline"
+              size="16"
+              value={sendAmount}
+              onChange={(event) => {
+                setSendAmount(event.target.value);
+              }}
+            />
+            <select
+              value={sendUnit}
+              onChange={(event) => setSendUnit(event.target.value)}
+            >
+              <option value="algo">Algo</option>
+              <option value="asset">Asset</option>
+            </select>
+          </div>
+
+          <div>{"You receive"}</div>
+          <div className="input-row">
+            {receiveAssetIdElement()}
+            <input
+              placeholder={"Amount"}
+              className="inline"
+              size="16"
+              value={receiveAmount}
+              onChange={(event) => {
+                setReceiveAmount(event.target.value);
+              }}
+            />
+            <select
+              value={receiveUnit}
+              onChange={(event) => setReceiveUnit(event.target.value)}
+            >
+              <option value="algo">Algo</option>
+              <option value="asset">Asset</option>
+            </select>
+          </div>
+
+          <div>{"Your fee"}</div>
+          <input
+            placeholder="Fee"
+            size="16"
+            value={myFee}
+            onChange={(event) => {
+              setMyFee(event.target.value);
+            }}
+          />
+          <div>{"Peer's fee"}</div>
+          <input
+            placeholder="Fee"
+            size="16"
+            value={peerFee}
+            onChange={(event) => {
+              setPeerFee(event.target.value);
+            }}
+          />
+          <button
+            className="submit-button"
+            onClick={async () => {
+              const { generate_unsigned_swap_transactions, generate_link } =
+                await wasmPromise;
+              setErroMsg("");
+
+              try {
+                let unsignedSwapTransactions =
+                  await generate_unsigned_swap_transactions(myAddress, {
+                    peer: peerAddress,
+
+                    send_amount: sendAmount,
+                    send_asset_id: sendAssetId,
+                    send_unit: sendUnit,
+
+                    receive_amount: receiveAmount,
+                    receive_asset_id: receiveAssetId,
+                    receive_unit: receiveUnit,
+
+                    my_fee: myFee,
+                    peer_fee: peerFee,
+                  });
+
+                let rawSwapRequest = await signMyTx(unsignedSwapTransactions);
+                let linkRes = await generate_link(rawSwapRequest);
+                setSwapLink(linkRes);
+              } catch (e) {
+                setErroMsg(e + "");
+              }
+            }}
+          >
+            {"Generate link"}
+          </button>
+          {swapLinkElement()}
+        </div>
+      </div>
+      <div className="footer">
+        <a
+          href="https://github.com/ivanschuetz/swaplink"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {"Github"}
+        </a>
       </div>
     </div>
   );

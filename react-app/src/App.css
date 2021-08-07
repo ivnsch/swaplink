@@ -90,7 +90,7 @@ select {
 #wrapper {
   max-width: 700px;
   display: inline-block;
-  padding: 0 20px;
+  padding: 0 20px 60px 0;
   box-sizing: border-box;
   position: relative;
 }
@@ -168,4 +168,25 @@ button {
 .warning {
   color: orangered;
   margin-bottom: 12px;
+}
+
+.footer {
+  position: fixed;
+  left: 0;
+  padding-bottom: 20px;
+  padding-top: 10px;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  z-index: 1000;
+  background-color: white;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+a {
+  color: gray;
+  text-decoration: none;
 }
