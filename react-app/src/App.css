@@ -164,3 +164,8 @@ button {
   -ms-transform: translate(-50%, 0%);
   transform: translate(-50%, 0%);
 }
+
+.warning {
+  color: orangered;
+  margin-bottom: 12px;
+}
