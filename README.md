@@ -6,6 +6,8 @@ Site to perform peer to peer atomic swaps on the Algorand blockchain
 
 Live: http://www.swaplink.xyz
 
+Community project: no additional fees or charges.
+
 ## Pre-requisites
 
 [Rust](https://www.rust-lang.org/tools/install), [wasm-pack](https://rustwasm.github.io/wasm-pack/installer/) and [Node.js](https://nodejs.org/en/)
@@ -33,3 +35,10 @@ npm start
 ```
 
 See more instructions for React in the [app folder](https://github.com/ivanschuetz/swaplink/tree/main/react-app)
+
+
+## Contribute
+
+1. Fork
+2. Commit changes to a branch in your fork
+3. Push your code and make a pull request
