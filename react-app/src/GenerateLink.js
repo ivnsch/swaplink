@@ -36,7 +36,7 @@ export const GenerateLink = () => {
   }, []);
 
   const sendAssetIdElement = () => {
-    if (sendUnit == "asset") {
+    if (sendUnit === "asset") {
       return (
         <input
           placeholder="Asset id"
@@ -48,14 +48,13 @@ export const GenerateLink = () => {
           }}
         />
       );
-      <div />;
     } else {
       return null;
     }
   };
 
   const receiveAssetIdElement = () => {
-    if (receiveUnit == "asset") {
+    if (receiveUnit === "asset") {
       return (
         <input
           placeholder="Asset id"
@@ -67,7 +66,6 @@ export const GenerateLink = () => {
           }}
         />
       );
-      <div />;
     } else {
       return null;
     }
@@ -114,7 +112,7 @@ export const GenerateLink = () => {
   };
 
   const yourAddressElement = () => {
-    if (myAddress != "") {
+    if (myAddress !== "") {
       return (
         <div>
           <div>{"Your address:"}</div>
@@ -126,7 +124,7 @@ export const GenerateLink = () => {
     }
   };
 
-const connectButtonElement = () => {
+  const connectButtonElement = () => {
     if (myAddress === "") {
       return (
         <button

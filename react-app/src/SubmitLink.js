@@ -24,7 +24,7 @@ export const SubmitLink = () => {
       setSwapViewData(swapRequest.view_data);
     };
     init();
-  }, []);
+  }, [link]);
 
   const swapViewDataElement = () => {
     if (swapViewData) {
@@ -62,7 +62,7 @@ export const SubmitLink = () => {
   };
 
   const yourAddressElement = () => {
-    if (myAddress != "") {
+    if (myAddress !== "") {
       return (
         <div>
           <div>{"Your address:"}</div>
@@ -134,16 +134,16 @@ const connectWallet = async () => {
 };
 
 const tranferElement = (transfer) => {
-  if (transfer.unit == "algo") {
+  if (transfer.unit === "algo") {
     return <div>{transfer.amount + " Algos"}</div>;
-  } else if (transfer.unit == "asset") {
+  } else if (transfer.unit === "asset") {
     return (
       <div>
         {"Asset id: " + transfer.asset_id + ", amount: " + transfer.amount}
       </div>
     );
   } else {
-    throw "Invalid transfer type: " + transfer.unit;
+    throw new Error("Invalid transfer type: " + transfer.unit);
   }
 };
 

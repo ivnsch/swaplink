@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useState } from "react";
+import React from "react";
 import { GenerateLink } from "./GenerateLink";
 import { SubmitLink } from "./SubmitLink";
 import { BrowserRouter as Router, Route } from "react-router-dom";
