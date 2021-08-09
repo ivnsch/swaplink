@@ -108,6 +108,32 @@ export const GenerateLink = () => {
     }
   };
 
+const connectButtonElement = () => {
+    if (myAddress === "") {
+      return (
+        <button
+          className="connect-button"
+          onClick={async (event) => {
+            let addresses = await connectWallet();
+            setMyAddress(addresses[0]);
+          }}
+          >
+          {"Connect My Algo wallet"}
+        </button>
+      );
+    } else {
+      return <button
+              className="connect-button"
+              onClick={() => {
+                setMyAddress("");
+              }}
+              >
+              {"Disconnect"}
+            </button>
+    }
+  };
+
+
   return (
     <div>
       <div className="form">
@@ -117,15 +143,7 @@ export const GenerateLink = () => {
           }
         </div>
         <div>{"Generate a link to swap Algos, ASAs or NFTs with a peer"}</div>
-        <button
-          className="connect-button"
-          onClick={async (event) => {
-            let addresses = await connectWallet();
-            setMyAddress(addresses[0]);
-          }}
-        >
-          {"Connect My Algo wallet"}
-        </button>
+        {connectButtonElement()}
         {yourAddressElement()}
         {errorMsgElement()}
         <div>
