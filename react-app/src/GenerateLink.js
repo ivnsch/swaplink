@@ -135,22 +135,23 @@ const connectButtonElement = () => {
             let addresses = await connectWallet();
             setMyAddress(addresses[0]);
           }}
-          >
+        >
           {"Connect My Algo wallet"}
         </button>
       );
     } else {
-      return <button
-              className="connect-button"
-              onClick={() => {
-                setMyAddress("");
-              }}
-              >
-              {"Disconnect"}
-            </button>
+      return (
+        <button
+          className="connect-button"
+          onClick={() => {
+            setMyAddress("");
+          }}
+        >
+          {"Disconnect"}
+        </button>
+      );
     }
   };
-
 
   return (
     <div>
