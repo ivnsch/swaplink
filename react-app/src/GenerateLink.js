@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import MyAlgo from "@randlabs/myalgo-connect";
+import { CopyToClipboard } from "react-copy-to-clipboard";
+import { MdContentCopy } from "react-icons/md";
 
 const wasmPromise = import("wasm");
 const myAlgoWallet = new MyAlgo();
@@ -20,6 +22,8 @@ export const GenerateLink = () => {
   const [peerFee, setPeerFee] = useState("0.001");
 
   const [swapLink, setSwapLink] = useState("");
+  const [swapLinkTruncated, setSwapLinkTruncated] = useState("");
+  const [swapLinkIsCopied, setSwapLinkIsCopied] = useState(false);
 
   const [errorMsg, setErroMsg] = useState("");
 
@@ -87,12 +91,26 @@ export const GenerateLink = () => {
             }
           </div>
           <div className="submit-msg">{"⚠️ It expires in ~1 hour"}</div>
-          <div className="swap-link">{swapLink} </div>
+          <CopyToClipboard text={swapLink} onCopy={onCopyText}>
+            <div className="swap-link">
+              {swapLinkTruncated}
+              <span class="copy">
+                {swapLinkIsCopied ? "copied!" : <MdContentCopy />}
+              </span>
+            </div>
+          </CopyToClipboard>
         </div>
       );
     } else {
       return null;
     }
+  };
+
+  const onCopyText = () => {
+    setSwapLinkIsCopied(true);
+    setTimeout(() => {
+      setSwapLinkIsCopied(false);
+    }, 1000);
   };
 
   const yourAddressElement = () => {
@@ -243,8 +261,11 @@ const connectButtonElement = () => {
                   });
 
                 let rawSwapRequest = await signMyTx(unsignedSwapTransactions);
-                let linkRes = await generate_link(rawSwapRequest);
-                setSwapLink(linkRes);
+                let link = await generate_link(rawSwapRequest);
+                setSwapLink(link);
+                setSwapLinkTruncated(
+                  link.replace(/(.*)\/(.*).(?=....)/, "$1/...")
+                );
               } catch (e) {
                 setErroMsg(e + "");
               }
