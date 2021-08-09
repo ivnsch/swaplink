@@ -73,7 +73,7 @@ export const GenerateLink = () => {
 
   const errorMsgElement = () => {
     if (errorMsg) {
-      return <div className="error"> {errorMsg}</div>;
+      return <div className="error">{errorMsg}</div>;
     } else {
       return null;
     }
@@ -226,6 +226,7 @@ export const GenerateLink = () => {
               setMyFee(event.target.value);
             }}
           />
+          <span>{" Algo"}</span>
           <div>{"Peer's fee"}</div>
           <input
             placeholder="Fee"
@@ -235,6 +236,7 @@ export const GenerateLink = () => {
               setPeerFee(event.target.value);
             }}
           />
+          <span>{" Algo"}</span>
           <button
             className="submit-button"
             onClick={async () => {
