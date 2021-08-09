@@ -16,8 +16,8 @@ export const GenerateLink = () => {
   const [receiveAmount, setReceiveAmount] = useState("");
   const [receiveAssetId, setReceiveAssetId] = useState("");
 
-  const [myFee, setMyFee] = useState("");
-  const [peerFee, setPeerFee] = useState("");
+  const [myFee, setMyFee] = useState("0.001");
+  const [peerFee, setPeerFee] = useState("0.001");
 
   const [swapLink, setSwapLink] = useState("");
 
