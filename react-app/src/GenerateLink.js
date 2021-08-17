@@ -239,6 +239,9 @@ export const GenerateLink = () => {
           <span>{" Algo"}</span>
           <button
             className="submit-button"
+            disabled={
+              myAddress === "" || peerAddress === "" || sendAmount === "" || receiveAmount === "" ? true : false
+            }
             onClick={async () => {
               const { generate_unsigned_swap_transactions, generate_link } =
                 await wasmPromise;
