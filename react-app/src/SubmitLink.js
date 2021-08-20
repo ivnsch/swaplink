@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
-import MyAlgo from "@randlabs/myalgo-connect";
 import { useParams } from "react-router-dom";
+import { connectWallet, sign } from "./MyAlgo";
 
 const wasmPromise = import("wasm");
-const myAlgoWallet = new MyAlgo();
 
 export const SubmitLink = () => {
   let { link } = useParams();
@@ -85,8 +84,11 @@ export const SubmitLink = () => {
         <button
           className="connect-button"
           onClick={async (event) => {
-            let addresses = await connectWallet();
-            setMyAddress(addresses[0]);
+            try {
+              setMyAddress(await connectWallet());
+            } catch (e) {
+              setErrorMsg(e + "");
+            }
           }}
         >
           {"Connect My Algo wallet"}
@@ -103,7 +105,12 @@ export const SubmitLink = () => {
             setErrorMsg("");
 
             try {
-              const signed_txns = await signMyTx(swapRequest);
+              const signed_txns = {
+                signed_my_tx_msg_pack: await sign(
+                  swapRequest.unsigned_my_tx_my_algo_format
+                ),
+                signed_peer_tx_msg_pack: swapRequest.signed_peer_tx_msg_pack, // passthrough
+              };
               const tx_id = await submit_transactions(signed_txns);
               setSuccessMsg("Swap submitted! Tx id: " + tx_id);
             } catch (e) {
@@ -127,12 +134,6 @@ export const SubmitLink = () => {
   );
 };
 
-const connectWallet = async () => {
-  const accounts = await myAlgoWallet.connect();
-  const addresses = accounts.map((account) => account.address);
-  return addresses;
-};
-
 const tranferElement = (transfer) => {
   if (transfer.unit === "algo") {
     return <div>{transfer.amount + " Algos"}</div>;
@@ -145,15 +146,4 @@ const tranferElement = (transfer) => {
   } else {
     throw new Error("Invalid transfer type: " + transfer.unit);
   }
-};
-
-const signMyTx = async (txns) => {
-  const my_tx = txns.unsigned_my_tx_my_algo_format;
-  const peer_tx = txns.signed_peer_tx_msg_pack;
-  const signedTxn = await myAlgoWallet.signTransaction(my_tx);
-
-  return {
-    signed_my_tx_msg_pack: Array.from(signedTxn.blob), // Uint8Array -> array (otherwise parsing to Vec<u8> in Rust doesn't work)
-    signed_peer_tx_msg_pack: peer_tx, // passthrough
-  };
 };
