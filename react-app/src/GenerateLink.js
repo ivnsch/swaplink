@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import MyAlgo from "@randlabs/myalgo-connect";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { MdContentCopy } from "react-icons/md";
+import { connectWallet, sign } from "./MyAlgo";
 
 const wasmPromise = import("wasm");
-const myAlgoWallet = new MyAlgo();
 
 export const GenerateLink = () => {
   const [myAddress, setMyAddress] = useState("");
@@ -25,7 +24,7 @@ export const GenerateLink = () => {
   const [swapLinkTruncated, setSwapLinkTruncated] = useState("");
   const [swapLinkIsCopied, setSwapLinkIsCopied] = useState(false);
 
-  const [errorMsg, setErroMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
     const init = async () => {
@@ -130,8 +129,11 @@ export const GenerateLink = () => {
         <button
           className="connect-button"
           onClick={async (event) => {
-            let addresses = await connectWallet();
-            setMyAddress(addresses[0]);
+            try {
+              setMyAddress(await connectWallet());
+            } catch (e) {
+              setErrorMsg(e + "");
+            }
           }}
         >
           {"Connect My Algo wallet"}
@@ -240,12 +242,17 @@ export const GenerateLink = () => {
           <button
             className="submit-button"
             disabled={
-              myAddress === "" || peerAddress === "" || sendAmount === "" || receiveAmount === "" ? true : false
+              myAddress === "" ||
+              peerAddress === "" ||
+              sendAmount === "" ||
+              receiveAmount === ""
+                ? true
+                : false
             }
             onClick={async () => {
               const { generate_unsigned_swap_transactions, generate_link } =
                 await wasmPromise;
-              setErroMsg("");
+              setErrorMsg("");
 
               try {
                 let unsignedSwapTransactions =
@@ -264,14 +271,21 @@ export const GenerateLink = () => {
                     peer_fee: peerFee,
                   });
 
-                let rawSwapRequest = await signMyTx(unsignedSwapTransactions);
+                let rawSwapRequest = {
+                  signed_my_tx_msg_pack: await sign(
+                    unsignedSwapTransactions.my_tx_my_algo_format
+                  ),
+                  unsigned_peer_tx_msg_pack:
+                    unsignedSwapTransactions.peer_tx_msg_pack, // passthrough
+                };
+
                 let link = await generate_link(rawSwapRequest);
                 setSwapLink(link);
                 setSwapLinkTruncated(
                   link.replace(/(.*)\/(.*).(?=....)/, "$1/...")
                 );
               } catch (e) {
-                setErroMsg(e + "");
+                setErrorMsg(e + "");
               }
             }}
           >
@@ -291,22 +305,4 @@ export const GenerateLink = () => {
       </div>
     </div>
   );
-};
-
-const connectWallet = async () => {
-  const accounts = await myAlgoWallet.connect();
-  const addresses = accounts.map((account) => account.address);
-  return addresses;
-};
-
-const signMyTx = async (unsigned_transactions) => {
-  let my_tx = unsigned_transactions.my_tx_my_algo_format;
-  let peer_tx = unsigned_transactions.peer_tx_msg_pack;
-
-  let signedTxn = await myAlgoWallet.signTransaction(my_tx);
-
-  return {
-    signed_my_tx_msg_pack: Array.from(signedTxn.blob), // Uint8Array -> array (otherwise parsing to Vec<u8> in Rust doesn't work)
-    unsigned_peer_tx_msg_pack: peer_tx, // passthrough
-  };
 };
