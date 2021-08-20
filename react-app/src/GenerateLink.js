@@ -242,7 +242,12 @@ export const GenerateLink = () => {
           <button
             className="submit-button"
             disabled={
-              myAddress === "" || peerAddress === "" || sendAmount === "" || receiveAmount === "" ? true : false
+              myAddress === "" ||
+              peerAddress === "" ||
+              sendAmount === "" ||
+              receiveAmount === ""
+                ? true
+                : false
             }
             onClick={async () => {
               const { generate_unsigned_swap_transactions, generate_link } =
