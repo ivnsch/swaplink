@@ -24,7 +24,7 @@ export const GenerateLink = () => {
   const [swapLinkTruncated, setSwapLinkTruncated] = useState("");
   const [swapLinkIsCopied, setSwapLinkIsCopied] = useState(false);
 
-  const [errorMsg, setErroMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
     const init = async () => {
@@ -252,7 +252,7 @@ export const GenerateLink = () => {
             onClick={async () => {
               const { generate_unsigned_swap_transactions, generate_link } =
                 await wasmPromise;
-              setErroMsg("");
+              setErrorMsg("");
 
               try {
                 let unsignedSwapTransactions =
@@ -285,7 +285,7 @@ export const GenerateLink = () => {
                   link.replace(/(.*)\/(.*).(?=....)/, "$1/...")
                 );
               } catch (e) {
-                setErroMsg(e + "");
+                setErrorMsg(e + "");
               }
             }}
           >
