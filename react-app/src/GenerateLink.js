@@ -158,7 +158,7 @@ export const GenerateLink = () => {
 
   return (
     <div>
-      <div className="form">
+      <div className="container">
         <div className="warning">
           {
             "This site is under development. It operates on TestNet. Use only for testing purposes."
