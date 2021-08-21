@@ -3,6 +3,10 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
+const modalRoot = document.createElement("div");
+modalRoot.setAttribute("id", "modal-root");
+document.body.append(modalRoot);
+
 ReactDOM.render(
   <React.StrictMode>
     <App />
