@@ -62,6 +62,7 @@ input {
 }
 
 select {
+  outline: none;
   height: 35px;
   border-radius: 20px;
   border: 1px solid #d8e1ea;
