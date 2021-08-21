@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { MdContentCopy } from "react-icons/md";
 import { connectWallet, sign } from "./MyAlgo";
+import Modal from "./Modal";
 
 const wasmPromise = import("wasm");
 
@@ -25,6 +26,8 @@ export const GenerateLink = () => {
   const [swapLinkIsCopied, setSwapLinkIsCopied] = useState(false);
 
   const [errorMsg, setErrorMsg] = useState("");
+
+  const [showLinkModal, setShowLinkModal] = useState(false);
 
   useEffect(() => {
     const init = async () => {
@@ -81,13 +84,13 @@ export const GenerateLink = () => {
   const swapLinkElement = () => {
     if (swapLink) {
       return (
-        <div>
+        <div className="link-data-container">
           <div className="submit-msg">
             {
-              "Send this link to your peer! Upon opening, they can confirm and submit the swap."
+              "Send this link to your peer. Upon opening, they can confirm and submit the swap."
             }
           </div>
-          <div className="submit-msg">{"⚠️ It expires in ~1 hour"}</div>
+          <div className="submit-msg-warning">{"⚠️ It expires in ~1 hour"}</div>
           <CopyToClipboard text={swapLink} onCopy={onCopyText}>
             <div className="swap-link">
               {swapLinkTruncated}
@@ -284,6 +287,7 @@ export const GenerateLink = () => {
                 setSwapLinkTruncated(
                   link.replace(/(.*)\/(.*).(?=....)/, "$1/...")
                 );
+                setShowLinkModal(true);
               } catch (e) {
                 setErrorMsg(e + "");
               }
@@ -291,7 +295,11 @@ export const GenerateLink = () => {
           >
             {"Generate link"}
           </button>
-          {swapLinkElement()}
+          {showLinkModal && (
+            <Modal title={"Done!"} onCloseClick={() => setShowLinkModal(false)}>
+              {swapLinkElement()}
+            </Modal>
+          )}
         </div>
       </div>
     </div>

@@ -134,7 +134,12 @@ button {
 }
 
 .submit-msg {
-  margin-bottom: 8px;
+  margin-bottom: 16px;
+}
+
+.submit-msg-warning {
+  margin-bottom: 16px;
+  color: orangered;
 }
 
 .swap-link {
@@ -199,7 +204,7 @@ a {
 }
 
 .copy {
-  margin-left: 10px;
+  margin-left: 6px;
 }
 
 .modal {
@@ -271,4 +276,8 @@ a {
     min-width: 350px;
     min-height: 350px;
   }
+}
+
+.link-data-container {
+  text-align: center;
 }
