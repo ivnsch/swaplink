@@ -121,15 +121,6 @@ export const SubmitLink = () => {
           {"Sign and submit"}
         </button>
       </div>
-      <div className="footer">
-        <a
-          href="https://github.com/ivanschuetz/swaplink"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {"Github"}
-        </a>
-      </div>
     </div>
   );
 };

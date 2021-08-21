@@ -1,12 +1,15 @@
 import "./App.css";
-import React from "react";
 import { GenerateLink } from "./GenerateLink";
 import { SubmitLink } from "./SubmitLink";
 import { BrowserRouter as Router, Route } from "react-router-dom";
+import Modal from "./Modal";
+import React, { useState } from "react";
 
 const isIE = /*@cc_on!@*/ false || !!document.documentMode;
 
-function App() {
+const App = () => {
+  const [showLegalModal, setShowLegalModal] = useState(false);
+
   if (isIE) {
     return (
       <div style={{ marginLeft: 20, marginRight: 20, marginTop: 20 }}>
@@ -15,14 +18,41 @@ function App() {
     );
   } else {
     return (
-      <Router>
-        <div id="wrapper">
-          <Route exact path="/" component={GenerateLink} />
-          <Route path="/submit/:link" component={SubmitLink} />
-        </div>
-      </Router>
+      <div>
+        <Router>
+          <div id="wrapper">
+            <Route exact path="/" component={GenerateLink} />
+            <Route path="/submit/:link" component={SubmitLink} />
+            <div className="footer">
+              <a
+                href="https://github.com/ivanschuetz/swaplink"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {"Github"}
+              </a>
+              <a
+                onClick={() => {
+                  setShowLegalModal(!showLegalModal);
+                }}
+                rel="noopener noreferrer"
+              >
+                {"Disclaimer"}
+              </a>
+            </div>
+            {showLegalModal && (
+              <Modal
+                title={"Disclaimer"}
+                onCloseClick={() => setShowLegalModal(false)}
+              >
+                <p>YOLO 🏳️</p>
+              </Modal>
+            )}
+          </div>
+        </Router>
+      </div>
     );
   }
-}
+};
 
 export default App;

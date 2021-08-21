@@ -294,15 +294,6 @@ export const GenerateLink = () => {
           {swapLinkElement()}
         </div>
       </div>
-      <div className="footer">
-        <a
-          href="https://github.com/ivanschuetz/swaplink"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {"Github"}
-        </a>
-      </div>
     </div>
   );
 };
