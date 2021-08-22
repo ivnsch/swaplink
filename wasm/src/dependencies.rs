@@ -6,12 +6,12 @@ use algonaut::{
     indexer::{v2::Indexer, IndexerBuilder, IndexerCustomEndpointBuilder},
 };
 
-pub fn algod() -> Algod {
-    testnet_algod()
+pub fn algod(api_key: &str) -> Algod {
+    testnet_algod(api_key)
 }
 
-pub fn indexer() -> Indexer {
-    testnet_indexer()
+pub fn indexer(api_key: &str) -> Indexer {
+    testnet_indexer(api_key)
 }
 
 pub fn generate_swap_logic(algod: Rc<Algod>, indexer: Rc<Indexer>) -> GenerateSwapLogic {
@@ -22,12 +22,12 @@ pub fn submit_swap_logic(algod: Rc<Algod>, indexer: Rc<Indexer>) -> SubmitSwapLo
     SubmitSwapLogic::new(algod, indexer)
 }
 
-fn testnet_algod() -> Algod {
+fn testnet_algod(api_key: &str) -> Algod {
     AlgodCustomEndpointBuilder::new()
         .bind("https://testnet-algorand.api.purestake.io/ps2/")
         .headers(vec![(
             "x-api-key",
-            "Ii8MvLymlZ8mxE5hT94KG4nEWfH1A7cP6WMWTfkk",
+            api_key,
         )])
         .build_v2()
         // expect: build returns an error if the URL or token are not provided or have an invalid format,
@@ -35,12 +35,12 @@ fn testnet_algod() -> Algod {
         .expect("Couldn't initialize algod")
 }
 
-fn testnet_indexer() -> Indexer {
+fn testnet_indexer(api_key: &str) -> Indexer {
     IndexerCustomEndpointBuilder::new()
         .bind("https://testnet-algorand.api.purestake.io/idx2/")
         .headers(vec![(
             "x-api-key",
-            "Ii8MvLymlZ8mxE5hT94KG4nEWfH1A7cP6WMWTfkk",
+            api_key,
         )])
         .build_v2()
         // expect: build returns an error if the URL or token are not provided or have an invalid format,

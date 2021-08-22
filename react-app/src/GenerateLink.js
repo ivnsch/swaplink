@@ -28,6 +28,7 @@ export const GenerateLink = () => {
   const [errorMsg, setErrorMsg] = useState("");
 
   const [showLinkModal, setShowLinkModal] = useState(false);
+  const [apiKey, setApiKey] = useState("");
 
   useEffect(() => {
     const init = async () => {
@@ -169,6 +170,17 @@ export const GenerateLink = () => {
         {yourAddressElement()}
         {errorMsgElement()}
         <div>
+        <div>{"Purestake api key"}</div>
+          <input
+            type="password"
+            placeholder="api key"
+            className="address-input"
+            size="64"
+            value={apiKey}
+            onChange={(event) => {
+              setApiKey(event.target.value);
+            }}
+          />
           <div>{"Peer"}</div>
           <input
             placeholder="Peer address"
@@ -272,7 +284,7 @@ export const GenerateLink = () => {
 
                     my_fee: myFee,
                     peer_fee: peerFee,
-                  });
+                  }, apiKey);
 
                 let rawSwapRequest = {
                   signed_my_tx_msg_pack: await sign(
@@ -282,7 +294,7 @@ export const GenerateLink = () => {
                     unsignedSwapTransactions.peer_tx_msg_pack, // passthrough
                 };
 
-                let link = await generate_link(rawSwapRequest);
+                let link = await generate_link(rawSwapRequest, apiKey);
                 setSwapLink(link);
                 setSwapLinkTruncated(
                   link.replace(/(.*)\/(.*).(?=....)/, "$1/...")

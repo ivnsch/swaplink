@@ -12,11 +12,12 @@ export const SubmitLink = () => {
   const [swapViewData, setSwapViewData] = useState(null);
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
+  const [apiKey, setApiKey] = useState("");
 
   useEffect(() => {
     const init = async () => {
       const { init_log, decode_link } = await wasmPromise;
-      const swapRequest = await decode_link(link);
+      const swapRequest = await decode_link(link, apiKey);
 
       init_log();
       setSwapRequest(swapRequest);
@@ -111,7 +112,7 @@ export const SubmitLink = () => {
                 ),
                 signed_peer_tx_msg_pack: swapRequest.signed_peer_tx_msg_pack, // passthrough
               };
-              const tx_id = await submit_transactions(signed_txns);
+              const tx_id = await submit_transactions(signed_txns, apiKey);
               setSuccessMsg("Swap submitted! Tx id: " + tx_id);
             } catch (e) {
               setErrorMsg(e + "");
