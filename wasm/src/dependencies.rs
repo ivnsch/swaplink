@@ -25,10 +25,7 @@ pub fn submit_swap_logic(algod: Rc<Algod>, indexer: Rc<Indexer>) -> SubmitSwapLo
 fn testnet_algod(api_key: &str) -> Algod {
     AlgodCustomEndpointBuilder::new()
         .bind("https://testnet-algorand.api.purestake.io/ps2/")
-        .headers(vec![(
-            "x-api-key",
-            api_key,
-        )])
+        .headers(vec![("x-api-key", api_key)])
         .build_v2()
         // expect: build returns an error if the URL or token are not provided or have an invalid format,
         // we are passing verified hardcoded values.
@@ -38,10 +35,7 @@ fn testnet_algod(api_key: &str) -> Algod {
 fn testnet_indexer(api_key: &str) -> Indexer {
     IndexerCustomEndpointBuilder::new()
         .bind("https://testnet-algorand.api.purestake.io/idx2/")
-        .headers(vec![(
-            "x-api-key",
-            api_key,
-        )])
+        .headers(vec![("x-api-key", api_key)])
         .build_v2()
         // expect: build returns an error if the URL or token are not provided or have an invalid format,
         // we are passing verified hardcoded values.

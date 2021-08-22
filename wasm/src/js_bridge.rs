@@ -27,7 +27,7 @@ pub async fn init_log() -> Result<(), String> {
 pub async fn generate_unsigned_swap_transactions(
     my_address_str: String,
     inputs: JsValue,
-    api_key: String
+    api_key: String,
 ) -> Result<JsValue, String> {
     let inputs = inputs.into_serde().map_err(to_js_value)?;
 
@@ -95,7 +95,10 @@ pub async fn decode_link(swap_link: String, api_key: String) -> Result<JsValue, 
 
 // Receiver submits the signed tx pair
 #[wasm_bindgen]
-pub async fn submit_transactions(raw_signed_txns: JsValue, api_key: String) -> Result<String, String> {
+pub async fn submit_transactions(
+    raw_signed_txns: JsValue,
+    api_key: String,
+) -> Result<String, String> {
     let raw_txns = raw_signed_txns
         .into_serde::<SignedTxnsFromJs>()
         .map_err(to_js_value)?;
