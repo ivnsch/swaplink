@@ -28,6 +28,7 @@ export const GenerateLink = () => {
   const [errorMsg, setErrorMsg] = useState("");
 
   const [showLinkModal, setShowLinkModal] = useState(false);
+  const [showPurestakeHelpModal, setShowPurestakeHelpModal] = useState(false);
   const [apiKey, setApiKey] = useState("");
 
   useEffect(() => {
@@ -107,6 +108,22 @@ export const GenerateLink = () => {
     }
   };
 
+  const purestakeHelpElement = () => {
+    return (
+      <div>
+        <p>
+          <a target="_blank" href="https://www.purestake.com/">Purestake</a> provides a service
+          that allows swaplink to submit transactions to the algorand blockchain without requiring
+          a connection to an algorand node.
+        </p>
+        <p>
+          Algorand has provided a detailed, step-by-step tutorial on how to sign up for purestake and
+          how to obtain an API key here: <a target="_blank" href="https://developer.algorand.org/tutorials/getting-started-purestake-api-service/">Getting Started with the PureStake API Service</a>
+        </p>
+      </div>
+    );
+  };
+
   const onCopyText = () => {
     setSwapLinkIsCopied(true);
     setTimeout(() => {
@@ -170,7 +187,10 @@ export const GenerateLink = () => {
         {yourAddressElement()}
         {errorMsgElement()}
         <div>
-        <div>{"Purestake api key"}</div>
+          <div>
+            {"Purestake api key "}
+            <a href="#" onClick={() => setShowPurestakeHelpModal(true)}>?</a>
+          </div>
           <input
             type="password"
             placeholder="api key"
@@ -310,6 +330,11 @@ export const GenerateLink = () => {
           {showLinkModal && (
             <Modal title={"Done!"} onCloseClick={() => setShowLinkModal(false)}>
               {swapLinkElement()}
+            </Modal>
+          )}
+          {showPurestakeHelpModal && (
+            <Modal title={"Purestake API key help"} onCloseClick={() => setShowPurestakeHelpModal(false)}>
+              {purestakeHelpElement()}
             </Modal>
           )}
         </div>
