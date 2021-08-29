@@ -27,10 +27,11 @@ pub async fn init_log() -> Result<(), String> {
 pub async fn generate_unsigned_swap_transactions(
     my_address_str: String,
     inputs: JsValue,
+    api_key: String,
 ) -> Result<JsValue, String> {
     let inputs = inputs.into_serde().map_err(to_js_value)?;
 
-    let txns = generate_swap_logic()
+    let txns = generate_swap_logic(&api_key)
         .generate_unsigned_swap_transactions(my_address_str, inputs)
         .await
         .map_err(to_js_value)?;
@@ -48,7 +49,7 @@ pub async fn generate_unsigned_swap_transactions(
 
 /// Signed "my tx" + passthrough peer tx -> link
 #[wasm_bindgen]
-pub async fn generate_link(raw_request_js: JsValue) -> Result<JsValue, String> {
+pub async fn generate_link(raw_request_js: JsValue, api_key: String) -> Result<JsValue, String> {
     let raw_request = raw_request_js
         .into_serde::<SwapRequestFromJs>()
         .map_err(to_js_value)?;
@@ -60,7 +61,7 @@ pub async fn generate_link(raw_request_js: JsValue) -> Result<JsValue, String> {
             .map_err(to_js_value)?,
     };
 
-    let link = generate_swap_logic()
+    let link = generate_swap_logic(&api_key)
         .generate_link(&request)
         .await
         .map_err(to_js_value)?;
@@ -70,8 +71,8 @@ pub async fn generate_link(raw_request_js: JsValue) -> Result<JsValue, String> {
 
 /// Receiver decodes link
 #[wasm_bindgen]
-pub async fn decode_link(swap_link: String) -> Result<JsValue, String> {
-    let logic = submit_swap_logic();
+pub async fn decode_link(swap_link: String, api_key: String) -> Result<JsValue, String> {
+    let logic = submit_swap_logic(&api_key);
 
     let request = logic
         .to_swap_request(swap_link)
@@ -94,7 +95,10 @@ pub async fn decode_link(swap_link: String) -> Result<JsValue, String> {
 
 // Receiver submits the signed tx pair
 #[wasm_bindgen]
-pub async fn submit_transactions(raw_signed_txns: JsValue) -> Result<String, String> {
+pub async fn submit_transactions(
+    raw_signed_txns: JsValue,
+    api_key: String,
+) -> Result<String, String> {
     let raw_txns = raw_signed_txns
         .into_serde::<SignedTxnsFromJs>()
         .map_err(to_js_value)?;
@@ -102,23 +106,23 @@ pub async fn submit_transactions(raw_signed_txns: JsValue) -> Result<String, Str
     let my_tx = rmp_serde::from_slice(&raw_txns.signed_my_tx_msg_pack).map_err(to_js_value)?;
     let peer_tx = rmp_serde::from_slice(&raw_txns.signed_peer_tx_msg_pack).map_err(to_js_value)?;
 
-    submit_swap_logic()
+    submit_swap_logic(&api_key)
         .submit_swap(my_tx, peer_tx)
         .await
         .map_err(to_js_value)
 }
 
-fn generate_swap_logic() -> GenerateSwapLogic {
+fn generate_swap_logic(api_key: &str) -> GenerateSwapLogic {
     dependencies::generate_swap_logic(
-        Rc::new(dependencies::algod()),
-        Rc::new(dependencies::indexer()),
+        Rc::new(dependencies::algod(api_key)),
+        Rc::new(dependencies::indexer(api_key)),
     )
 }
 
-fn submit_swap_logic() -> SubmitSwapLogic {
+fn submit_swap_logic(api_key: &str) -> SubmitSwapLogic {
     dependencies::submit_swap_logic(
-        Rc::new(dependencies::algod()),
-        Rc::new(dependencies::indexer()),
+        Rc::new(dependencies::algod(api_key)),
+        Rc::new(dependencies::indexer(api_key)),
     )
 }
 
