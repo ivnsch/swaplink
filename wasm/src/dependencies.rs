@@ -3,8 +3,29 @@ use std::rc::Rc;
 use crate::{generate_swap::logic::GenerateSwapLogic, submit_swap::logic::SubmitSwapLogic};
 use algonaut::algod::{v2::Algod, AlgodBuilder, AlgodCustomEndpointBuilder};
 
-pub fn algod(api_key: &str) -> Algod {
-    testnet_algod(api_key)
+#[derive(Debug)]
+pub enum Network {
+    Private,
+    Test,
+}
+
+pub fn network() -> Network {
+    let str = option_env!("NETWORK");
+    log::debug!("Network str: {:?}", str);
+
+    let env = match str.as_deref() {
+        Some("test") => Network::Test,
+        _ => Network::Private,
+    };
+    log::info!("Network: {:?}", env);
+    env
+}
+
+pub fn algod(network: &Network, api_key: &str) -> Algod {
+    match network {
+        Network::Private => private_network_algod(),
+        Network::Test => testnet_algod(api_key),
+    }
 }
 
 pub fn generate_swap_logic(algod: Rc<Algod>) -> GenerateSwapLogic {

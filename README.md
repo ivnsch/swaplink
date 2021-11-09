@@ -12,12 +12,24 @@ Live: http://www.swaplink.xyz
 
 ## Instructions
 
-Build Rust:
+Build Rust in debug mode:
 
 ```
 cd wasm
-wasm-pack build --out-dir ../wasm-build
+wasm-pack build --out-dir ../wasm-build --debug
 ```
+
+Build Rust in release mode:
+```
+cd wasm
+wasm-pack build --out-dir ../wasm-build --release
+```
+
+Use the `NETWORK` environment variable to set the network to connect to, e.g:
+```
+NETWORK=test wasm-pack build --out-dir ../wasm-build --release
+```
+Currently only `test` (TestNet) can be passed. It defaults to a private network configuration if it's not set.
 
 Initialize the React app:
 

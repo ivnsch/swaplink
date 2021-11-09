@@ -6,7 +6,7 @@ use std::{fmt::Debug, rc::Rc};
 use wasm_bindgen::prelude::*;
 
 use crate::{
-    dependencies,
+    dependencies::{self, network},
     generate_swap::logic::GenerateSwapLogic,
     model::SwapRequest,
     submit_swap::{
@@ -113,11 +113,11 @@ pub async fn submit_transactions(
 }
 
 fn generate_swap_logic(api_key: &str) -> GenerateSwapLogic {
-    dependencies::generate_swap_logic(Rc::new(dependencies::algod(api_key)))
+    dependencies::generate_swap_logic(Rc::new(dependencies::algod(&network(), api_key)))
 }
 
 fn submit_swap_logic(api_key: &str) -> SubmitSwapLogic {
-    dependencies::submit_swap_logic(Rc::new(dependencies::algod(api_key)))
+    dependencies::submit_swap_logic(Rc::new(dependencies::algod(&network(), api_key)))
 }
 
 fn to_js_value<T: Debug>(t: T) -> JsValue {
