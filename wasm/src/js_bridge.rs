@@ -16,7 +16,7 @@ use crate::{
 };
 
 #[wasm_bindgen]
-pub async fn init_log() -> Result<(), String> {
+pub async fn init_log() -> Result<(), JsValue> {
     wasm_logger::init(wasm_logger::Config::default());
     debug!("Initialized wasm logs");
     Ok(())
@@ -28,7 +28,7 @@ pub async fn generate_unsigned_swap_transactions(
     my_address_str: String,
     inputs: JsValue,
     api_key: String,
-) -> Result<JsValue, String> {
+) -> Result<JsValue, JsValue> {
     let inputs = inputs.into_serde().map_err(to_js_value)?;
 
     let txns = generate_swap_logic(&api_key)
@@ -49,7 +49,7 @@ pub async fn generate_unsigned_swap_transactions(
 
 /// Signed "my tx" + passthrough peer tx -> link
 #[wasm_bindgen]
-pub async fn generate_link(raw_request_js: JsValue, api_key: String) -> Result<JsValue, String> {
+pub async fn generate_link(raw_request_js: JsValue, api_key: String) -> Result<JsValue, JsValue> {
     let raw_request = raw_request_js
         .into_serde::<SwapRequestFromJs>()
         .map_err(to_js_value)?;
@@ -71,7 +71,7 @@ pub async fn generate_link(raw_request_js: JsValue, api_key: String) -> Result<J
 
 /// Receiver decodes link
 #[wasm_bindgen]
-pub async fn decode_link(swap_link: String, api_key: String) -> Result<JsValue, String> {
+pub async fn decode_link(swap_link: String, api_key: String) -> Result<JsValue, JsValue> {
     let logic = submit_swap_logic(&api_key);
 
     let request = logic
@@ -98,7 +98,7 @@ pub async fn decode_link(swap_link: String, api_key: String) -> Result<JsValue, 
 pub async fn submit_transactions(
     raw_signed_txns: JsValue,
     api_key: String,
-) -> Result<String, String> {
+) -> Result<String, JsValue> {
     let raw_txns = raw_signed_txns
         .into_serde::<SignedTxnsFromJs>()
         .map_err(to_js_value)?;
@@ -126,11 +126,8 @@ fn submit_swap_logic(api_key: &str) -> SubmitSwapLogic {
     )
 }
 
-// fn to_js_value<T: Debug>(t: T) -> JsValue {
-//     JsValue::from_str(&format!("{:?}", t))
-// }
-fn to_js_value<T: Debug>(t: T) -> String {
-    format!("{:?}", t)
+fn to_js_value<T: Debug>(t: T) -> JsValue {
+    JsValue::from_str(&format!("{:?}", t))
 }
 
 #[derive(Debug, Clone, Serialize)]
