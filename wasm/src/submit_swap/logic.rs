@@ -3,7 +3,6 @@ use std::{convert::TryInto, rc::Rc};
 use algonaut::{
     algod::v2::Algod,
     core::MicroAlgos,
-    indexer::v2::Indexer,
     transaction::{SignedTransaction, Transaction, TransactionType},
 };
 use anyhow::Result;
@@ -15,12 +14,11 @@ use crate::{asset_infos::asset_infos, model::SwapRequest};
 use super::model::{SubmitSwapViewData, SubmitTransferViewData};
 pub struct SubmitSwapLogic {
     algod: Rc<Algod>,
-    indexer: Rc<Indexer>,
 }
 
 impl SubmitSwapLogic {
-    pub fn new(algod: Rc<Algod>, indexer: Rc<Indexer>) -> SubmitSwapLogic {
-        SubmitSwapLogic { algod, indexer }
+    pub fn new(algod: Rc<Algod>) -> SubmitSwapLogic {
+        SubmitSwapLogic { algod }
     }
 
     pub async fn to_swap_request(&self, encoded_swap: String) -> Result<SwapRequest> {
@@ -45,7 +43,7 @@ impl SubmitSwapLogic {
                 amount: Self::micro_algos_to_algos_str(p.amount)?,
             }),
             TransactionType::AssetTransferTransaction(a) => {
-                let asset_config = asset_infos(&self.indexer, a.xfer).await?;
+                let asset_config = asset_infos(&self.algod, a.xfer).await?;
                 let decimal = Decimal::from_i128_with_scale(
                     a.amount as i128,
                     asset_config.params.decimals.try_into()?,

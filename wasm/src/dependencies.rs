@@ -1,40 +1,23 @@
 use std::rc::Rc;
 
 use crate::{generate_swap::logic::GenerateSwapLogic, submit_swap::logic::SubmitSwapLogic};
-use algonaut::{
-    algod::{v2::Algod, AlgodBuilder, AlgodCustomEndpointBuilder},
-    indexer::{v2::Indexer, IndexerBuilder, IndexerCustomEndpointBuilder},
-};
+use algonaut::algod::{v2::Algod, AlgodBuilder, AlgodCustomEndpointBuilder};
 
 pub fn algod(api_key: &str) -> Algod {
     testnet_algod(api_key)
 }
 
-pub fn indexer(api_key: &str) -> Indexer {
-    testnet_indexer(api_key)
+pub fn generate_swap_logic(algod: Rc<Algod>) -> GenerateSwapLogic {
+    GenerateSwapLogic::new(algod)
 }
 
-pub fn generate_swap_logic(algod: Rc<Algod>, indexer: Rc<Indexer>) -> GenerateSwapLogic {
-    GenerateSwapLogic::new(algod, indexer)
-}
-
-pub fn submit_swap_logic(algod: Rc<Algod>, indexer: Rc<Indexer>) -> SubmitSwapLogic {
-    SubmitSwapLogic::new(algod, indexer)
+pub fn submit_swap_logic(algod: Rc<Algod>) -> SubmitSwapLogic {
+    SubmitSwapLogic::new(algod)
 }
 
 fn testnet_algod(api_key: &str) -> Algod {
     AlgodCustomEndpointBuilder::new()
         .bind("https://testnet-algorand.api.purestake.io/ps2/")
-        .headers(vec![("x-api-key", api_key)])
-        .build_v2()
-        // expect: build returns an error if the URL or token are not provided or have an invalid format,
-        // we are passing verified hardcoded values.
-        .expect("Couldn't initialize algod")
-}
-
-fn testnet_indexer(api_key: &str) -> Indexer {
-    IndexerCustomEndpointBuilder::new()
-        .bind("https://testnet-algorand.api.purestake.io/idx2/")
         .headers(vec![("x-api-key", api_key)])
         .build_v2()
         // expect: build returns an error if the URL or token are not provided or have an invalid format,
@@ -51,14 +34,4 @@ fn private_network_algod() -> Algod {
         // expect: build returns an error if the URL or token are not provided or have an invalid format,
         // we are passing verified hardcoded values.
         .expect("Couldn't initialize algod")
-}
-
-#[allow(dead_code)]
-fn private_network_indexer() -> Indexer {
-    IndexerBuilder::new()
-        .bind("http://127.0.0.1:8980")
-        .build_v2()
-        // expect: build returns an error if the URL is not provided or has an invalid format,
-        // we are passing a verified hardcoded value.
-        .expect("Couldn't initialize indexer")
 }

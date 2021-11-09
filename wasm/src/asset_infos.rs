@@ -1,23 +1,17 @@
 use algonaut::{
+    algod::v2::Algod,
     error::{AlgonautError, RequestError, RequestErrorDetails},
-    indexer::v2::Indexer,
-    model::indexer::v2::{Asset, QueryAssetsInfo},
+    model::algod::v2::Asset,
 };
 use anyhow::{anyhow, Result};
 
-pub async fn asset_infos(indexer: &Indexer, asset_id: u64) -> Result<Asset> {
-    // TODO improve indexer interface in Algonaut
-    let infos = indexer
-        .assets_info(
-            &asset_id.to_string(),
-            &QueryAssetsInfo {
-                include_all: Some(true),
-            },
-        )
+pub async fn asset_infos(algod: &Algod, asset_id: u64) -> Result<Asset> {
+    let infos = algod
+        .asset_information(asset_id)
         .await
         .map_err(|e| map_possible_asset_id_not_found_workaround(e, asset_id))?;
 
-    Ok(*infos.asset)
+    Ok(infos)
 }
 
 // Workaround for PureStake API, from which we get a CORS error when the asset id isn't found.

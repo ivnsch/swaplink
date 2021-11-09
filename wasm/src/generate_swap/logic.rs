@@ -3,7 +3,6 @@ use std::{convert::TryInto, rc::Rc, str::FromStr};
 use algonaut::{
     algod::v2::Algod,
     core::{Address, MicroAlgos, SuggestedTransactionParams},
-    indexer::v2::Indexer,
     transaction::{tx_group::TxGroup, Pay, Transaction, TransferAsset, TxnBuilder},
 };
 use anyhow::{anyhow, Result};
@@ -20,12 +19,11 @@ use super::model::{
 
 pub struct GenerateSwapLogic {
     algod: Rc<Algod>,
-    indexer: Rc<Indexer>,
 }
 
 impl GenerateSwapLogic {
-    pub fn new(algod: Rc<Algod>, indexer: Rc<Indexer>) -> GenerateSwapLogic {
-        GenerateSwapLogic { algod, indexer }
+    pub fn new(algod: Rc<Algod>) -> GenerateSwapLogic {
+        GenerateSwapLogic { algod }
     }
 
     async fn validate_swap_inputs(&self, inputs: SwapInputs) -> Result<ValidatedSwapInputs> {
@@ -116,7 +114,7 @@ impl GenerateSwapLogic {
         role: SwapRole,
     ) -> Result<Transfer> {
         let asset_id = asset_id_input.parse()?;
-        let asset_config = asset_infos(&self.indexer, asset_id).await?;
+        let asset_config = asset_infos(&self.algod, asset_id).await?;
 
         Self::validate_asset_transfer_with_fractionals(
             asset_config.params.decimals,
