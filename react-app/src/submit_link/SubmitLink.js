@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { connectWallet } from "../MyAlgo";
 import { init, submitTxs } from "./controller";
+import Modal from "../Modal";
+import { PureStakeHelp } from "../PureStakeHelp";
 
 export const SubmitLink = () => {
   let { link } = useParams();
@@ -12,6 +14,7 @@ export const SubmitLink = () => {
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const [apiKey, setApiKey] = useState("");
+  const [showPurestakeHelpModal, setShowPurestakeHelpModal] = useState(false);
 
   useEffect(() => {
     init(link, apiKey, setErrorMsg, setSwapRequest, setSwapViewData);
@@ -89,6 +92,22 @@ export const SubmitLink = () => {
         <div className="submit-swap-title">{"You got a swap request!"}</div>
         {successMsgElement()}
         {errorMsgElement()}
+        <div>
+          {"Purestake api key "}
+          <a href="#" onClick={() => setShowPurestakeHelpModal(true)}>
+            ?
+          </a>
+        </div>
+        <input
+          type="password"
+          placeholder="api key"
+          className="address-input"
+          size="64"
+          value={apiKey}
+          onChange={(event) => {
+            setApiKey(event.target.value);
+          }}
+        />
         {swapViewDataElement(swapViewData)}
         <button
           className="submit-sign-and-submit-button"
@@ -98,6 +117,14 @@ export const SubmitLink = () => {
         >
           {"Sign and submit"}
         </button>
+        {showPurestakeHelpModal && (
+          <Modal
+            title={"Purestake API key help"}
+            onCloseClick={() => setShowPurestakeHelpModal(false)}
+          >
+            <PureStakeHelp />
+          </Modal>
+        )}
       </div>
     </div>
   );

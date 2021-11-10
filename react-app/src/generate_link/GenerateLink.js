@@ -4,6 +4,7 @@ import { MdContentCopy } from "react-icons/md";
 import { connectWallet } from "../MyAlgo";
 import Modal from "../Modal";
 import { init, generateSwapTxs } from "./controller";
+import { PureStakeHelp } from "../PureStakeHelp";
 
 export const GenerateLink = () => {
   const [myAddress, setMyAddress] = useState("");
@@ -101,31 +102,6 @@ export const GenerateLink = () => {
     } else {
       return null;
     }
-  };
-
-  const purestakeHelpElement = () => {
-    return (
-      <div>
-        <p>
-          <a target="_blank" href="https://www.purestake.com/">
-            Purestake
-          </a>{" "}
-          provides a service that allows swaplink to submit transactions to the
-          algorand blockchain without requiring a connection to an algorand
-          node.
-        </p>
-        <p>
-          Algorand has provided a detailed, step-by-step tutorial on how to sign
-          up for purestake and how to obtain an API key here:{" "}
-          <a
-            target="_blank"
-            href="https://developer.algorand.org/tutorials/getting-started-purestake-api-service/"
-          >
-            Getting Started with the PureStake API Service
-          </a>
-        </p>
-      </div>
-    );
   };
 
   const onCopyText = () => {
@@ -330,7 +306,7 @@ export const GenerateLink = () => {
               title={"Purestake API key help"}
               onCloseClick={() => setShowPurestakeHelpModal(false)}
             >
-              {purestakeHelpElement()}
+              <PureStakeHelp />
             </Modal>
           )}
         </div>
