@@ -1,6 +1,6 @@
 mod asset_infos;
+pub mod bridge;
 mod dependencies;
 pub mod generate_swap;
-pub mod js_bridge;
 mod model;
 pub mod submit_swap;

@@ -1,5 +1,4 @@
 use algonaut::core::{Address, MicroAlgos};
-use serde::Deserialize;
 
 /// Complete and validated swap data, ready to start the signing and link generation flow.
 #[derive(Debug, Clone)]
@@ -14,7 +13,9 @@ pub struct SwapIntent {
 
 /// Validated form inputs
 #[derive(Debug, Clone)]
-pub struct ValidatedSwapInputs {
+pub struct ValidatedSwapPars {
+    pub me: Address,
+    pub api_key: String,
     pub peer: Address,
     pub send: Transfer,
     pub receive: Transfer,
@@ -22,10 +23,10 @@ pub struct ValidatedSwapInputs {
     pub peer_fee: MicroAlgos,
 }
 
-impl ValidatedSwapInputs {
-    pub fn to_swap(&self, me: Address) -> SwapIntent {
+impl ValidatedSwapPars {
+    pub fn to_swap(&self) -> SwapIntent {
         SwapIntent {
-            me,
+            me: self.me,
             peer: self.peer,
             send: self.send.clone(),
             receive: self.receive.clone(),
@@ -33,20 +34,6 @@ impl ValidatedSwapInputs {
             peer_fee: self.peer_fee,
         }
     }
-}
-
-/// Raw form inputs
-#[derive(Debug, Clone, Deserialize)]
-pub struct SwapInputs {
-    pub peer: String,
-    pub send_amount: String,
-    pub send_unit: String,
-    pub send_asset_id: String,
-    pub receive_amount: String,
-    pub receive_unit: String,
-    pub receive_asset_id: String,
-    pub my_fee: String,
-    pub peer_fee: String,
 }
 
 /// Wrapper for the link path containg the encoded swap data.

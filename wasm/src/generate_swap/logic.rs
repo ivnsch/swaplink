@@ -13,8 +13,9 @@ use crate::{
     model::{SwapRequest, UnsignedSwapTransactions},
 };
 
-use super::model::{
-    SwapInputUnit, SwapInputs, SwapIntent, SwapLink, SwapRole, Transfer, ValidatedSwapInputs,
+use super::{
+    bridge::generate_swap_txs::GenerateSwapTxsParJs,
+    model::{SwapInputUnit, SwapIntent, SwapLink, SwapRole, Transfer, ValidatedSwapPars},
 };
 
 pub struct GenerateSwapLogic {
@@ -26,37 +27,38 @@ impl GenerateSwapLogic {
         GenerateSwapLogic { algod }
     }
 
-    async fn validate_swap_inputs(&self, inputs: SwapInputs) -> Result<ValidatedSwapInputs> {
-        let peer = inputs.peer.parse().map_err(anyhow::Error::msg)?;
+    async fn validate_swap_pars(&self, pars: GenerateSwapTxsParJs) -> Result<ValidatedSwapPars> {
+        let me = pars.my_address.parse().map_err(anyhow::Error::msg)?;
+        let peer = pars.peer_address.parse().map_err(anyhow::Error::msg)?;
+        if pars.api_key.is_empty() {
+            return Err(anyhow!("Please enter an API key"));
+        }
 
-        let send_amount = Decimal::from_str(&inputs.send_amount)?;
-        let receive_amount = Decimal::from_str(&inputs.receive_amount)?;
+        let send_amount = Decimal::from_str(&pars.send_amount)?;
+        let receive_amount = Decimal::from_str(&pars.receive_amount)?;
 
-        let send_unit = Self::validate_unit(inputs.send_unit)?;
-        let receive_unit = Self::validate_unit(inputs.receive_unit)?;
+        let send_unit = Self::validate_unit(pars.send_unit)?;
+        let receive_unit = Self::validate_unit(pars.receive_unit)?;
 
         let send = self
-            .validate_transfer(
-                send_unit,
-                send_amount,
-                inputs.send_asset_id,
-                SwapRole::Sender,
-            )
+            .validate_transfer(send_unit, send_amount, pars.send_asset_id, SwapRole::Sender)
             .await?;
 
         let receive = self
             .validate_transfer(
                 receive_unit,
                 receive_amount,
-                inputs.receive_asset_id,
+                pars.receive_asset_id,
                 SwapRole::Receiver,
             )
             .await?;
 
-        let my_fee = Self::validate_algos(Decimal::from_str(&inputs.my_fee)?)?;
-        let peer_fee = Self::validate_algos(Decimal::from_str(&inputs.peer_fee)?)?;
+        let my_fee = Self::validate_algos(Decimal::from_str(&pars.my_fee)?)?;
+        let peer_fee = Self::validate_algos(Decimal::from_str(&pars.peer_fee)?)?;
 
-        Ok(ValidatedSwapInputs {
+        Ok(ValidatedSwapPars {
+            me,
+            api_key: pars.api_key.clone(),
             peer,
             send,
             receive,
@@ -177,13 +179,11 @@ impl GenerateSwapLogic {
 
     pub async fn generate_unsigned_swap_transactions(
         &self,
-        my_address_str: String,
-        inputs: SwapInputs,
+        pars: GenerateSwapTxsParJs,
     ) -> Result<UnsignedSwapTransactions> {
-        let my_address = my_address_str.parse().map_err(anyhow::Error::msg)?;
-        let validated_inputs = self.validate_swap_inputs(inputs).await?;
+        let validated_inputs = self.validate_swap_pars(pars).await?;
         Ok(self
-            .swap_intent_to_unsigned_swap_transactions(validated_inputs.to_swap(my_address))
+            .swap_intent_to_unsigned_swap_transactions(validated_inputs.to_swap())
             .await?)
     }
 
