@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { connectWallet, sign } from "./MyAlgo";
-
-const wasmPromise = import("wasm");
+import { connectWallet } from "../MyAlgo";
+import { init, submitTxs } from "./controller";
 
 export const SubmitLink = () => {
   let { link } = useParams();
@@ -15,18 +14,7 @@ export const SubmitLink = () => {
   const [apiKey, setApiKey] = useState("");
 
   useEffect(() => {
-    const init = async () => {
-      const { init_log, bridge_decode_link } = await wasmPromise;
-      const swapRequest = await bridge_decode_link({
-        swap_link: link,
-        api_key: apiKey,
-      });
-
-      init_log();
-      setSwapRequest(swapRequest);
-      setSwapViewData(swapRequest.view_data);
-    };
-    init();
+    init(link, apiKey, setErrorMsg, setSwapRequest, setSwapViewData);
   }, [link]);
 
   const swapViewDataElement = () => {
@@ -105,21 +93,7 @@ export const SubmitLink = () => {
         <button
           className="submit-sign-and-submit-button"
           onClick={async () => {
-            const { bridge_submit_txs } = await wasmPromise;
-            setErrorMsg("");
-
-            try {
-              const tx_id = await bridge_submit_txs({
-                api_key: apiKey,
-                signed_my_tx_msg_pack: await sign(
-                  swapRequest.unsigned_my_tx_my_algo_format
-                ),
-                pr: swapRequest.pr, // passthrough
-              });
-              setSuccessMsg("Swap submitted! Tx id: " + tx_id);
-            } catch (e) {
-              setErrorMsg(e + "");
-            }
+            await submitTxs(apiKey, swapRequest, setSuccessMsg, setErrorMsg);
           }}
         >
           {"Sign and submit"}

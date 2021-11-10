@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { MdContentCopy } from "react-icons/md";
-import { connectWallet, sign } from "./MyAlgo";
-import Modal from "./Modal";
-
-const wasmPromise = import("wasm");
+import { connectWallet } from "../MyAlgo";
+import Modal from "../Modal";
+import { init, generateSwapTxs } from "./controller";
 
 export const GenerateLink = () => {
   const [myAddress, setMyAddress] = useState("");
@@ -32,11 +31,7 @@ export const GenerateLink = () => {
   const [apiKey, setApiKey] = useState("");
 
   useEffect(() => {
-    const init = async () => {
-      const { init_log } = await wasmPromise;
-      await init_log();
-    };
-    init();
+    init(setErrorMsg);
   }, []);
 
   const sendAssetIdElement = () => {
@@ -296,45 +291,31 @@ export const GenerateLink = () => {
                 : false
             }
             onClick={async () => {
-              const { bridge_generate_swap_txs, bridge_generate_link } =
-                await wasmPromise;
-              setErrorMsg("");
+              let swapPars = {
+                api_key: apiKey,
 
-              try {
-                let unsignedSwapTransactions = await bridge_generate_swap_txs({
-                  api_key: apiKey,
+                my_address: myAddress,
+                peer_address: peerAddress,
 
-                  my_address: myAddress,
-                  peer_address: peerAddress,
+                send_amount: sendAmount,
+                send_asset_id: sendAssetId,
+                send_unit: sendUnit,
 
-                  send_amount: sendAmount,
-                  send_asset_id: sendAssetId,
-                  send_unit: sendUnit,
+                receive_amount: receiveAmount,
+                receive_asset_id: receiveAssetId,
+                receive_unit: receiveUnit,
 
-                  receive_amount: receiveAmount,
-                  receive_asset_id: receiveAssetId,
-                  receive_unit: receiveUnit,
+                my_fee: myFee,
+                peer_fee: peerFee,
+              };
 
-                  my_fee: myFee,
-                  peer_fee: peerFee,
-                });
-
-                let link = await bridge_generate_link({
-                  api_key: apiKey,
-                  signed_my_tx_msg_pack: await sign(
-                    unsignedSwapTransactions.my_tx_my_algo_format
-                  ),
-                  pt: unsignedSwapTransactions.pt, // passthrough
-                });
-
-                setSwapLink(link);
-                setSwapLinkTruncated(
-                  link.replace(/(.*)\/(.*).(?=....)/, "$1/...")
-                );
-                setShowLinkModal(true);
-              } catch (e) {
-                setErrorMsg(e + "");
-              }
+              await generateSwapTxs(
+                swapPars,
+                setErrorMsg,
+                setSwapLink,
+                setSwapLinkTruncated,
+                setShowLinkModal
+              );
             }}
           >
             {"Generate link"}

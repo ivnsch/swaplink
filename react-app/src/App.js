@@ -1,6 +1,6 @@
 import "./App.css";
-import { GenerateLink } from "./GenerateLink";
-import { SubmitLink } from "./SubmitLink";
+import { GenerateLink } from "./generate_link/GenerateLink";
+import { SubmitLink } from "./submit_link/SubmitLink";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import Modal from "./Modal";
 import React, { useState } from "react";
