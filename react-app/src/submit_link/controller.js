@@ -39,7 +39,7 @@ export const submitTxs = async (
       signed_my_tx_msg_pack: await sign(
         swapRequest.unsigned_my_tx_my_algo_format
       ),
-      pr: swapRequest.pr, // passthrough
+      pt: swapRequest.pt, // passthrough
     });
     setSuccessMsg("Swap submitted! Tx id: " + txId);
   } catch (e) {
