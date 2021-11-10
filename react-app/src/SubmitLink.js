@@ -16,8 +16,11 @@ export const SubmitLink = () => {
 
   useEffect(() => {
     const init = async () => {
-      const { init_log, decode_link } = await wasmPromise;
-      const swapRequest = await decode_link(link, apiKey);
+      const { init_log, bridge_decode_link } = await wasmPromise;
+      const swapRequest = await bridge_decode_link({
+        swap_link: link,
+        api_key: apiKey,
+      });
 
       init_log();
       setSwapRequest(swapRequest);
@@ -102,17 +105,17 @@ export const SubmitLink = () => {
         <button
           className="submit-sign-and-submit-button"
           onClick={async () => {
-            const { submit_transactions } = await wasmPromise;
+            const { bridge_submit_txs } = await wasmPromise;
             setErrorMsg("");
 
             try {
-              const signed_txns = {
+              const tx_id = await bridge_submit_txs({
+                api_key: apiKey,
                 signed_my_tx_msg_pack: await sign(
                   swapRequest.unsigned_my_tx_my_algo_format
                 ),
-                signed_peer_tx_msg_pack: swapRequest.signed_peer_tx_msg_pack, // passthrough
-              };
-              const tx_id = await submit_transactions(signed_txns, apiKey);
+                pr: swapRequest.pr, // passthrough
+              });
               setSuccessMsg("Swap submitted! Tx id: " + tx_id);
             } catch (e) {
               setErrorMsg(e + "");

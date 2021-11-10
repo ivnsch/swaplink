@@ -296,40 +296,37 @@ export const GenerateLink = () => {
                 : false
             }
             onClick={async () => {
-              const { generate_unsigned_swap_transactions, generate_link } =
+              const { bridge_generate_swap_txs, bridge_generate_link } =
                 await wasmPromise;
               setErrorMsg("");
 
               try {
-                let unsignedSwapTransactions =
-                  await generate_unsigned_swap_transactions(
-                    myAddress,
-                    {
-                      peer: peerAddress,
+                let unsignedSwapTransactions = await bridge_generate_swap_txs({
+                  api_key: apiKey,
 
-                      send_amount: sendAmount,
-                      send_asset_id: sendAssetId,
-                      send_unit: sendUnit,
+                  my_address: myAddress,
+                  peer_address: peerAddress,
 
-                      receive_amount: receiveAmount,
-                      receive_asset_id: receiveAssetId,
-                      receive_unit: receiveUnit,
+                  send_amount: sendAmount,
+                  send_asset_id: sendAssetId,
+                  send_unit: sendUnit,
 
-                      my_fee: myFee,
-                      peer_fee: peerFee,
-                    },
-                    apiKey
-                  );
+                  receive_amount: receiveAmount,
+                  receive_asset_id: receiveAssetId,
+                  receive_unit: receiveUnit,
 
-                let rawSwapRequest = {
+                  my_fee: myFee,
+                  peer_fee: peerFee,
+                });
+
+                let link = await bridge_generate_link({
+                  api_key: apiKey,
                   signed_my_tx_msg_pack: await sign(
                     unsignedSwapTransactions.my_tx_my_algo_format
                   ),
-                  unsigned_peer_tx_msg_pack:
-                    unsignedSwapTransactions.peer_tx_msg_pack, // passthrough
-                };
+                  pt: unsignedSwapTransactions.pt, // passthrough
+                });
 
-                let link = await generate_link(rawSwapRequest, apiKey);
                 setSwapLink(link);
                 setSwapLinkTruncated(
                   link.replace(/(.*)\/(.*).(?=....)/, "$1/...")
