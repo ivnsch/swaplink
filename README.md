@@ -6,30 +6,41 @@ Site to perform peer to peer atomic swaps on the Algorand blockchain
 
 Live: http://www.swaplink.xyz
 
-## Pre-requisites
+# Pre-requisites
 
 [Rust](https://www.rust-lang.org/tools/install), [wasm-pack](https://rustwasm.github.io/wasm-pack/installer/) and [Node.js](https://nodejs.org/en/)
 
-## Instructions
+# Instructions
 
-Build Rust in debug mode:
+## WASM
+
+Build in debug mode:
 
 ```
 cd wasm
 wasm-pack build --out-dir ../wasm-build --debug
 ```
 
-Build Rust in release mode:
+Build in release mode:
 ```
 cd wasm
 wasm-pack build --out-dir ../wasm-build --release
 ```
 
-Use the `NETWORK` environment variable to set the network to connect to, e.g:
+### Environment variables:
+
+- `NETWORK` sets the network to connect to. Possible (explicit) values: `test`. Defaults to private network.
+
+
+- `ENV` sets the deployment environment. Possible (explicit) values: `prod`. Defaults to local environment. Used e.g. to determine the generated swap link base URL.
+
+Complete build command example:
 ```
-NETWORK=test wasm-pack build --out-dir ../wasm-build --release
+NETWORK=test ENV=prod wasm-pack build --out-dir ../wasm-build --release
 ```
-Currently only `test` (TestNet) can be passed. It defaults to a private network configuration if it's not set.
+
+## React 
+
 
 Initialize the React app:
 
@@ -47,7 +58,7 @@ npm start
 See more instructions for React in the [app folder](https://github.com/ivanschuetz/swaplink/tree/main/react-app)
 
 
-## Contribute
+# Contribute
 
 1. Fork
 2. Commit changes to a branch in your fork
