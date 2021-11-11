@@ -6,6 +6,8 @@ import Modal from "./Modal";
 import React, { useState } from "react";
 import { connectWallet } from "./MyAlgo";
 import ProgressBar from "./ProgressBar";
+import { CopyToClipboard } from "react-copy-to-clipboard";
+import { MdContentCopy } from "react-icons/md";
 
 const isIE = /*@cc_on!@*/ false || !!document.documentMode;
 
@@ -14,6 +16,7 @@ const App = () => {
   const [showLegalModal, setShowLegalModal] = useState(false);
   const [statusMsg, setStatusMsg] = useState(null);
   const [showProgress, setShowProgress] = useState(false);
+  const [addressIsCopied, setAddressIsCopied] = useState(false);
 
   class StatusMsgUpdater {
     success(msg) {
@@ -62,12 +65,26 @@ const App = () => {
     }
   };
 
+  const onCopyAddress = () => {
+    setAddressIsCopied(true);
+    setTimeout(() => {
+      setAddressIsCopied(false);
+    }, 1000);
+  };
+
   const yourAddressView = () => {
     if (myAddress !== "") {
       return (
         <div>
           <div>{"Your address:"}</div>
-          <div className="your-address">{myAddress}</div>
+          <CopyToClipboard text={myAddress} onCopy={onCopyAddress}>
+            <div className="copyable">
+              {myAddress}
+              <span class="copy">
+                {addressIsCopied ? "copied!" : <MdContentCopy />}
+              </span>
+            </div>
+          </CopyToClipboard>
         </div>
       );
     } else {
@@ -131,9 +148,6 @@ const App = () => {
               </Route>
             </Router>
           </div>
-
-          {/* <Route exact path="/" component={GenerateLink} />
-          <Route path="/submit/:link" component={SubmitLink} /> */}
           <div className="footer">
             <a
               href="https://github.com/ivanschuetz/swaplink"

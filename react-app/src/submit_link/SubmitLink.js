@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 import { init, submitTxs } from "./controller";
 import Modal from "../Modal";
 import { PureStakeHelp } from "../PureStakeHelp";
+import { CopyToClipboard } from "react-copy-to-clipboard";
+import { MdContentCopy } from "react-icons/md";
 
 export const SubmitLink = (props) => {
   let { link } = useParams();
@@ -11,21 +13,61 @@ export const SubmitLink = (props) => {
   const [swapViewData, setSwapViewData] = useState(null);
   const [apiKey, setApiKey] = useState("");
   const [showPurestakeHelpModal, setShowPurestakeHelpModal] = useState(false);
+  const [peerAddressIsCopied, setPeerAddressIsCopied] = useState(false);
+
+  const [sendAssetIdIsCopied, setSendAssetIdIsCopied] = useState(false);
+  const [receiveAssetIdIsCopied, setReceiveAssetIdIsCopied] = useState(false);
 
   useEffect(() => {
     init(link, apiKey, props.statusMsg, setSwapRequest, setSwapViewData);
   }, [link]);
+
+  const onCopyPeerAddress = () => {
+    setPeerAddressIsCopied(true);
+    setTimeout(() => {
+      setPeerAddressIsCopied(false);
+    }, 1000);
+  };
+
+  const onCopySendAssetId = () => {
+    setSendAssetIdIsCopied(true);
+    setTimeout(() => {
+      setSendAssetIdIsCopied(false);
+    }, 1000);
+  };
+
+  const onCopyReceiveAssetId = () => {
+    setReceiveAssetIdIsCopied(true);
+    setTimeout(() => {
+      setReceiveAssetIdIsCopied(false);
+    }, 1000);
+  };
 
   const swapViewDataView = () => {
     if (swapViewData) {
       return (
         <div>
           <div className="submit-swap-label">{"From:"}</div>
-          <div>{swapViewData.peer}</div>
+          <CopyToClipboard text={swapViewData.peer} onCopy={onCopyPeerAddress}>
+            <div className="copyable">
+              {swapViewData.peer}
+              <span class="copy">
+                {peerAddressIsCopied ? "copied!" : <MdContentCopy />}
+              </span>
+            </div>
+          </CopyToClipboard>
           <div className="submit-swap-label">{"You send:"}</div>
-          {tranferView(swapViewData.send)}
+          {tranferView(
+            swapViewData.send,
+            sendAssetIdIsCopied,
+            onCopySendAssetId
+          )}
           <div className="submit-swap-label">{"You receive:"}</div>
-          {tranferView(swapViewData.receive)}
+          {tranferView(
+            swapViewData.receive,
+            receiveAssetIdIsCopied,
+            onCopyReceiveAssetId
+          )}
           <div className="submit-swap-label">{"Your fee:"}</div>
           <div>{swapViewData.my_fee}</div>
         </div>
@@ -82,14 +124,21 @@ export const SubmitLink = (props) => {
   );
 };
 
-const tranferView = (transfer) => {
+const tranferView = (transfer, assetIdIsCopied, onCopyAssetId) => {
   if (transfer.unit === "algo") {
     return <div>{transfer.amount + " Algos"}</div>;
   } else if (transfer.unit === "asset") {
+    let text =
+      "Asset id: " + transfer.asset_id + ", amount: " + transfer.amount;
     return (
-      <div>
-        {"Asset id: " + transfer.asset_id + ", amount: " + transfer.amount}
-      </div>
+      <CopyToClipboard text={text} onCopy={onCopyAssetId}>
+        <div className="copyable">
+          {text}
+          <span class="copy">
+            {assetIdIsCopied ? "copied!" : <MdContentCopy />}
+          </span>
+        </div>
+      </CopyToClipboard>
     );
   } else {
     throw new Error("Invalid transfer type: " + transfer.unit);

@@ -171,7 +171,8 @@ button:disabled {
 }
 
 .submit-swap-title {
-  margin-bottom: 16px;
+  margin-bottom: 30px;
+  margin-top: 30px;
 }
 
 .submit-swap-label {
@@ -304,6 +305,10 @@ a {
 
 .link-data-container {
   text-align: center;
+}
+
+.copyable {
+  cursor: pointer;
 }
 
 /*********************/
