@@ -19,9 +19,9 @@ async fn suggested_fees() -> Result<SuggestedFeesResJs> {
     let suggested_fee = algod.suggested_transaction_params().await?.min_fee;
     let total_fee = suggested_fee * 2;
     Ok(SuggestedFeesResJs {
-        mine: micro_algos_to_algos_str(suggested_fee)?,
-        peer: micro_algos_to_algos_str(suggested_fee)?,
-        total: micro_algos_to_algos_str(total_fee)?,
+        mine: micro_algos_to_algos_str(suggested_fee),
+        peer: micro_algos_to_algos_str(suggested_fee),
+        total: micro_algos_to_algos_str(total_fee),
     })
 }
 

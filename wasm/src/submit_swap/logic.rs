@@ -32,14 +32,14 @@ impl SubmitSwapLogic {
             peer: peer_tx.transaction.sender().to_string(),
             send: self.to_tranfer(&my_tx).await?,
             receive: self.to_tranfer(&peer_tx.transaction).await?,
-            my_fee: format!("{} Algos", micro_algos_to_algos_str(my_tx.fee)?),
+            my_fee: format!("{} Algos", micro_algos_to_algos_str(my_tx.fee)),
         })
     }
 
     async fn to_tranfer(&self, tx: &Transaction) -> Result<SubmitTransferViewData> {
         match &tx.txn_type {
             TransactionType::Payment(p) => Ok(SubmitTransferViewData::Algos {
-                amount: micro_algos_to_algos_str(p.amount)?,
+                amount: micro_algos_to_algos_str(p.amount),
             }),
             TransactionType::AssetTransferTransaction(a) => {
                 let asset_config = &self.algod.asset_information(a.xfer).await?;

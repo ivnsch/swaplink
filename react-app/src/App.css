@@ -80,9 +80,14 @@ select {
   margin-right: 5px;
 }
 
-.your-address {
+#my-address {
   margin-top: 8px;
-  margin-bottom: 16px;
+}
+
+#my-balance {
+  font-size: 0.8em;
+  color: gray;
+  margin-bottom: 30px;
 }
 
 .form {

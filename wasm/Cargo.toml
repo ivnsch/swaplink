@@ -24,6 +24,9 @@ log = "0.4"
 data-encoding = "2.3.2"
 rmp-serde = "0.15.5"
 urlencoding = "2.0.0"
+# https://github.com/sebcrozet/instant/issues/1
+instant = { version = "0.1", features = [ "now", "wasm-bindgen" ] }
+gloo-timers = { version = "0.2.1", features = ["futures"] }
 
 [profile.release]
 # less code to include into binary

@@ -35,7 +35,6 @@ export const generateSwapTxs = async (
     showProgress(false);
 
     let link = await bridge_generate_link({
-      api_key: swapPars.api_key,
       signed_my_tx_msg_pack: await sign(
         unsignedSwapTransactions.my_tx_my_algo_format
       ),

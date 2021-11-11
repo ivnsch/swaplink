@@ -12,12 +12,16 @@ import CopyPasteText from "./CopyPasteText";
 
 const isIE = /*@cc_on!@*/ false || !!document.documentMode;
 
+const wasmPromise = import("wasm");
+
 const App = () => {
   const [myAddress, setMyAddress] = useState("");
   const [myAddressDisplay, setMyAddressDisplay] = useState("");
+  const [myBalance, setMyBalance] = useState("");
   const [showLegalModal, setShowLegalModal] = useState(false);
   const [statusMsg, setStatusMsg] = useState(null);
   const [showProgress, setShowProgress] = useState(false);
+  const [apiKey, setApiKey] = useState("");
 
   class StatusMsgUpdater {
     success(msg) {
@@ -43,6 +47,8 @@ const App = () => {
           className="connect-button"
           onClick={async (event) => {
             try {
+              const { bridge_balance } = await wasmPromise;
+
               let address = await connectWallet();
               setMyAddress(address);
 
@@ -51,6 +57,11 @@ const App = () => {
               const trailing = address.substring(address.length - short_chars);
               const shortAddress = leading + "..." + trailing;
               setMyAddressDisplay(shortAddress);
+
+              const balance = await bridge_balance({
+                address: address,
+              });
+              setMyBalance(balance.balance);
             } catch (e) {
               statusMsgUpdater.error(e);
             }
@@ -79,6 +90,7 @@ const App = () => {
         <div>
           <div>{"Your address:"}</div>
           <CopyPasteText text={myAddressDisplay} copyText={myAddress} />
+          <div id="my-balance">{myBalance}</div>
         </div>
       )
     );
@@ -126,7 +138,6 @@ const App = () => {
           </div>
           <div>{connectButtonView()}</div>
           {yourAddressView()}
-
           <div id="wrapper">
             {statusMsgView()}
 
@@ -144,6 +155,7 @@ const App = () => {
                   myAddress={myAddress}
                   statusMsg={statusMsgUpdater}
                   showProgress={(show) => setShowProgress(show)}
+                  setMyBalance={setMyBalance}
                 />
               </Route>
             </Router>

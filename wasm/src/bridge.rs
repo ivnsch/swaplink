@@ -1,3 +1,7 @@
+use crate::{
+    dependencies::{algod, network},
+    network_util::wait_for_pending_transaction,
+};
 use anyhow::Result;
 use log::debug;
 use serde::{de::DeserializeOwned, Serialize};
@@ -8,6 +12,15 @@ use wasm_bindgen::prelude::*;
 pub async fn init_log() -> Result<(), JsValue> {
     wasm_logger::init(wasm_logger::Config::default());
     debug!("Initialized wasm logs");
+    Ok(())
+}
+
+#[wasm_bindgen]
+pub async fn bridge_wait_for_pending_tx(id: String) -> Result<(), JsValue> {
+    let algod = algod(&network());
+    wait_for_pending_transaction(&algod, &id)
+        .await
+        .map_err(to_js_value)?;
     Ok(())
 }
 

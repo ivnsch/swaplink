@@ -22,7 +22,7 @@ fn add_fees(pars: AddFeesParJs) -> Result<AddFeesResJs> {
     let total_fee = my_fee + peer_fee;
 
     Ok(AddFeesResJs {
-        total: micro_algos_to_algos_str(total_fee)?,
+        total: micro_algos_to_algos_str(total_fee),
     })
 }
 
