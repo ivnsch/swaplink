@@ -93,7 +93,7 @@ select {
 #wrapper {
   max-width: 700px;
   display: inline-block;
-  padding: 0 20px 60px 0;
+  padding: 0 0px 60px 0;
   box-sizing: border-box;
   position: relative;
 }
