@@ -1,23 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { connectWallet } from "../MyAlgo";
 import { init, submitTxs } from "./controller";
 import Modal from "../Modal";
 import { PureStakeHelp } from "../PureStakeHelp";
 
-export const SubmitLink = () => {
+export const SubmitLink = (props) => {
   let { link } = useParams();
 
-  const [myAddress, setMyAddress] = useState("");
   const [swapRequest, setSwapRequest] = useState(null);
   const [swapViewData, setSwapViewData] = useState(null);
-  const [errorMsg, setErrorMsg] = useState("");
-  const [successMsg, setSuccessMsg] = useState("");
   const [apiKey, setApiKey] = useState("");
   const [showPurestakeHelpModal, setShowPurestakeHelpModal] = useState(false);
 
   useEffect(() => {
-    init(link, apiKey, setErrorMsg, setSwapRequest, setSwapViewData);
+    init(link, apiKey, props.statusMsg, setSwapRequest, setSwapViewData);
   }, [link]);
 
   const swapViewDataElement = () => {
@@ -39,59 +35,10 @@ export const SubmitLink = () => {
     }
   };
 
-  const successMsgElement = () => {
-    if (successMsg) {
-      return <div className="success">{successMsg}</div>;
-    } else {
-      return null;
-    }
-  };
-
-  const errorMsgElement = () => {
-    if (errorMsg) {
-      return <div className="error">{errorMsg}</div>;
-    } else {
-      return null;
-    }
-  };
-
-  const yourAddressElement = () => {
-    if (myAddress !== "") {
-      return (
-        <div>
-          <div>{"Your address:"}</div>
-          <div className="your-address">{myAddress}</div>
-        </div>
-      );
-    } else {
-      return null;
-    }
-  };
-
   return (
     <div>
       <div className="container">
-        <div className="warning">
-          {
-            "This site is under development. It operates on TestNet. Use only for testing purposes."
-          }
-        </div>
-        <button
-          className="connect-button"
-          onClick={async (event) => {
-            try {
-              setMyAddress(await connectWallet());
-            } catch (e) {
-              setErrorMsg(e + "");
-            }
-          }}
-        >
-          {"Connect My Algo wallet"}
-        </button>
-        {yourAddressElement()}
         <div className="submit-swap-title">{"You got a swap request!"}</div>
-        {successMsgElement()}
-        {errorMsgElement()}
         <div>
           {"Purestake api key "}
           <a href="#" onClick={() => setShowPurestakeHelpModal(true)}>
@@ -112,7 +59,7 @@ export const SubmitLink = () => {
         <button
           className="submit-sign-and-submit-button"
           onClick={async () => {
-            await submitTxs(apiKey, swapRequest, setSuccessMsg, setErrorMsg);
+            await submitTxs(apiKey, swapRequest, props.statusMsg);
           }}
         >
           {"Sign and submit"}

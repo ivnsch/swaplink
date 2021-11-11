@@ -13,13 +13,13 @@ export const init = async (setErrorMsg) => {
 
 export const generateSwapTxs = async (
   swapPars,
-  setErrorMsg,
+  statusMsg,
   setSwapLink,
   setSwapLinkTruncated,
   setShowLinkModal
 ) => {
   const { bridge_generate_swap_txs, bridge_generate_link } = await wasmPromise;
-  setErrorMsg("");
+  statusMsg.clear();
 
   try {
     let unsignedSwapTransactions = await bridge_generate_swap_txs(swapPars);
@@ -36,6 +36,6 @@ export const generateSwapTxs = async (
     setSwapLinkTruncated(link.replace(/(.*)\/(.*).(?=....)/, "$1/..."));
     setShowLinkModal(true);
   } catch (e) {
-    setErrorMsg(e + "");
+    statusMsg.error(e);
   }
 };

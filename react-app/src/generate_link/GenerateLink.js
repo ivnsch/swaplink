@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { MdContentCopy } from "react-icons/md";
-import { connectWallet } from "../MyAlgo";
 import Modal from "../Modal";
 import { init, generateSwapTxs } from "./controller";
 import { PureStakeHelp } from "../PureStakeHelp";
 
-export const GenerateLink = () => {
-  const [myAddress, setMyAddress] = useState("");
+export const GenerateLink = (props) => {
   const [peerAddress, setPeerAddress] = useState("");
 
   const [sendUnit, setSendUnit] = useState("algo");
@@ -25,14 +23,12 @@ export const GenerateLink = () => {
   const [swapLinkTruncated, setSwapLinkTruncated] = useState("");
   const [swapLinkIsCopied, setSwapLinkIsCopied] = useState(false);
 
-  const [errorMsg, setErrorMsg] = useState("");
-
   const [showLinkModal, setShowLinkModal] = useState(false);
   const [showPurestakeHelpModal, setShowPurestakeHelpModal] = useState(false);
   const [apiKey, setApiKey] = useState("");
 
   useEffect(() => {
-    init(setErrorMsg);
+    init(props.statusMsg);
   }, []);
 
   const sendAssetIdElement = () => {
@@ -71,14 +67,6 @@ export const GenerateLink = () => {
     }
   };
 
-  const errorMsgElement = () => {
-    if (errorMsg) {
-      return <div className="error">{errorMsg}</div>;
-    } else {
-      return null;
-    }
-  };
-
   const swapLinkElement = () => {
     if (swapLink) {
       return (
@@ -111,61 +99,12 @@ export const GenerateLink = () => {
     }, 1000);
   };
 
-  const yourAddressElement = () => {
-    if (myAddress !== "") {
-      return (
-        <div>
-          <div>{"Your address:"}</div>
-          <div className="your-address">{myAddress}</div>
-        </div>
-      );
-    } else {
-      return null;
-    }
-  };
-
-  const connectButtonElement = () => {
-    if (myAddress === "") {
-      return (
-        <button
-          className="connect-button"
-          onClick={async (event) => {
-            try {
-              setMyAddress(await connectWallet());
-            } catch (e) {
-              setErrorMsg(e + "");
-            }
-          }}
-        >
-          {"Connect My Algo wallet"}
-        </button>
-      );
-    } else {
-      return (
-        <button
-          className="connect-button"
-          onClick={() => {
-            setMyAddress("");
-          }}
-        >
-          {"Disconnect"}
-        </button>
-      );
-    }
-  };
-
   return (
     <div>
       <div className="container">
-        <div className="warning">
-          {
-            "This site is under development. It operates on TestNet. Use only for testing purposes."
-          }
+        <div style={{ marginTop: 20, marginBottom: 40 }}>
+          {"Generate a link to swap Algos, ASAs or NFTs with a peer"}
         </div>
-        <div>{"Generate a link to swap Algos, ASAs or NFTs with a peer"}</div>
-        {connectButtonElement()}
-        {yourAddressElement()}
-        {errorMsgElement()}
         <div>
           <div>
             {"Purestake api key "}
@@ -259,7 +198,7 @@ export const GenerateLink = () => {
           <button
             className="submit-button"
             disabled={
-              myAddress === "" ||
+              props.myAddress === "" ||
               peerAddress === "" ||
               sendAmount === "" ||
               receiveAmount === ""
@@ -270,7 +209,7 @@ export const GenerateLink = () => {
               let swapPars = {
                 api_key: apiKey,
 
-                my_address: myAddress,
+                my_address: props.myAddress,
                 peer_address: peerAddress,
 
                 send_amount: sendAmount,
@@ -287,7 +226,7 @@ export const GenerateLink = () => {
 
               await generateSwapTxs(
                 swapPars,
-                setErrorMsg,
+                props.statusMsg,
                 setSwapLink,
                 setSwapLinkTruncated,
                 setShowLinkModal

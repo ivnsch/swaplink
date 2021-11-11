@@ -5,7 +5,7 @@ const wasmPromise = import("wasm");
 export const init = async (
   link,
   apiKey,
-  setErrorMsg,
+  statusMsg,
   setSwapRequest,
   setSwapViewData
 ) => {
@@ -20,18 +20,13 @@ export const init = async (
     setSwapRequest(swapRequest);
     setSwapViewData(swapRequest.view_data);
   } catch (e) {
-    setErrorMsg(e + "");
+    statusMsg.error(e);
   }
 };
 
-export const submitTxs = async (
-  apiKey,
-  swapRequest,
-  setSuccessMsg,
-  setErrorMsg
-) => {
+export const submitTxs = async (apiKey, swapRequest, statusMsg) => {
   const { bridge_submit_txs } = await wasmPromise;
-  setErrorMsg("");
+  statusMsg.clear();
 
   try {
     const txId = await bridge_submit_txs({
@@ -41,8 +36,8 @@ export const submitTxs = async (
       ),
       pt: swapRequest.pt, // passthrough
     });
-    setSuccessMsg("Swap submitted! Tx id: " + txId);
+    statusMsg.success("Swap submitted! Tx id: " + txId);
   } catch (e) {
-    setErrorMsg(e + "");
+    statusMsg.error(e);
   }
 };

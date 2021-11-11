@@ -4,11 +4,90 @@ import { SubmitLink } from "./submit_link/SubmitLink";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import Modal from "./Modal";
 import React, { useState } from "react";
+import { connectWallet } from "./MyAlgo";
 
 const isIE = /*@cc_on!@*/ false || !!document.documentMode;
 
 const App = () => {
+  const [myAddress, setMyAddress] = useState("");
   const [showLegalModal, setShowLegalModal] = useState(false);
+  const [statusMsg, setStatusMsg] = useState(null);
+
+  class StatusMsgUpdater {
+    success(msg) {
+      msg = msg + "";
+      console.log(msg);
+      setStatusMsg({ msg: msg, type: "success" });
+    }
+    error(msg) {
+      msg = msg + "";
+      console.error(msg);
+      setStatusMsg({ msg: msg, type: "error" });
+    }
+    clear() {
+      setStatusMsg(null);
+    }
+  }
+  const [statusMsgUpdater, _] = useState(new StatusMsgUpdater());
+
+  const connectButtonElement = () => {
+    if (myAddress === "") {
+      return (
+        <button
+          className="connect-button"
+          onClick={async (event) => {
+            try {
+              setMyAddress(await connectWallet());
+            } catch (e) {
+              statusMsgUpdater.error(e);
+            }
+          }}
+        >
+          {"Connect My Algo wallet"}
+        </button>
+      );
+    } else {
+      return (
+        <button
+          className="connect-button"
+          onClick={() => {
+            setMyAddress("");
+          }}
+        >
+          {"Disconnect"}
+        </button>
+      );
+    }
+  };
+
+  const yourAddressElement = () => {
+    if (myAddress !== "") {
+      return (
+        <div>
+          <div>{"Your address:"}</div>
+          <div className="your-address">{myAddress}</div>
+        </div>
+      );
+    } else {
+      return null;
+    }
+  };
+
+  const statusMsgElemenent = () => {
+    if (statusMsg) {
+      var className = "";
+      if (statusMsg.type === "success") {
+        className = "success";
+      } else if (statusMsg.type === "error") {
+        className = "error";
+      } else {
+        throw Error("Invalid status msg type: " + statusMsg.type);
+      }
+      return <div className={className}>{statusMsg.msg}</div>;
+    } else {
+      return null;
+    }
+  };
 
   if (isIE) {
     return (
@@ -19,37 +98,63 @@ const App = () => {
   } else {
     return (
       <div>
-        <Router>
-          <div id="wrapper">
-            <Route exact path="/" component={GenerateLink} />
-            <Route path="/submit/:link" component={SubmitLink} />
-            <div className="footer">
-              <a
-                href="https://github.com/ivanschuetz/swaplink"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {"Github"}
-              </a>
-              <a
-                onClick={() => {
-                  setShowLegalModal(!showLegalModal);
-                }}
-                rel="noopener noreferrer"
-              >
-                {"Disclaimer"}
-              </a>
-            </div>
-            {showLegalModal && (
-              <Modal
-                title={"Disclaimer"}
-                onCloseClick={() => setShowLegalModal(false)}
-              >
-                <p>YOLO 🏳️</p>
-              </Modal>
-            )}
+        <div className="container">
+          <div className="warning">
+            {
+              "This site is under development. It operates on TestNet. Use only for testing purposes."
+            }
           </div>
-        </Router>
+          <div>{connectButtonElement()}</div>
+          {yourAddressElement()}
+
+          <div id="wrapper">
+            {statusMsgElemenent()}
+
+            <Router>
+              <Route exact path="/">
+                <GenerateLink
+                  myAddress={myAddress}
+                  statusMsg={statusMsgUpdater}
+                />
+              </Route>
+
+              <Route exact path="/submit/:link">
+                <SubmitLink
+                  myAddress={myAddress}
+                  statusMsg={statusMsgUpdater}
+                />
+              </Route>
+            </Router>
+          </div>
+
+          {/* <Route exact path="/" component={GenerateLink} />
+          <Route path="/submit/:link" component={SubmitLink} /> */}
+          <div className="footer">
+            <a
+              href="https://github.com/ivanschuetz/swaplink"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {"Github"}
+            </a>
+            <a
+              onClick={() => {
+                setShowLegalModal(!showLegalModal);
+              }}
+              rel="noopener noreferrer"
+            >
+              {"Disclaimer"}
+            </a>
+          </div>
+          {showLegalModal && (
+            <Modal
+              title={"Disclaimer"}
+              onCloseClick={() => setShowLegalModal(false)}
+            >
+              <p>YOLO 🏳️</p>
+            </Modal>
+          )}
+        </div>
       </div>
     );
   }
