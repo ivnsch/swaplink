@@ -9,16 +9,41 @@ pub enum Network {
     Test,
 }
 
+#[derive(Debug)]
+pub enum Env {
+    Local,
+    Prod,
+}
+
 pub fn network() -> Network {
     let str = option_env!("NETWORK");
     log::debug!("Network str: {:?}", str);
 
-    let env = match str.as_deref() {
+    let network = match str.as_deref() {
         Some("test") => Network::Test,
         _ => Network::Private,
     };
-    log::info!("Network: {:?}", env);
+    log::info!("Network: {:?}", network);
+    network
+}
+
+pub fn env() -> Env {
+    let str = option_env!("ENV");
+    log::debug!("env str: {:?}", str);
+
+    let env = match str.as_deref() {
+        Some("prod") => Env::Prod,
+        _ => Env::Local,
+    };
+    log::info!("Env: {:?}", env);
     env
+}
+
+pub fn base_url<'a>() -> &'a str {
+    match env() {
+        Env::Local => "http://localhost:3000",
+        Env::Prod => "http://swaplink.xyz",
+    }
 }
 
 pub fn algod(network: &Network, api_key: &str) -> Algod {

@@ -10,6 +10,7 @@ use rust_decimal::{prelude::ToPrimitive, Decimal};
 
 use crate::{
     asset_infos::asset_infos,
+    dependencies::base_url,
     model::{SwapRequest, UnsignedSwapTransactions},
 };
 
@@ -171,8 +172,8 @@ impl GenerateSwapLogic {
 
     pub async fn generate_link(&self, request: &SwapRequest) -> Result<SwapLink> {
         Ok(SwapLink(format!(
-            "http://swaplink.xyz/submit/{}",
-            // "http://localhost:3000/submit/{}",
+            "{}/submit/{}",
+            base_url(),
             request.as_url_encoded_str()?
         )))
     }
