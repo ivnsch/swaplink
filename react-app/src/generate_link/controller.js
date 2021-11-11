@@ -19,11 +19,12 @@ export const generateSwapTxs = async (
   setSwapLinkTruncated,
   setShowLinkModal
 ) => {
-  const { bridge_generate_swap_txs, bridge_generate_link } = await wasmPromise;
-  statusMsg.clear();
-  showProgress(true);
-
   try {
+    const { bridge_generate_swap_txs, bridge_generate_link } =
+      await wasmPromise;
+    statusMsg.clear();
+    showProgress(true);
+
     let unsignedSwapTransactions = await bridge_generate_swap_txs(swapPars);
     showProgress(false);
 

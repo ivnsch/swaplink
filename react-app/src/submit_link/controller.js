@@ -46,13 +46,13 @@ export const submitTxs = async (
   statusMsg,
   showProgress
 ) => {
-  const { bridge_submit_txs } = await wasmPromise;
-  statusMsg.clear();
-
-  let signed = await sign(swapRequest.unsigned_my_tx_my_algo_format);
-
-  showProgress(true);
   try {
+    const { bridge_submit_txs } = await wasmPromise;
+    statusMsg.clear();
+
+    let signed = await sign(swapRequest.unsigned_my_tx_my_algo_format);
+
+    showProgress(true);
     const txId = await bridge_submit_txs({
       api_key: apiKey,
       signed_my_tx_msg_pack: signed,
