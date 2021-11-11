@@ -18,6 +18,7 @@ const App = () => {
   const [statusMsg, setStatusMsg] = useState(null);
   const [showProgress, setShowProgress] = useState(false);
   const [addressIsCopied, setAddressIsCopied] = useState(false);
+  const [errorMsgIsCopied, setErrorMsgIsCopied] = useState(false);
 
   class StatusMsgUpdater {
     success(msg) {
@@ -35,6 +36,13 @@ const App = () => {
     }
   }
   const [statusMsgUpdater, _] = useState(new StatusMsgUpdater());
+
+  const onCopyErrorMsg = () => {
+    setErrorMsgIsCopied(true);
+    setTimeout(() => {
+      setErrorMsgIsCopied(false);
+    }, 1000);
+  };
 
   const connectButtonView = () => {
     if (myAddress === "") {
@@ -102,15 +110,30 @@ const App = () => {
 
   const statusMsgView = () => {
     if (statusMsg) {
-      var className = "";
+      let shortMsg = statusMsg.msg;
+      let maxMsgLength = 200;
+      if (shortMsg.length > maxMsgLength) {
+        shortMsg = shortMsg.substring(0, maxMsgLength) + "...";
+      }
+
       if (statusMsg.type === "success") {
-        className = "success";
+        return <div className="success">{statusMsg.msg}</div>;
       } else if (statusMsg.type === "error") {
-        className = "error";
+        return (
+          <div className="error">
+            <CopyToClipboard text={statusMsg.msg} onCopy={onCopyErrorMsg}>
+              <div>
+                {shortMsg}
+                <span className="copy">
+                  {errorMsgIsCopied ? "copied!" : <MdContentCopy />}
+                </span>
+              </div>
+            </CopyToClipboard>
+          </div>
+        );
       } else {
         throw Error("Invalid status msg type: " + statusMsg.type);
       }
-      return <div className={className}>{statusMsg.msg}</div>;
     } else {
       return null;
     }
