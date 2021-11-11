@@ -30,7 +30,7 @@ const App = () => {
   }
   const [statusMsgUpdater, _] = useState(new StatusMsgUpdater());
 
-  const connectButtonElement = () => {
+  const connectButtonView = () => {
     if (myAddress === "") {
       return (
         <button
@@ -60,7 +60,7 @@ const App = () => {
     }
   };
 
-  const yourAddressElement = () => {
+  const yourAddressView = () => {
     if (myAddress !== "") {
       return (
         <div>
@@ -73,7 +73,7 @@ const App = () => {
     }
   };
 
-  const statusMsgElemenent = () => {
+  const statusMsgView = () => {
     if (statusMsg) {
       var className = "";
       if (statusMsg.type === "success") {
@@ -104,11 +104,11 @@ const App = () => {
               "This site is under development. It operates on TestNet. Use only for testing purposes."
             }
           </div>
-          <div>{connectButtonElement()}</div>
-          {yourAddressElement()}
+          <div>{connectButtonView()}</div>
+          {yourAddressView()}
 
           <div id="wrapper">
-            {statusMsgElemenent()}
+            {statusMsgView()}
 
             <Router>
               <Route exact path="/">

@@ -31,7 +31,7 @@ export const GenerateLink = (props) => {
     init(props.statusMsg);
   }, []);
 
-  const sendAssetIdElement = () => {
+  const sendAssetIdView = () => {
     if (sendUnit === "asset") {
       return (
         <input
@@ -49,7 +49,7 @@ export const GenerateLink = (props) => {
     }
   };
 
-  const receiveAssetIdElement = () => {
+  const receiveAssetIdView = () => {
     if (receiveUnit === "asset") {
       return (
         <input
@@ -67,7 +67,7 @@ export const GenerateLink = (props) => {
     }
   };
 
-  const swapLinkElement = () => {
+  const swapLinkView = () => {
     if (swapLink) {
       return (
         <div className="link-data-container">
@@ -135,7 +135,7 @@ export const GenerateLink = (props) => {
           <div>{"You send"}</div>
 
           <div className="input-row">
-            {sendAssetIdElement()}
+            {sendAssetIdView()}
             <input
               placeholder={"Amount"}
               className="inline"
@@ -156,7 +156,7 @@ export const GenerateLink = (props) => {
 
           <div>{"You receive"}</div>
           <div className="input-row">
-            {receiveAssetIdElement()}
+            {receiveAssetIdView()}
             <input
               placeholder={"Amount"}
               className="inline"
@@ -237,7 +237,7 @@ export const GenerateLink = (props) => {
           </button>
           {showLinkModal && (
             <Modal title={"Done!"} onCloseClick={() => setShowLinkModal(false)}>
-              {swapLinkElement()}
+              {swapLinkView()}
             </Modal>
           )}
           {showPurestakeHelpModal && (

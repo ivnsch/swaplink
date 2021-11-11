@@ -16,16 +16,16 @@ export const SubmitLink = (props) => {
     init(link, apiKey, props.statusMsg, setSwapRequest, setSwapViewData);
   }, [link]);
 
-  const swapViewDataElement = () => {
+  const swapViewDataView = () => {
     if (swapViewData) {
       return (
         <div>
           <div className="submit-swap-label">{"From:"}</div>
           <div>{swapViewData.peer}</div>
           <div className="submit-swap-label">{"You send:"}</div>
-          {tranferElement(swapViewData.send)}
+          {tranferView(swapViewData.send)}
           <div className="submit-swap-label">{"You receive:"}</div>
-          {tranferElement(swapViewData.receive)}
+          {tranferView(swapViewData.receive)}
           <div className="submit-swap-label">{"Your fee:"}</div>
           <div>{swapViewData.my_fee}</div>
         </div>
@@ -55,7 +55,7 @@ export const SubmitLink = (props) => {
             setApiKey(event.target.value);
           }}
         />
-        {swapViewDataElement(swapViewData)}
+        {swapViewDataView(swapViewData)}
         <button
           className="submit-sign-and-submit-button"
           onClick={async () => {
@@ -77,7 +77,7 @@ export const SubmitLink = (props) => {
   );
 };
 
-const tranferElement = (transfer) => {
+const tranferView = (transfer) => {
   if (transfer.unit === "algo") {
     return <div>{transfer.amount + " Algos"}</div>;
   } else if (transfer.unit === "asset") {
