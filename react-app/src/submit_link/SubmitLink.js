@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { init, submitTxs } from "./controller";
+import { init, submitTxs, fetchSwapData } from "./controller";
 import Modal from "../Modal";
 import { PureStakeHelp } from "../PureStakeHelp";
 import { CopyToClipboard } from "react-copy-to-clipboard";
@@ -19,8 +19,8 @@ export const SubmitLink = (props) => {
   const [receiveAssetIdIsCopied, setReceiveAssetIdIsCopied] = useState(false);
 
   useEffect(() => {
-    init(link, apiKey, props.statusMsg, setSwapRequest, setSwapViewData);
-  }, [link]);
+    init(props.statusMsg);
+  }, []);
 
   const onCopyPeerAddress = () => {
     setPeerAddressIsCopied(true);
@@ -97,9 +97,26 @@ export const SubmitLink = (props) => {
             setApiKey(event.target.value);
           }}
         />
+        <button
+          className="submit-sign-and-submit-button"
+          style={{ marginTop: 0, marginBottom: 20 }}
+          onClick={async () => {
+            await fetchSwapData(
+              link,
+              apiKey,
+              props.statusMsg,
+              setSwapRequest,
+              setSwapViewData,
+              props.showProgress
+            );
+          }}
+        >
+          {"Fetch asset data"}
+        </button>
         {swapViewDataView(swapViewData)}
         <button
           className="submit-sign-and-submit-button"
+          disabled={!swapViewData}
           onClick={async () => {
             await submitTxs(
               apiKey,
