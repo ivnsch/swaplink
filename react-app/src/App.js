@@ -13,6 +13,7 @@ const isIE = /*@cc_on!@*/ false || !!document.documentMode;
 
 const App = () => {
   const [myAddress, setMyAddress] = useState("");
+  const [myAddressDisplay, setMyAddressDisplay] = useState("");
   const [showLegalModal, setShowLegalModal] = useState(false);
   const [statusMsg, setStatusMsg] = useState(null);
   const [showProgress, setShowProgress] = useState(false);
@@ -42,7 +43,14 @@ const App = () => {
           className="connect-button"
           onClick={async (event) => {
             try {
-              setMyAddress(await connectWallet());
+              let address = await connectWallet();
+              setMyAddress(address);
+
+              const short_chars = 3;
+              const leading = address.substring(0, short_chars);
+              const trailing = address.substring(address.length - short_chars);
+              const shortAddress = leading + "..." + trailing;
+              setMyAddressDisplay(shortAddress);
             } catch (e) {
               statusMsgUpdater.error(e);
             }
@@ -79,7 +87,7 @@ const App = () => {
           <div>{"Your address:"}</div>
           <CopyToClipboard text={myAddress} onCopy={onCopyAddress}>
             <div className="copyable">
-              {myAddress}
+              {myAddressDisplay}
               <span class="copy">
                 {addressIsCopied ? "copied!" : <MdContentCopy />}
               </span>
