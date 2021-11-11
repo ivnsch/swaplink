@@ -107,23 +107,27 @@ select {
 }
 
 .error {
-  border-radius: 10px;
+  border-radius: 12px;
   border-style: solid;
   border-width: 1px;
   border-color: red;
   margin-bottom: 16px;
-  padding: 20px;
-  color: red;
+  padding: 10px;
+  background-color: red;
+  color: white;
+  /* color: red; */
 }
 
 .success {
-  border-radius: 10px;
+  border-radius: 12px;
   border-style: solid;
   border-width: 1px;
   border-color: green;
   margin-bottom: 16px;
-  padding: 20px;
-  color: green;
+  padding: 10px;
+  background-color: green;
+  color: white;
+  /* color: green; */
 }
 
 button {
@@ -186,9 +190,15 @@ button:disabled {
 }
 
 .warning {
-  color: orangered;
   margin-bottom: 12px;
   padding-top: 20px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: orangered;
+  margin-bottom: 16px;
+  padding: 10px;
+  background-color: orangered;
+  color: white;
 }
 
 .footer {
