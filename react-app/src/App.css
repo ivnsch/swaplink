@@ -160,13 +160,16 @@ button:disabled {
 }
 
 .swap-link {
-  border-radius: 10px;
+  border-radius: 12px;
   border-style: solid;
   border-width: 1px;
   border-color: green;
   margin-bottom: 16px;
+  padding: 10px;
+  background-color: green;
+  color: white;
+  margin-bottom: 16px;
   padding: 20px;
-  color: green;
   cursor: pointer;
 }
 
