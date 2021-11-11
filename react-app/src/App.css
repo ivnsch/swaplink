@@ -135,6 +135,17 @@ button {
   font-size: 16px;
 }
 
+
+button:enabled {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  pointer-events: all !important;
+}
+
+
 .submit-msg {
   margin-bottom: 16px;
 }
