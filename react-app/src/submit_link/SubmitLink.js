@@ -59,7 +59,12 @@ export const SubmitLink = (props) => {
         <button
           className="submit-sign-and-submit-button"
           onClick={async () => {
-            await submitTxs(apiKey, swapRequest, props.statusMsg);
+            await submitTxs(
+              apiKey,
+              swapRequest,
+              props.statusMsg,
+              props.showProgress
+            );
           }}
         >
           {"Sign and submit"}

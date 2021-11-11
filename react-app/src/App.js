@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import Modal from "./Modal";
 import React, { useState } from "react";
 import { connectWallet } from "./MyAlgo";
+import ProgressBar from "./ProgressBar";
 
 const isIE = /*@cc_on!@*/ false || !!document.documentMode;
 
@@ -12,6 +13,7 @@ const App = () => {
   const [myAddress, setMyAddress] = useState("");
   const [showLegalModal, setShowLegalModal] = useState(false);
   const [statusMsg, setStatusMsg] = useState(null);
+  const [showProgress, setShowProgress] = useState(false);
 
   class StatusMsgUpdater {
     success(msg) {
@@ -99,6 +101,7 @@ const App = () => {
     return (
       <div>
         <div className="container">
+          {showProgress && <ProgressBar />}
           <div className="warning">
             {
               "This site is under development. It operates on TestNet. Use only for testing purposes."
@@ -115,6 +118,7 @@ const App = () => {
                 <GenerateLink
                   myAddress={myAddress}
                   statusMsg={statusMsgUpdater}
+                  showProgress={(show) => setShowProgress(show)}
                 />
               </Route>
 
@@ -122,6 +126,7 @@ const App = () => {
                 <SubmitLink
                   myAddress={myAddress}
                   statusMsg={statusMsgUpdater}
+                  showProgress={(show) => setShowProgress(show)}
                 />
               </Route>
             </Router>

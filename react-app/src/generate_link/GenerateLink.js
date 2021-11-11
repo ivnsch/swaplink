@@ -227,6 +227,7 @@ export const GenerateLink = (props) => {
               await generateSwapTxs(
                 swapPars,
                 props.statusMsg,
+                props.showProgress,
                 setSwapLink,
                 setSwapLinkTruncated,
                 setShowLinkModal
