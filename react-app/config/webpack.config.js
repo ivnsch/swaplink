@@ -77,6 +77,11 @@ const hasJsxRuntime = (() => {
   }
 })();
 
+let commitHash = require("child_process")
+  .execSync("git rev-parse --short HEAD")
+  .toString()
+  .trim();
+
 // This is the production and development configuration.
 // It is focused on developer experience, fast rebuilds, and a minimal bundle.
 module.exports = function (webpackEnv) {
@@ -755,6 +760,9 @@ module.exports = function (webpackEnv) {
             },
           },
         }),
+      new webpack.DefinePlugin({
+        __COMMIT_HASH__: JSON.stringify(commitHash),
+      }),
     ].filter(Boolean),
     // Some libraries import Node modules but don't use them in the browser.
     // Tell webpack to provide empty mocks for them so importing them works.

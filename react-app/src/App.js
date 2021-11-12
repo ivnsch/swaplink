@@ -3,11 +3,13 @@ import { GenerateLink } from "./generate_link/GenerateLink";
 import { SubmitLink } from "./submit_link/SubmitLink";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import Modal from "./Modal";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { connectWallet } from "./MyAlgo";
 import ProgressBar from "./ProgressBar";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { MdContentCopy } from "react-icons/md";
+
+/* global __COMMIT_HASH__ */
 
 const isIE = /*@cc_on!@*/ false || !!document.documentMode;
 
@@ -181,7 +183,10 @@ const App = () => {
           </div>
           <div className="footer">
             <a
-              href="https://github.com/ivanschuetz/swaplink"
+              href={
+                "https://github.com/ivanschuetz/swaplink/tree/" +
+                __COMMIT_HASH__
+              }
               target="_blank"
               rel="noopener noreferrer"
             >
