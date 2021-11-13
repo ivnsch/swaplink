@@ -62,8 +62,21 @@ export const GenerateLink = (props) => {
               onUnitClick={() => setShowSendUnitModal(true)}
             />
 
-            <div>{"You receive"}</div>
+            <button
+              onClick={() => {
+                setSendUnit(receiveUnit);
+                setSendAssetId(receiveAssetId);
+                setSendAmount(receiveAmount);
 
+                setReceiveUnit(sendUnit);
+                setReceiveAssetId(sendAssetId);
+                setReceiveAmount(sendAmount);
+              }}
+            >
+              {"Invert"}
+            </button>
+
+            <div>{"You receive"}</div>
             <AssetInputRow
               assetId={receiveAssetId}
               amount={receiveAmount}
