@@ -1,4 +1,3 @@
-mod asset_infos;
 pub mod bridge;
 mod dependencies;
 pub mod generate_swap;

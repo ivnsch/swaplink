@@ -19,7 +19,7 @@ pub async fn bridge_generate_swap_txs(pars: JsValue) -> Result<JsValue, JsValue>
 
 /// Swap inputs -> unsigned tx pair
 async fn generate_swap_txs(pars: GenerateSwapTxsParJs) -> Result<UnsignedTxnsResJs> {
-    let txns = generate_swap_logic(&pars.api_key)
+    let txns = generate_swap_logic()
         .generate_unsigned_swap_transactions(pars)
         .await?;
 
@@ -33,13 +33,12 @@ async fn generate_swap_txs(pars: GenerateSwapTxsParJs) -> Result<UnsignedTxnsRes
     })
 }
 
-fn generate_swap_logic(api_key: &str) -> GenerateSwapLogic {
-    dependencies::generate_swap_logic(Rc::new(dependencies::algod(&network(), api_key)))
+fn generate_swap_logic() -> GenerateSwapLogic {
+    dependencies::generate_swap_logic(Rc::new(dependencies::algod(&network())))
 }
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct GenerateSwapTxsParJs {
-    pub api_key: String,
     pub my_address: String,
     pub peer_address: String,
     pub send_amount: String,

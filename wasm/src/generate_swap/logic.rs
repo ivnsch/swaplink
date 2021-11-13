@@ -9,7 +9,6 @@ use anyhow::{anyhow, Result};
 use rust_decimal::{prelude::ToPrimitive, Decimal};
 
 use crate::{
-    asset_infos::asset_infos,
     dependencies::base_url,
     model::{SwapRequest, UnsignedSwapTransactions},
 };
@@ -31,9 +30,6 @@ impl GenerateSwapLogic {
     async fn validate_swap_pars(&self, pars: GenerateSwapTxsParJs) -> Result<ValidatedSwapPars> {
         let me = pars.my_address.parse().map_err(anyhow::Error::msg)?;
         let peer = pars.peer_address.parse().map_err(anyhow::Error::msg)?;
-        if pars.api_key.is_empty() {
-            return Err(anyhow!("Please enter an API key"));
-        }
 
         let send_amount = Decimal::from_str(&pars.send_amount)?;
         let receive_amount = Decimal::from_str(&pars.receive_amount)?;
@@ -59,7 +55,6 @@ impl GenerateSwapLogic {
 
         Ok(ValidatedSwapPars {
             me,
-            api_key: pars.api_key.clone(),
             peer,
             send,
             receive,
@@ -117,8 +112,7 @@ impl GenerateSwapLogic {
         role: SwapRole,
     ) -> Result<Transfer> {
         let asset_id = asset_id_input.parse()?;
-        let asset_config = asset_infos(&self.algod, asset_id).await?;
-
+        let asset_config = &self.algod.asset_information(asset_id).await?;
         Self::validate_asset_transfer_with_fractionals(
             asset_config.params.decimals,
             amount,

@@ -2,10 +2,24 @@ import { sign } from "../MyAlgo";
 
 const wasmPromise = import("wasm");
 
-export const init = async (statusMsg) => {
+export const init = async (
+  link,
+  statusMsg,
+  setSwapRequest,
+  setSwapViewData,
+  showProgress
+) => {
   try {
     const { init_log } = await wasmPromise;
     await init_log();
+
+    await fetchSwapData(
+      link,
+      statusMsg,
+      setSwapRequest,
+      setSwapViewData,
+      showProgress
+    );
   } catch (e) {
     statusMsg.error(e);
   }
@@ -13,7 +27,6 @@ export const init = async (statusMsg) => {
 
 export const fetchSwapData = async (
   link,
-  apiKey,
   statusMsg,
   setSwapRequest,
   setSwapViewData,
@@ -26,7 +39,6 @@ export const fetchSwapData = async (
     console.log("will decode!");
     const swapRequest = await bridge_decode_link({
       swap_link: link,
-      api_key: apiKey,
     });
     console.log("decoded!");
 
@@ -40,12 +52,7 @@ export const fetchSwapData = async (
   }
 };
 
-export const submitTxs = async (
-  apiKey,
-  swapRequest,
-  statusMsg,
-  showProgress
-) => {
+export const submitTxs = async (swapRequest, statusMsg, showProgress) => {
   try {
     const { bridge_submit_txs } = await wasmPromise;
     statusMsg.clear();
@@ -54,7 +61,6 @@ export const submitTxs = async (
 
     showProgress(true);
     const txId = await bridge_submit_txs({
-      api_key: apiKey,
       signed_my_tx_msg_pack: signed,
       pt: swapRequest.pt, // passthrough
     });

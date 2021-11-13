@@ -22,20 +22,17 @@ async fn generate_link(pars: GenerateLinkParJs) -> Result<String> {
         unsigned_tx: rmp_serde::from_slice(&pars.pt.unsigned_peer_tx_msg_pack)?,
     };
 
-    let link = generate_swap_logic(&pars.api_key)
-        .generate_link(&request)
-        .await?;
+    let link = generate_swap_logic().generate_link(&request).await?;
 
     Ok(link.0)
 }
 
-fn generate_swap_logic(api_key: &str) -> GenerateSwapLogic {
-    dependencies::generate_swap_logic(Rc::new(dependencies::algod(&network(), api_key)))
+fn generate_swap_logic() -> GenerateSwapLogic {
+    dependencies::generate_swap_logic(Rc::new(dependencies::algod(&network())))
 }
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct GenerateLinkParJs {
-    pub api_key: String,
     pub signed_my_tx_msg_pack: Vec<u8>,
     pub pt: GenerateLinkPassthroughParJs, // passthrough
 }

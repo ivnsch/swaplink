@@ -22,7 +22,7 @@ pub async fn bridge_decode_link(pars: JsValue) -> Result<JsValue, JsValue> {
 
 /// Receiver decodes link
 pub async fn decode_link(pars: DecodeLinkParJs) -> Result<DecodedLinkResJs> {
-    let logic = submit_swap_logic(&pars.api_key);
+    let logic = submit_swap_logic();
 
     let request = logic.to_swap_request(pars.swap_link).await?;
 
@@ -38,14 +38,13 @@ pub async fn decode_link(pars: DecodeLinkParJs) -> Result<DecodedLinkResJs> {
     })
 }
 
-fn submit_swap_logic(api_key: &str) -> SubmitSwapLogic {
-    dependencies::submit_swap_logic(Rc::new(dependencies::algod(&network(), api_key)))
+fn submit_swap_logic() -> SubmitSwapLogic {
+    dependencies::submit_swap_logic(Rc::new(dependencies::algod(&network())))
 }
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct DecodeLinkParJs {
     pub swap_link: String,
-    pub api_key: String,
 }
 
 /// Decoded link data: tx to be signed + passthrough peer tx + data to be displayed

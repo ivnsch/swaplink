@@ -3,7 +3,6 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import { MdContentCopy } from "react-icons/md";
 import Modal from "../Modal";
 import { init, generateSwapTxs } from "./controller";
-import { PureStakeHelp } from "../PureStakeHelp";
 
 export const GenerateLink = (props) => {
   const [peerAddress, setPeerAddress] = useState("");
@@ -24,8 +23,6 @@ export const GenerateLink = (props) => {
   const [swapLinkIsCopied, setSwapLinkIsCopied] = useState(false);
 
   const [showLinkModal, setShowLinkModal] = useState(false);
-  const [showPurestakeHelpModal, setShowPurestakeHelpModal] = useState(false);
-  const [apiKey, setApiKey] = useState("");
 
   useEffect(() => {
     init(props.statusMsg);
@@ -106,22 +103,6 @@ export const GenerateLink = (props) => {
           {"Generate a link to swap Algos, ASAs or NFTs with a peer"}
         </div>
         <div>
-          <div>
-            {"Purestake api key "}
-            <a href="#" onClick={() => setShowPurestakeHelpModal(true)}>
-              ?
-            </a>
-          </div>
-          <input
-            type="password"
-            placeholder="api key"
-            className="address-input"
-            size="64"
-            value={apiKey}
-            onChange={(event) => {
-              setApiKey(event.target.value);
-            }}
-          />
           <div>{"Peer"}</div>
           <input
             placeholder="Peer address"
@@ -207,8 +188,6 @@ export const GenerateLink = (props) => {
             }
             onClick={async () => {
               let swapPars = {
-                api_key: apiKey,
-
                 my_address: props.myAddress,
                 peer_address: peerAddress,
 
@@ -239,14 +218,6 @@ export const GenerateLink = (props) => {
           {showLinkModal && (
             <Modal title={"Done!"} onCloseClick={() => setShowLinkModal(false)}>
               {swapLinkView()}
-            </Modal>
-          )}
-          {showPurestakeHelpModal && (
-            <Modal
-              title={"Purestake API key help"}
-              onCloseClick={() => setShowPurestakeHelpModal(false)}
-            >
-              <PureStakeHelp />
             </Modal>
           )}
         </div>

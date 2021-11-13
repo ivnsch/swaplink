@@ -15,7 +15,6 @@ pub struct SwapIntent {
 #[derive(Debug, Clone)]
 pub struct ValidatedSwapPars {
     pub me: Address,
-    pub api_key: String,
     pub peer: Address,
     pub send: Transfer,
     pub receive: Transfer,

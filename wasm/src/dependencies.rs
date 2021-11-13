@@ -46,10 +46,10 @@ pub fn base_url<'a>() -> &'a str {
     }
 }
 
-pub fn algod(network: &Network, api_key: &str) -> Algod {
+pub fn algod(network: &Network) -> Algod {
     match network {
         Network::Private => private_network_algod(),
-        Network::Test => testnet_algod(api_key),
+        Network::Test => testnet_algod(),
     }
 }
 
@@ -61,10 +61,9 @@ pub fn submit_swap_logic(algod: Rc<Algod>) -> SubmitSwapLogic {
     SubmitSwapLogic::new(algod)
 }
 
-fn testnet_algod(api_key: &str) -> Algod {
+fn testnet_algod() -> Algod {
     AlgodCustomEndpointBuilder::new()
-        .bind("https://testnet-algorand.api.purestake.io/ps2/")
-        .headers(vec![("x-api-key", api_key)])
+        .bind("https://algoexplorerapi.io")
         .build_v2()
         // expect: build returns an error if the URL or token are not provided or have an invalid format,
         // we are passing verified hardcoded values.

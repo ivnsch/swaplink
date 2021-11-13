@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { init, submitTxs, fetchSwapData } from "./controller";
-import Modal from "../Modal";
-import { PureStakeHelp } from "../PureStakeHelp";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { MdContentCopy } from "react-icons/md";
 
@@ -11,15 +9,19 @@ export const SubmitLink = (props) => {
 
   const [swapRequest, setSwapRequest] = useState(null);
   const [swapViewData, setSwapViewData] = useState(null);
-  const [apiKey, setApiKey] = useState("");
-  const [showPurestakeHelpModal, setShowPurestakeHelpModal] = useState(false);
   const [peerAddressIsCopied, setPeerAddressIsCopied] = useState(false);
 
   const [sendAssetIdIsCopied, setSendAssetIdIsCopied] = useState(false);
   const [receiveAssetIdIsCopied, setReceiveAssetIdIsCopied] = useState(false);
 
   useEffect(() => {
-    init(props.statusMsg);
+    init(
+      link,
+      props.statusMsg,
+      setSwapRequest,
+      setSwapViewData,
+      props.showProgress
+    );
   }, []);
 
   const onCopyPeerAddress = () => {
@@ -81,61 +83,16 @@ export const SubmitLink = (props) => {
     <div>
       <div className="container">
         <div className="submit-swap-title">{"You got a swap request!"}</div>
-        <div>
-          {"Purestake api key "}
-          <a href="#" onClick={() => setShowPurestakeHelpModal(true)}>
-            ?
-          </a>
-        </div>
-        <input
-          type="password"
-          placeholder="api key"
-          className="address-input"
-          size="64"
-          value={apiKey}
-          onChange={(event) => {
-            setApiKey(event.target.value);
-          }}
-        />
-        <button
-          className="submit-sign-and-submit-button"
-          style={{ marginTop: 0, marginBottom: 20 }}
-          onClick={async () => {
-            await fetchSwapData(
-              link,
-              apiKey,
-              props.statusMsg,
-              setSwapRequest,
-              setSwapViewData,
-              props.showProgress
-            );
-          }}
-        >
-          {"Fetch asset data"}
-        </button>
         {swapViewDataView(swapViewData)}
         <button
           className="submit-sign-and-submit-button"
           disabled={!swapViewData}
           onClick={async () => {
-            await submitTxs(
-              apiKey,
-              swapRequest,
-              props.statusMsg,
-              props.showProgress
-            );
+            await submitTxs(swapRequest, props.statusMsg, props.showProgress);
           }}
         >
           {"Sign and submit"}
         </button>
-        {showPurestakeHelpModal && (
-          <Modal
-            title={"Purestake API key help"}
-            onCloseClick={() => setShowPurestakeHelpModal(false)}
-          >
-            <PureStakeHelp />
-          </Modal>
-        )}
       </div>
     </div>
   );

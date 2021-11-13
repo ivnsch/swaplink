@@ -9,7 +9,7 @@ use anyhow::Result;
 use log::debug;
 use rust_decimal::Decimal;
 
-use crate::{asset_infos::asset_infos, model::SwapRequest};
+use crate::model::SwapRequest;
 
 use super::model::{SubmitSwapViewData, SubmitTransferViewData};
 pub struct SubmitSwapLogic {
@@ -43,7 +43,7 @@ impl SubmitSwapLogic {
                 amount: Self::micro_algos_to_algos_str(p.amount)?,
             }),
             TransactionType::AssetTransferTransaction(a) => {
-                let asset_config = asset_infos(&self.algod, a.xfer).await?;
+                let asset_config = &self.algod.asset_information(a.xfer).await?;
                 let decimal = Decimal::from_i128_with_scale(
                     a.amount as i128,
                     asset_config.params.decimals.try_into()?,

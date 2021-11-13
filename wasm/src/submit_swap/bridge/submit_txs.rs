@@ -19,19 +19,16 @@ pub async fn submit_txs(pars: SignedTxnsParJs) -> Result<String> {
     let my_tx = rmp_serde::from_slice(&pars.signed_my_tx_msg_pack)?;
     let peer_tx = rmp_serde::from_slice(&pars.pt.signed_peer_tx_msg_pack)?;
 
-    submit_swap_logic(&pars.api_key)
-        .submit_swap(my_tx, peer_tx)
-        .await
+    submit_swap_logic().submit_swap(my_tx, peer_tx).await
 }
 
-fn submit_swap_logic(api_key: &str) -> SubmitSwapLogic {
-    dependencies::submit_swap_logic(Rc::new(dependencies::algod(&network(), api_key)))
+fn submit_swap_logic() -> SubmitSwapLogic {
+    dependencies::submit_swap_logic(Rc::new(dependencies::algod(&network())))
 }
 
 /// Link receiver signed their tx
 #[derive(Debug, Clone, Deserialize)]
 pub struct SignedTxnsParJs {
-    pub api_key: String,
     pub signed_my_tx_msg_pack: Vec<u8>,
     pub pt: SignedTxnsPassthroughParJs, // passthrough
 }
