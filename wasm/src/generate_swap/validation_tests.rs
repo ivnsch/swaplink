@@ -103,42 +103,42 @@ fn asset_amount_fails_if_too_many_fractional_digits() {
 #[test]
 fn converts_to_base_units() {
     let decimal = Decimal::from_str("102.002131").unwrap().normalize();
-    let base_units = GenerateSwapLogic::to_base_units(decimal, 6).unwrap();
+    let base_units = to_base_units(decimal, 6).unwrap();
     assert_eq!(102002131, base_units)
 }
 
 #[test]
 fn converts_to_base_units_integer_with_0_exp() {
     let decimal = Decimal::from_str("123456789").unwrap().normalize();
-    let base_units = GenerateSwapLogic::to_base_units(decimal, 0).unwrap();
+    let base_units = to_base_units(decimal, 0).unwrap();
     assert_eq!(123456789, base_units)
 }
 
 #[test]
 fn converts_to_base_units_0_integer() {
     let decimal = Decimal::from_str("0.232131999").unwrap().normalize();
-    let base_units = GenerateSwapLogic::to_base_units(decimal, 9).unwrap();
+    let base_units = to_base_units(decimal, 9).unwrap();
     assert_eq!(232131999, base_units)
 }
 
 #[test]
 fn converts_to_base_units_0_integer_and_prefix() {
     let decimal = Decimal::from_str("0.00232131999").unwrap().normalize();
-    let base_units = GenerateSwapLogic::to_base_units(decimal, 11).unwrap();
+    let base_units = to_base_units(decimal, 11).unwrap();
     assert_eq!(232131999, base_units)
 }
 
 #[test]
 fn converts_to_base_units_with_trailing_0() {
     let decimal = Decimal::from_str("102.00213100").unwrap().normalize(); // trailing 0s are stripped
-    let base_units = GenerateSwapLogic::to_base_units(decimal, 6).unwrap();
+    let base_units = to_base_units(decimal, 6).unwrap();
     assert_eq!(102002131, base_units)
 }
 
 #[test]
 fn fails_converts_to_base_units_too_many_fractionals() {
     let decimal = Decimal::from_str("102.0021311").unwrap().normalize();
-    let res = GenerateSwapLogic::to_base_units(decimal, 6);
+    let res = to_base_units(decimal, 6);
     // 7 fractional digits > 6 exp
     assert!(res.is_err());
 }
@@ -146,7 +146,7 @@ fn fails_converts_to_base_units_too_many_fractionals() {
 #[test]
 fn fails_converts_to_base_units_too_many_fractionals_0_integer_and_prefix() {
     let decimal = Decimal::from_str("0.0021311").unwrap().normalize();
-    let res = GenerateSwapLogic::to_base_units(decimal, 6);
+    let res = to_base_units(decimal, 6);
     // 7 fractional digits > 6 exp
     assert!(res.is_err());
 }

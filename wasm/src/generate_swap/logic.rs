@@ -6,12 +6,9 @@ use algonaut::{
     transaction::{tx_group::TxGroup, Pay, Transaction, TransferAsset, TxnBuilder},
 };
 use anyhow::{anyhow, Result};
-use rust_decimal::{prelude::ToPrimitive, Decimal};
+use rust_decimal::Decimal;
 
-use crate::{
-    dependencies::base_url,
-    model::{SwapRequest, UnsignedSwapTransactions},
-};
+use crate::{conversions::{to_base_units, validate_algos}, dependencies::base_url, model::{SwapRequest, UnsignedSwapTransactions}};
 
 use super::{
     bridge::generate_swap_txs::GenerateSwapTxsParJs,
@@ -50,8 +47,8 @@ impl GenerateSwapLogic {
             )
             .await?;
 
-        let my_fee = Self::validate_algos(Decimal::from_str(&pars.my_fee)?)?;
-        let peer_fee = Self::validate_algos(Decimal::from_str(&pars.peer_fee)?)?;
+        let my_fee = validate_algos(Decimal::from_str(&pars.my_fee)?)?;
+        let peer_fee = validate_algos(Decimal::from_str(&pars.peer_fee)?)?;
 
         Ok(ValidatedSwapPars {
             me,
@@ -91,18 +88,8 @@ impl GenerateSwapLogic {
 
     pub fn validate_algos_transfer(amount: Decimal) -> Result<Transfer> {
         Ok(Transfer::Algos {
-            amount: Self::validate_algos(amount)?.0,
+            amount: validate_algos(amount)?.0,
         })
-    }
-
-    pub fn validate_algos(amount: Decimal) -> Result<MicroAlgos> {
-        let amount = amount.normalize();
-
-        if amount.is_sign_negative() || amount.is_zero() {
-            return Err(anyhow!("{} amount must be positive (>0)", amount));
-        };
-
-        Ok(MicroAlgos(Self::to_base_units(amount, 6)?))
     }
 
     async fn validate_asset_transfer(
@@ -160,7 +147,7 @@ impl GenerateSwapLogic {
 
         Ok(Transfer::Asset {
             id: asset_id,
-            amount: Self::to_base_units(amount, asset_config_max_fractional_digits.try_into()?)?,
+            amount: to_base_units(amount, asset_config_max_fractional_digits.try_into()?)?,
         })
     }
 
@@ -219,37 +206,5 @@ impl GenerateSwapLogic {
             },
         )
         .build())
-    }
-
-    pub fn to_base_units(decimal: Decimal, base_10_exp: u32) -> Result<u64> {
-        let multiplier = Decimal::from_i128_with_scale(
-            10u64
-                .checked_pow(base_10_exp)
-                .ok_or_else(|| anyhow!("exp overflow decimal: {}, exp: {}", decimal, base_10_exp))?
-                as i128,
-            0,
-        );
-
-        let base_units = (decimal * multiplier).normalize();
-        if base_units.scale() != 0 {
-            return Err(anyhow!(
-                "Amount: {} has more fractional digits than allowed: {}",
-                decimal,
-                base_10_exp
-            ));
-        }
-
-        if base_units > Decimal::from_i128_with_scale(u64::MAX as i128, 0) {
-            return Err(anyhow!(
-                "Base units: {} overflow, decimal: {}, exp: {}",
-                base_units,
-                decimal,
-                base_10_exp
-            ));
-        }
-
-        base_units
-            .to_u64()
-            .ok_or_else(|| anyhow!("Couldn't convert decimal: {} to u64", decimal))
     }
 }

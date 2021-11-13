@@ -2,14 +2,13 @@ use std::{convert::TryInto, rc::Rc};
 
 use algonaut::{
     algod::v2::Algod,
-    core::MicroAlgos,
     transaction::{SignedTransaction, Transaction, TransactionType},
 };
 use anyhow::Result;
 use log::debug;
 use rust_decimal::Decimal;
 
-use crate::model::SwapRequest;
+use crate::{format::micro_algos_to_algos_str, model::SwapRequest};
 
 use super::model::{SubmitSwapViewData, SubmitTransferViewData};
 pub struct SubmitSwapLogic {
@@ -33,14 +32,14 @@ impl SubmitSwapLogic {
             peer: peer_tx.transaction.sender().to_string(),
             send: self.to_tranfer(&my_tx).await?,
             receive: self.to_tranfer(&peer_tx.transaction).await?,
-            my_fee: format!("{} Algos", Self::micro_algos_to_algos_str(my_tx.fee)?),
+            my_fee: format!("{} Algos", micro_algos_to_algos_str(my_tx.fee)?),
         })
     }
 
     async fn to_tranfer(&self, tx: &Transaction) -> Result<SubmitTransferViewData> {
         match &tx.txn_type {
             TransactionType::Payment(p) => Ok(SubmitTransferViewData::Algos {
-                amount: Self::micro_algos_to_algos_str(p.amount)?,
+                amount: micro_algos_to_algos_str(p.amount)?,
             }),
             TransactionType::AssetTransferTransaction(a) => {
                 let asset_config = &self.algod.asset_information(a.xfer).await?;
@@ -59,11 +58,6 @@ impl SubmitSwapLogic {
                 panic!("Not supported transaction type");
             }
         }
-    }
-
-    fn micro_algos_to_algos_str(micro_algos: MicroAlgos) -> Result<String> {
-        let decimal = Decimal::from_i128_with_scale(micro_algos.0 as i128, 6).normalize();
-        Ok(decimal.to_string())
     }
 
     pub async fn submit_swap(

@@ -1,4 +1,4 @@
-const FeeInput = ({ title, fee, setFee }) => {
+const FeeInput = ({ title, fee, setFee, onChange }) => {
   return (
     <div>
       <div>{title}</div>
@@ -7,7 +7,9 @@ const FeeInput = ({ title, fee, setFee }) => {
         size="16"
         value={fee}
         onChange={(event) => {
-          setFee(event.target.value);
+          let input = event.target.value;
+          setFee(input);
+          onChange(input);
         }}
       />
       <span>{" Algo"}</span>

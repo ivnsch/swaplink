@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Modal from "../Modal";
-import { init, generateSwapTxs } from "./controller";
+import { init, generateSwapTxs, updateFeeTotal } from "./controller";
 import AssetInputRow from "./AssetInputRow";
 import FeeInput from "./FeeInput";
 import SwapLinkView from "./SwapLinkView";
@@ -16,16 +16,19 @@ export const GenerateLink = (props) => {
   const [receiveAmount, setReceiveAmount] = useState("");
   const [receiveAssetId, setReceiveAssetId] = useState("");
 
-  const [myFee, setMyFee] = useState("0.001");
-  const [peerFee, setPeerFee] = useState("0.001");
+  const [myFee, setMyFee] = useState("");
+  const [peerFee, setPeerFee] = useState("");
+  const [feeTotal, setFeeTotal] = useState("");
+  const [hideFeeTotal, setHideFeeTotal] = useState(false);
 
   const [swapLink, setSwapLink] = useState("");
   const [swapLinkTruncated, setSwapLinkTruncated] = useState("");
 
   const [showLinkModal, setShowLinkModal] = useState(false);
+  const [showFeesModal, setShowFeesModal] = useState(false);
 
   useEffect(() => {
-    init(props.statusMsg);
+    init(props.statusMsg, setMyFee, setPeerFee, setFeeTotal);
   }, []);
 
   return (
@@ -46,28 +49,40 @@ export const GenerateLink = (props) => {
             }}
           />
 
-          <div>{"You send"}</div>
-          <AssetInputRow
-            assetId={sendAssetId}
-            setAssetId={setSendAssetId}
-            amount={sendAmount}
-            setAmount={setSendAmount}
-            unit={sendUnit}
-            setUnit={setSendUnit}
-          />
+          <div id="swap-container">
+            <div>{"You send"}</div>
+            <AssetInputRow
+              assetId={sendAssetId}
+              setAssetId={setSendAssetId}
+              amount={sendAmount}
+              setAmount={setSendAmount}
+              unit={sendUnit}
+              setUnit={setSendUnit}
+            />
 
-          <div>{"You receive"}</div>
-          <AssetInputRow
-            assetId={receiveAssetId}
-            setAssetId={setReceiveAssetId}
-            amount={receiveAmount}
-            setAmount={setReceiveAmount}
-            unit={receiveUnit}
-            setUnit={setReceiveUnit}
-          />
+            <div>{"You receive"}</div>
+            <AssetInputRow
+              assetId={receiveAssetId}
+              setAssetId={setReceiveAssetId}
+              amount={receiveAmount}
+              setAmount={setReceiveAmount}
+              unit={receiveUnit}
+              setUnit={setReceiveUnit}
+            />
+          </div>
 
-          <FeeInput title={"Your fee"} fee={myFee} setFee={setMyFee} />
-          <FeeInput title={"Peer's fee"} fee={peerFee} setFee={setPeerFee} />
+          <div id="fee-container">
+            <span style={{ marginRight: 5 }}>{"Fee:"}</span>
+            <span>
+              <button
+                onClick={async () => {
+                  setShowFeesModal(true);
+                }}
+              >
+                {feeTotal}
+              </button>
+            </span>
+          </div>
 
           <button
             className="submit-button"
@@ -115,6 +130,45 @@ export const GenerateLink = (props) => {
                 swapLinkTruncated={swapLinkTruncated}
                 swapLink={swapLink}
               />
+            </Modal>
+          )}
+          {showFeesModal && (
+            <Modal title={"Done!"} onCloseClick={() => setShowFeesModal(false)}>
+              <FeeInput
+                title={"Your fee"}
+                fee={myFee}
+                setFee={setMyFee}
+                onChange={(input) => {
+                  updateFeeTotal(
+                    props.statusMsg,
+                    input,
+                    peerFee,
+                    setFeeTotal,
+                    setHideFeeTotal
+                  );
+                }}
+              />
+              <FeeInput
+                title={"Peer's fee"}
+                fee={peerFee}
+                setFee={setPeerFee}
+                onChange={(input) =>
+                  updateFeeTotal(
+                    props.statusMsg,
+                    myFee,
+                    input,
+                    setFeeTotal,
+                    setHideFeeTotal
+                  )
+                }
+              />
+              {!hideFeeTotal && (
+                <div>
+                  <span style={{ marginRight: 5 }}>{"Total:"}</span>
+                  <span>{feeTotal}</span>
+                  <span>{" Algo"}</span>
+                </div>
+              )}
             </Modal>
           )}
         </div>
