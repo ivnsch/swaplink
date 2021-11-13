@@ -46,8 +46,8 @@ export const SubmitLink = (props) => {
   };
 
   const swapViewDataView = () => {
-    if (swapViewData) {
-      return (
+    return (
+      swapViewData && (
         <div>
           <div className="submit-swap-label">{"From:"}</div>
           <CopyToClipboard text={swapViewData.peer} onCopy={onCopyPeerAddress}>
@@ -73,10 +73,8 @@ export const SubmitLink = (props) => {
           <div className="submit-swap-label">{"Your fee:"}</div>
           <div>{swapViewData.my_fee}</div>
         </div>
-      );
-    } else {
-      return null;
-    }
+      )
+    );
   };
 
   return (

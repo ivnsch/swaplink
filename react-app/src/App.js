@@ -91,8 +91,8 @@ const App = () => {
   };
 
   const yourAddressView = () => {
-    if (myAddress !== "") {
-      return (
+    return (
+      myAddress !== "" && (
         <div>
           <div>{"Your address:"}</div>
           <CopyToClipboard text={myAddress} onCopy={onCopyAddress}>
@@ -104,10 +104,8 @@ const App = () => {
             </div>
           </CopyToClipboard>
         </div>
-      );
-    } else {
-      return null;
-    }
+      )
+    );
   };
 
   const statusMsgView = () => {

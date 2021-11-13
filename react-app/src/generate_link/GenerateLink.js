@@ -29,8 +29,8 @@ export const GenerateLink = (props) => {
   }, []);
 
   const sendAssetIdView = () => {
-    if (sendUnit === "asset") {
-      return (
+    return (
+      sendUnit === "asset" && (
         <input
           placeholder="Asset id"
           className="inline"
@@ -40,15 +40,13 @@ export const GenerateLink = (props) => {
             setSendAssetId(event.target.value);
           }}
         />
-      );
-    } else {
-      return null;
-    }
+      )
+    );
   };
 
   const receiveAssetIdView = () => {
-    if (receiveUnit === "asset") {
-      return (
+    return (
+      receiveUnit === "asset" && (
         <input
           placeholder="Asset id"
           className="inline"
@@ -58,15 +56,13 @@ export const GenerateLink = (props) => {
             setReceiveAssetId(event.target.value);
           }}
         />
-      );
-    } else {
-      return null;
-    }
+      )
+    );
   };
 
   const swapLinkView = () => {
-    if (swapLink) {
-      return (
+    return (
+      swapLink && (
         <div className="link-data-container">
           <div className="submit-msg">
             {
@@ -83,10 +79,8 @@ export const GenerateLink = (props) => {
             </div>
           </CopyToClipboard>
         </div>
-      );
-    } else {
-      return null;
-    }
+      )
+    );
   };
 
   const onCopyText = () => {
