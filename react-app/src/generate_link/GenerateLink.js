@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Modal from "../Modal";
 import { init, generateSwapTxs } from "./controller";
-import CopyPasteText from "../CopyPasteText";
+import AssetInputRow from "./AssetInputRow";
+import FeeInput from "./FeeInput";
+import SwapLinkView from "./SwapLinkView";
 
 export const GenerateLink = (props) => {
   const [peerAddress, setPeerAddress] = useState("");
@@ -26,56 +28,6 @@ export const GenerateLink = (props) => {
     init(props.statusMsg);
   }, []);
 
-  const sendAssetIdView = () => {
-    return (
-      sendUnit === "asset" && (
-        <input
-          placeholder="Asset id"
-          className="inline"
-          size="16"
-          value={sendAssetId}
-          onChange={(event) => {
-            setSendAssetId(event.target.value);
-          }}
-        />
-      )
-    );
-  };
-
-  const receiveAssetIdView = () => {
-    return (
-      receiveUnit === "asset" && (
-        <input
-          placeholder="Asset id"
-          className="inline"
-          size="16"
-          value={receiveAssetId}
-          onChange={(event) => {
-            setReceiveAssetId(event.target.value);
-          }}
-        />
-      )
-    );
-  };
-
-  const swapLinkView = () => {
-    return (
-      swapLink && (
-        <div className="link-data-container">
-          <div className="submit-msg">
-            {
-              "Send this link to your peer. Upon opening, they can confirm and submit the swap."
-            }
-          </div>
-          <div className="submit-msg-warning">{"⚠️ It expires in ~1 hour"}</div>
-          <div className="swap-link">
-            <CopyPasteText text={swapLinkTruncated} copyText={swapLink} />
-          </div>
-        </div>
-      )
-    );
-  };
-
   return (
     <div>
       <div className="container">
@@ -93,69 +45,30 @@ export const GenerateLink = (props) => {
               setPeerAddress(event.target.value);
             }}
           />
-          <div>{"You send"}</div>
 
-          <div className="input-row">
-            {sendAssetIdView()}
-            <input
-              placeholder={"Amount"}
-              className="inline"
-              size="16"
-              value={sendAmount}
-              onChange={(event) => {
-                setSendAmount(event.target.value);
-              }}
-            />
-            <select
-              value={sendUnit}
-              onChange={(event) => setSendUnit(event.target.value)}
-            >
-              <option value="algo">Algo</option>
-              <option value="asset">Asset</option>
-            </select>
-          </div>
+          <div>{"You send"}</div>
+          <AssetInputRow
+            assetId={sendAssetId}
+            setAssetId={setSendAssetId}
+            amount={sendAmount}
+            setAmount={setSendAmount}
+            unit={sendUnit}
+            setUnit={setSendUnit}
+          />
 
           <div>{"You receive"}</div>
-          <div className="input-row">
-            {receiveAssetIdView()}
-            <input
-              placeholder={"Amount"}
-              className="inline"
-              size="16"
-              value={receiveAmount}
-              onChange={(event) => {
-                setReceiveAmount(event.target.value);
-              }}
-            />
-            <select
-              value={receiveUnit}
-              onChange={(event) => setReceiveUnit(event.target.value)}
-            >
-              <option value="algo">Algo</option>
-              <option value="asset">Asset</option>
-            </select>
-          </div>
+          <AssetInputRow
+            assetId={receiveAssetId}
+            setAssetId={setReceiveAssetId}
+            amount={receiveAmount}
+            setAmount={setReceiveAmount}
+            unit={receiveUnit}
+            setUnit={setReceiveUnit}
+          />
 
-          <div>{"Your fee"}</div>
-          <input
-            placeholder="Fee"
-            size="16"
-            value={myFee}
-            onChange={(event) => {
-              setMyFee(event.target.value);
-            }}
-          />
-          <span>{" Algo"}</span>
-          <div>{"Peer's fee"}</div>
-          <input
-            placeholder="Fee"
-            size="16"
-            value={peerFee}
-            onChange={(event) => {
-              setPeerFee(event.target.value);
-            }}
-          />
-          <span>{" Algo"}</span>
+          <FeeInput title={"Your fee"} fee={myFee} setFee={setMyFee} />
+          <FeeInput title={"Peer's fee"} fee={peerFee} setFee={setPeerFee} />
+
           <button
             className="submit-button"
             disabled={
@@ -195,9 +108,13 @@ export const GenerateLink = (props) => {
           >
             {"Generate link"}
           </button>
+
           {showLinkModal && (
             <Modal title={"Done!"} onCloseClick={() => setShowLinkModal(false)}>
-              {swapLinkView()}
+              <SwapLinkView
+                swapLinkTruncated={swapLinkTruncated}
+                swapLink={swapLink}
+              />
             </Modal>
           )}
         </div>
