@@ -3,11 +3,10 @@ import { GenerateLink } from "./generate_link/GenerateLink";
 import { SubmitLink } from "./submit_link/SubmitLink";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import Modal from "./Modal";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { connectWallet } from "./MyAlgo";
 import ProgressBar from "./ProgressBar";
-import { CopyToClipboard } from "react-copy-to-clipboard";
-import { MdContentCopy } from "react-icons/md";
+import CopyPasteText from "./CopyPasteText";
 
 /* global __COMMIT_HASH__ */
 
@@ -19,8 +18,6 @@ const App = () => {
   const [showLegalModal, setShowLegalModal] = useState(false);
   const [statusMsg, setStatusMsg] = useState(null);
   const [showProgress, setShowProgress] = useState(false);
-  const [addressIsCopied, setAddressIsCopied] = useState(false);
-  const [errorMsgIsCopied, setErrorMsgIsCopied] = useState(false);
 
   class StatusMsgUpdater {
     success(msg) {
@@ -38,13 +35,6 @@ const App = () => {
     }
   }
   const [statusMsgUpdater, _] = useState(new StatusMsgUpdater());
-
-  const onCopyErrorMsg = () => {
-    setErrorMsgIsCopied(true);
-    setTimeout(() => {
-      setErrorMsgIsCopied(false);
-    }, 1000);
-  };
 
   const connectButtonView = () => {
     if (myAddress === "") {
@@ -83,26 +73,12 @@ const App = () => {
     }
   };
 
-  const onCopyAddress = () => {
-    setAddressIsCopied(true);
-    setTimeout(() => {
-      setAddressIsCopied(false);
-    }, 1000);
-  };
-
   const yourAddressView = () => {
     return (
       myAddress !== "" && (
         <div>
           <div>{"Your address:"}</div>
-          <CopyToClipboard text={myAddress} onCopy={onCopyAddress}>
-            <div className="copyable">
-              {myAddressDisplay}
-              <span class="copy">
-                {addressIsCopied ? "copied!" : <MdContentCopy />}
-              </span>
-            </div>
-          </CopyToClipboard>
+          <CopyPasteText text={myAddressDisplay} copyText={myAddress} />
         </div>
       )
     );
@@ -121,14 +97,7 @@ const App = () => {
       } else if (statusMsg.type === "error") {
         return (
           <div className="error">
-            <CopyToClipboard text={statusMsg.msg} onCopy={onCopyErrorMsg}>
-              <div>
-                {shortMsg}
-                <span className="copy">
-                  {errorMsgIsCopied ? "copied!" : <MdContentCopy />}
-                </span>
-              </div>
-            </CopyToClipboard>
+            <CopyPasteText text={shortMsg} copyText={statusMsg.msg} />
           </div>
         );
       } else {

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { CopyToClipboard } from "react-copy-to-clipboard";
-import { MdContentCopy } from "react-icons/md";
 import Modal from "../Modal";
 import { init, generateSwapTxs } from "./controller";
+import CopyPasteText from "../CopyPasteText";
 
 export const GenerateLink = (props) => {
   const [peerAddress, setPeerAddress] = useState("");
@@ -20,7 +19,6 @@ export const GenerateLink = (props) => {
 
   const [swapLink, setSwapLink] = useState("");
   const [swapLinkTruncated, setSwapLinkTruncated] = useState("");
-  const [swapLinkIsCopied, setSwapLinkIsCopied] = useState(false);
 
   const [showLinkModal, setShowLinkModal] = useState(false);
 
@@ -70,24 +68,12 @@ export const GenerateLink = (props) => {
             }
           </div>
           <div className="submit-msg-warning">{"⚠️ It expires in ~1 hour"}</div>
-          <CopyToClipboard text={swapLink} onCopy={onCopyText}>
-            <div className="swap-link">
-              {swapLinkTruncated}
-              <span class="copy">
-                {swapLinkIsCopied ? "copied!" : <MdContentCopy />}
-              </span>
-            </div>
-          </CopyToClipboard>
+          <div className="swap-link">
+            <CopyPasteText text={swapLinkTruncated} copyText={swapLink} />
+          </div>
         </div>
       )
     );
-  };
-
-  const onCopyText = () => {
-    setSwapLinkIsCopied(true);
-    setTimeout(() => {
-      setSwapLinkIsCopied(false);
-    }, 1000);
   };
 
   return (
