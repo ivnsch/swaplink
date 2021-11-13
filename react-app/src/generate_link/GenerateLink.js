@@ -4,6 +4,7 @@ import { init, generateSwapTxs, updateFeeTotal } from "./controller";
 import AssetInputRow from "./AssetInputRow";
 import FeeInput from "./FeeInput";
 import SwapLinkView from "./SwapLinkView";
+import SelectUnit from "./SelectUnit";
 
 export const GenerateLink = (props) => {
   const [peerAddress, setPeerAddress] = useState("");
@@ -26,6 +27,8 @@ export const GenerateLink = (props) => {
 
   const [showLinkModal, setShowLinkModal] = useState(false);
   const [showFeesModal, setShowFeesModal] = useState(false);
+  const [showSendUnitModal, setShowSendUnitModal] = useState(false);
+  const [showReceiveUnitModal, setShowReceiveUnitModal] = useState(false);
 
   useEffect(() => {
     init(props.statusMsg, setMyFee, setPeerFee, setFeeTotal);
@@ -53,21 +56,20 @@ export const GenerateLink = (props) => {
             <div>{"You send"}</div>
             <AssetInputRow
               assetId={sendAssetId}
-              setAssetId={setSendAssetId}
               amount={sendAmount}
               setAmount={setSendAmount}
               unit={sendUnit}
-              setUnit={setSendUnit}
+              onUnitClick={() => setShowSendUnitModal(true)}
             />
 
             <div>{"You receive"}</div>
+
             <AssetInputRow
               assetId={receiveAssetId}
-              setAssetId={setReceiveAssetId}
               amount={receiveAmount}
               setAmount={setReceiveAmount}
               unit={receiveUnit}
-              setUnit={setReceiveUnit}
+              onUnitClick={() => setShowReceiveUnitModal(true)}
             />
           </div>
 
@@ -133,7 +135,7 @@ export const GenerateLink = (props) => {
             </Modal>
           )}
           {showFeesModal && (
-            <Modal title={"Done!"} onCloseClick={() => setShowFeesModal(false)}>
+            <Modal title={"Fees"} onCloseClick={() => setShowFeesModal(false)}>
               <FeeInput
                 title={"Your fee"}
                 fee={myFee}
@@ -169,6 +171,38 @@ export const GenerateLink = (props) => {
                   <span>{" Algo"}</span>
                 </div>
               )}
+            </Modal>
+          )}
+          {showSendUnitModal && (
+            <Modal
+              title={"Unit"}
+              onCloseClick={() => setShowSendUnitModal(false)}
+            >
+              <SelectUnit
+                statusMsg={props.statusMsg}
+                assetId={sendAssetId}
+                setAssetId={setSendAssetId}
+                onUnitSelected={(unit) => {
+                  setSendUnit(unit);
+                  setShowSendUnitModal(false);
+                }}
+              />
+            </Modal>
+          )}
+          {showReceiveUnitModal && (
+            <Modal
+              title={"Unit"}
+              onCloseClick={() => setShowReceiveUnitModal(false)}
+            >
+              <SelectUnit
+                statusMsg={props.statusMsg}
+                assetId={receiveAssetId}
+                setAssetId={setReceiveAssetId}
+                onUnitSelected={(unit) => {
+                  setReceiveUnit(unit);
+                  setShowReceiveUnitModal(false);
+                }}
+              />
             </Modal>
           )}
         </div>

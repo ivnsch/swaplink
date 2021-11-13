@@ -1,34 +1,27 @@
-const AssetInputRow = ({
-  assetId,
-  setAssetId,
-  amount,
-  setAmount,
-  unit,
-  setUnit,
-}) => {
+const AssetInputRow = ({ assetId, amount, setAmount, unit, onUnitClick }) => {
   return (
     <div className="input-row">
-      {assetIdView(unit, assetId, setAssetId)}
       {assetAmountView(amount, setAmount)}
-      {assetUnitView(unit, setUnit)}
+      <button onClick={() => onUnitClick()}>
+        {<div>{unitLabel(unit, assetId)}</div>}
+      </button>
     </div>
   );
 };
 
-const assetIdView = (unit, assetId, setAssetId) => {
-  return (
-    unit === "asset" && (
-      <input
-        placeholder="Asset id"
-        className="inline"
-        size="16"
-        value={assetId}
-        onChange={(event) => {
-          setAssetId(event.target.value);
-        }}
-      />
-    )
-  );
+const unitLabel = (unit, assetId) => {
+  if (unit === "algo") {
+    return "algo";
+  } else if (unit === "asset") {
+    // TODO review
+    if (!assetId) {
+      return "Select asset";
+    } else {
+      return assetId + " (id)";
+    }
+  } else {
+    throw Error("Illegal state: no unit");
+  }
 };
 
 const assetAmountView = (amount, setAmount) => {
@@ -42,15 +35,6 @@ const assetAmountView = (amount, setAmount) => {
         setAmount(event.target.value);
       }}
     />
-  );
-};
-
-const assetUnitView = (unit, setUnit) => {
-  return (
-    <select value={unit} onChange={(event) => setUnit(event.target.value)}>
-      <option value="algo">Algo</option>
-      <option value="asset">Asset</option>
-    </select>
   );
 };
 
