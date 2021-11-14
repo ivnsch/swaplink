@@ -62,6 +62,7 @@ export const GenerateLink = (props) => {
               amount={sendAmount}
               setAmount={setSendAmount}
               unit={sendUnit}
+              myBalance={props.myBalance}
               assetBalance={sendAssetBalance}
               unitLabel={sendAssetUnitLabel}
               onUnitClick={() => setShowSendUnitModal(true)}
@@ -86,6 +87,7 @@ export const GenerateLink = (props) => {
               amount={receiveAmount}
               setAmount={setReceiveAmount}
               unit={receiveUnit}
+              myBalance={props.myBalance}
               assetBalance={receiveAssetBalance}
               unitLabel={receiveAssetUnitLabel}
               onUnitClick={() => setShowReceiveUnitModal(true)}

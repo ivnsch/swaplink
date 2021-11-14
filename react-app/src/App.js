@@ -147,6 +147,7 @@ const App = () => {
                   myAddress={myAddress}
                   statusMsg={statusMsgUpdater}
                   showProgress={(show) => setShowProgress(show)}
+                  myBalance={myBalance}
                 />
               </Route>
 
