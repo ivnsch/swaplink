@@ -1,3 +1,5 @@
+// TODO refactor: shouldn't have if else everywhere for algo/asset
+
 const AssetInputRow = ({
   amount,
   setAmount,
@@ -14,7 +16,20 @@ const AssetInputRow = ({
       <button onClick={() => onUnitClick()}>
         {<div>{unitLabel === "" ? "Select asset" : unitLabel}</div>}
       </button>
-      {balanceText && <div>{balanceText}</div>}
+      {balanceText && (
+        <div>
+          <span>{balanceText}</span>
+          {generateMaxView(unit, myBalance, assetBalance, () => {
+            if (unit === "algo") {
+              setAmount(myBalance);
+            } else if (unit === "asset") {
+              setAmount(assetBalance);
+            } else {
+              throw Error("Invalid unit: " + unit);
+            }
+          })}
+        </div>
+      )}
     </div>
   );
 };
@@ -35,6 +50,23 @@ const generateBalanceText = (unit, myBalance, assetBalance) => {
   } else {
     throw Error("Invalid unit: " + unit);
   }
+};
+
+const generateMaxView = (unit, myBalance, assetBalance, onClick) => {
+  if (unit === "algo") {
+    return generateMaxViewForBalance(myBalance, onClick);
+  } else if (unit === "asset") {
+    return generateMaxViewForBalance(assetBalance, onClick);
+  } else {
+    throw Error("Invalid unit: " + unit);
+  }
+};
+
+const generateMaxViewForBalance = (balance, onClick) => {
+  return (
+    balance !== "" &&
+    balance !== "0" && <button onClick={onClick}>{"max"}</button>
+  );
 };
 
 const assetAmountView = (amount, setAmount) => {

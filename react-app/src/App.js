@@ -90,7 +90,11 @@ const App = () => {
         <div>
           <div>{"Your address:"}</div>
           <CopyPasteText text={myAddressDisplay} copyText={myAddress} />
-          <div id="my-balance">{myBalance}</div>
+          {myBalance && (
+            <div id="my-balance">
+              {myBalance} {"algo"}
+            </div>
+          )}
         </div>
       )
     );

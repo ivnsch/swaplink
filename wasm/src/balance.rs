@@ -20,7 +20,7 @@ pub async fn balance(pars: BalanceParJs) -> Result<BalanceResJs> {
         .await?
         .amount;
     Ok(BalanceResJs {
-        balance: format!("{} Algo", micro_algos_to_algos_str(balance)),
+        balance: micro_algos_to_algos_str(balance),
     })
 }
 
