@@ -13,7 +13,7 @@ export const GenerateLink = (props) => {
   const [sendAmount, setSendAmount] = useState("");
   const [sendAssetId, setSendAssetId] = useState("");
   const [sendAssetBalance, setSendAssetBalance] = useState("");
-  const [sendAssetUnitLabel, setsendAssetUnitLabel] = useState("algo");
+  const [sendAssetUnitLabel, setSendAssetUnitLabel] = useState("algo");
 
   const [receiveUnit, setReceiveUnit] = useState("asset");
   const [receiveAmount, setReceiveAmount] = useState("");
@@ -73,10 +73,14 @@ export const GenerateLink = (props) => {
                 setSendUnit(receiveUnit);
                 setSendAssetId(receiveAssetId);
                 setSendAmount(receiveAmount);
+                setSendAssetBalance(receiveAssetBalance);
+                setSendAssetUnitLabel(receiveAssetUnitLabel);
 
                 setReceiveUnit(sendUnit);
                 setReceiveAssetId(sendAssetId);
                 setReceiveAmount(sendAmount);
+                setReceiveAssetBalance(sendAssetBalance);
+                setReceiveAssetUnitLabel(sendAssetUnitLabel);
               }}
             >
               {"Invert"}
@@ -205,7 +209,7 @@ export const GenerateLink = (props) => {
                 assetId={sendAssetId}
                 setAssetId={setSendAssetId}
                 setAssetBalance={setSendAssetBalance}
-                setAssetUnitLabel={setsendAssetUnitLabel}
+                setAssetUnitLabel={setSendAssetUnitLabel}
                 onUnitSelected={(unit) => {
                   setSendUnit(unit);
                   setShowSendUnitModal(false);
