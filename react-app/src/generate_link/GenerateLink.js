@@ -4,7 +4,7 @@ import { init, generateSwapTxs, updateFeeTotal } from "./controller";
 import AssetInputRow from "./AssetInputRow";
 import FeeInput from "./FeeInput";
 import SwapLinkView from "./SwapLinkView";
-import SelectUnit from "./SelectUnit";
+import SelectUnit from "./select_unit/SelectUnit";
 
 export const GenerateLink = (props) => {
   const [peerAddress, setPeerAddress] = useState("");
@@ -12,10 +12,14 @@ export const GenerateLink = (props) => {
   const [sendUnit, setSendUnit] = useState("algo");
   const [sendAmount, setSendAmount] = useState("");
   const [sendAssetId, setSendAssetId] = useState("");
+  const [sendAssetBalance, setSendAssetBalance] = useState("");
+  const [sendAssetUnitLabel, setsendAssetUnitLabel] = useState("algo");
 
   const [receiveUnit, setReceiveUnit] = useState("asset");
   const [receiveAmount, setReceiveAmount] = useState("");
   const [receiveAssetId, setReceiveAssetId] = useState("");
+  const [receiveAssetBalance, setReceiveAssetBalance] = useState("");
+  const [receiveAssetUnitLabel, setReceiveAssetUnitLabel] = useState("");
 
   const [myFee, setMyFee] = useState("");
   const [peerFee, setPeerFee] = useState("");
@@ -55,10 +59,11 @@ export const GenerateLink = (props) => {
           <div id="swap-container">
             <div>{"You send"}</div>
             <AssetInputRow
-              assetId={sendAssetId}
               amount={sendAmount}
               setAmount={setSendAmount}
               unit={sendUnit}
+              assetBalance={sendAssetBalance}
+              unitLabel={sendAssetUnitLabel}
               onUnitClick={() => setShowSendUnitModal(true)}
             />
 
@@ -78,10 +83,11 @@ export const GenerateLink = (props) => {
 
             <div>{"You receive"}</div>
             <AssetInputRow
-              assetId={receiveAssetId}
               amount={receiveAmount}
               setAmount={setReceiveAmount}
               unit={receiveUnit}
+              assetBalance={receiveAssetBalance}
+              unitLabel={receiveAssetUnitLabel}
               onUnitClick={() => setShowReceiveUnitModal(true)}
             />
           </div>
@@ -193,8 +199,11 @@ export const GenerateLink = (props) => {
             >
               <SelectUnit
                 statusMsg={props.statusMsg}
+                address={props.myAddress}
                 assetId={sendAssetId}
                 setAssetId={setSendAssetId}
+                setAssetBalance={setSendAssetBalance}
+                setAssetUnitLabel={setsendAssetUnitLabel}
                 onUnitSelected={(unit) => {
                   setSendUnit(unit);
                   setShowSendUnitModal(false);
@@ -209,8 +218,11 @@ export const GenerateLink = (props) => {
             >
               <SelectUnit
                 statusMsg={props.statusMsg}
+                address={props.myAddress}
                 assetId={receiveAssetId}
                 setAssetId={setReceiveAssetId}
+                setAssetBalance={setReceiveAssetBalance}
+                setAssetUnitLabel={setReceiveAssetUnitLabel}
                 onUnitSelected={(unit) => {
                   setReceiveUnit(unit);
                   setShowReceiveUnitModal(false);

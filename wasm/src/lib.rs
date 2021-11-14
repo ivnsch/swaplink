@@ -1,3 +1,4 @@
+pub mod asset_infos;
 pub mod balance;
 pub mod bridge;
 pub mod conversions;

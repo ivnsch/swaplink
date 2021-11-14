@@ -1,4 +1,6 @@
 #[cfg(test)]
+use crate::conversions::to_base_units;
+#[cfg(test)]
 use crate::generate_swap::{logic::GenerateSwapLogic, model::SwapRole};
 #[cfg(test)]
 use rust_decimal::prelude::ToPrimitive;
@@ -291,4 +293,11 @@ fn validate_more_than_max_fractional_long_number_fails() {
         SwapRole::Sender,
     );
     assert!(res.is_err());
+}
+
+#[test]
+fn from_0() {
+    let decimal: Decimal = 0.into();
+    assert_eq!(Decimal::from_str("0").unwrap(), decimal);
+    assert_eq!(0, decimal.to_u64().unwrap());
 }
