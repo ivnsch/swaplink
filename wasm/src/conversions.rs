@@ -1,7 +1,4 @@
-use algonaut::{
-    core::MicroAlgos,
-    model::algod::v2::{AssetHolding, AssetParams},
-};
+use algonaut::{core::MicroAlgos, model::algod::v2::AssetHolding};
 use anyhow::{anyhow, Result};
 use rust_decimal::{prelude::ToPrimitive, Decimal};
 use std::convert::TryFrom;
@@ -49,13 +46,14 @@ pub fn to_base_units(decimal: Decimal, base_10_exp: u32) -> Result<u64> {
 }
 
 pub trait AssetHoldingExt {
-    fn amount_decimal(&self, params: &AssetParams) -> Result<Decimal>;
+    // decimals is assumed to come from AssetParams (typed as u64)
+    fn amount_decimal(&self, decimals: u64) -> Result<Decimal>;
 }
 
 impl AssetHoldingExt for AssetHolding {
-    fn amount_decimal(&self, params: &AssetParams) -> Result<Decimal> {
+    fn amount_decimal(&self, decimals: u64) -> Result<Decimal> {
         // This cast should always succeed, as decimals max 19 (currently) and should never be > u32::MAX. Safe conversion anyway.
-        let decimals_u32 = u32::try_from(params.decimals)?;
+        let decimals_u32 = u32::try_from(decimals)?;
         to_decimal(self.amount, decimals_u32)
     }
 }

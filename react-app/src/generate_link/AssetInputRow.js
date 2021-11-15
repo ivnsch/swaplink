@@ -1,32 +1,20 @@
-// TODO refactor: shouldn't have if else everywhere for algo/asset
-
-const AssetInputRow = ({
-  amount,
-  setAmount,
-  unit,
-  myBalance,
-  assetBalance,
-  unitLabel,
-  onUnitClick,
-}) => {
-  let balanceText = generateBalanceText(unit, myBalance, assetBalance);
+const AssetInputRow = ({ token, setToken, onUnitClick }) => {
   return (
     <div className="input-row">
-      {assetAmountView(amount, setAmount)}
+      {assetAmountView(token, setToken)}
       <button onClick={() => onUnitClick()}>
-        {<div>{unitLabel === "" ? "Select asset" : unitLabel}</div>}
+        {<div>{token?.unit?.label ?? "Select asset"}</div>}
       </button>
-      {balanceText && (
+      {token && (
         <div>
-          <span>{balanceText}</span>
-          {generateMaxView(unit, myBalance, assetBalance, () => {
-            if (unit === "algo") {
-              setAmount(myBalance);
-            } else if (unit === "asset") {
-              setAmount(assetBalance);
-            } else {
-              throw Error("Invalid unit: " + unit);
-            }
+          <span>{"Balance: " + token.balance}</span>
+          {generateMaxView(token, () => {
+            setToken((t) => {
+              return {
+                ...t,
+                amount: t.balance,
+              };
+            });
           })}
         </div>
       )}
@@ -34,50 +22,25 @@ const AssetInputRow = ({
   );
 };
 
-const generateBalanceText = (unit, myBalance, assetBalance) => {
-  if (unit === "algo") {
-    if (myBalance === "") {
-      return "";
-    } else {
-      return "Balance: " + myBalance;
-    }
-  } else if (unit === "asset") {
-    if (assetBalance === "") {
-      return "";
-    } else {
-      return "Balance: " + assetBalance;
-    }
-  } else {
-    throw Error("Invalid unit: " + unit);
-  }
-};
-
-const generateMaxView = (unit, myBalance, assetBalance, onClick) => {
-  if (unit === "algo") {
-    return generateMaxViewForBalance(myBalance, onClick);
-  } else if (unit === "asset") {
-    return generateMaxViewForBalance(assetBalance, onClick);
-  } else {
-    throw Error("Invalid unit: " + unit);
-  }
-};
-
-const generateMaxViewForBalance = (balance, onClick) => {
+const generateMaxView = (token, onClick) => {
   return (
-    balance !== "" &&
-    balance !== "0" && <button onClick={onClick}>{"max"}</button>
+    token.balance !== "" &&
+    token.balance !== "0" && <button onClick={onClick}>{"max"}</button>
   );
 };
 
-const assetAmountView = (amount, setAmount) => {
+const assetAmountView = (token, setToken) => {
   return (
     <input
       placeholder={"Amount"}
       className="inline"
       size="16"
-      value={amount}
+      value={token?.amount}
       onChange={(event) => {
-        setAmount(event.target.value);
+        setToken({
+          ...token,
+          amount: event.target.value,
+        });
       }}
     />
   );

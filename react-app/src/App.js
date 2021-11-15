@@ -21,7 +21,6 @@ const App = () => {
   const [showLegalModal, setShowLegalModal] = useState(false);
   const [statusMsg, setStatusMsg] = useState(null);
   const [showProgress, setShowProgress] = useState(false);
-  const [apiKey, setApiKey] = useState("");
 
   class StatusMsgUpdater {
     success(msg) {

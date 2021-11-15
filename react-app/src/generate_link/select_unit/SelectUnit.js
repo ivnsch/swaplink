@@ -1,20 +1,18 @@
-import { onAlgoClick, onAssetSubmit } from "./controller";
+import { fetchAssetData } from "./controller";
 import React, { useState } from "react";
+import { assetUnit, algoUnit } from "../TokenFunctions";
 
 const SelectUnit = ({
   statusMsg,
-  address,
-  assetId: parentAssetId,
-  setAssetId: setParentAssetId,
-  setAssetBalance,
-  setAssetUnitLabel,
-  onUnitSelected,
+  initialAssetId,
+  showProgress,
+  onSelectUnit,
 }) => {
-  const [assetId, setAssetId] = useState(parentAssetId);
+  const [assetId, setAssetId] = useState(initialAssetId);
 
   return (
     <div>
-      <button onClick={() => onAlgoClick(onUnitSelected, setAssetUnitLabel)}>
+      <button onClick={() => onSelectUnit({ name: algoUnit, label: "algo" })}>
         {"Algos"}
       </button>
       <div>
@@ -30,15 +28,18 @@ const SelectUnit = ({
         />
         <button
           onClick={async () => {
-            onAssetSubmit(
+            const assetData = await fetchAssetData(
               statusMsg,
-              address,
               assetId,
-              setParentAssetId,
-              setAssetBalance,
-              onUnitSelected,
-              setAssetUnitLabel
+              showProgress
             );
+            if (assetData) {
+              onSelectUnit({
+                name: assetUnit,
+                label: assetData.unitLabel,
+                assetData: assetData,
+              });
+            }
           }}
         >
           {"Ok"}

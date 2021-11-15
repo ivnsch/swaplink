@@ -1,25 +1,22 @@
 import React, { useState, useEffect } from "react";
 import Modal from "../Modal";
-import { init, generateSwapTxs, updateFeeTotal } from "./controller";
+import {
+  init,
+  generateSwapTxs,
+  updateFeeTotal,
+  updateTokenWithUserSelectedUnit,
+} from "./controller";
 import AssetInputRow from "./AssetInputRow";
 import FeeInput from "./FeeInput";
 import SwapLinkView from "./SwapLinkView";
 import SelectUnit from "./select_unit/SelectUnit";
+import { emptyAlgo } from "./TokenFunctions";
 
 export const GenerateLink = (props) => {
   const [peerAddress, setPeerAddress] = useState("");
 
-  const [sendUnit, setSendUnit] = useState("algo");
-  const [sendAmount, setSendAmount] = useState("");
-  const [sendAssetId, setSendAssetId] = useState("");
-  const [sendAssetBalance, setSendAssetBalance] = useState("");
-  const [sendAssetUnitLabel, setSendAssetUnitLabel] = useState("algo");
-
-  const [receiveUnit, setReceiveUnit] = useState("asset");
-  const [receiveAmount, setReceiveAmount] = useState("");
-  const [receiveAssetId, setReceiveAssetId] = useState("");
-  const [receiveAssetBalance, setReceiveAssetBalance] = useState("");
-  const [receiveAssetUnitLabel, setReceiveAssetUnitLabel] = useState("");
+  const [sendToken, setSendToken] = useState(emptyAlgo());
+  const [receiveToken, setReceiveToken] = useState(null);
 
   const [myFee, setMyFee] = useState("");
   const [peerFee, setPeerFee] = useState("");
@@ -37,6 +34,17 @@ export const GenerateLink = (props) => {
   useEffect(() => {
     init(props.statusMsg, setMyFee, setPeerFee, setFeeTotal);
   }, []);
+
+  const updateTokenWithSelectedUnit = async (setToken, unit) => {
+    updateTokenWithUserSelectedUnit(
+      props.statusMsg,
+      props.showProgress,
+      props.myAddress,
+      props.myBalance,
+      setToken,
+      unit
+    );
+  };
 
   return (
     <div>
@@ -59,28 +67,15 @@ export const GenerateLink = (props) => {
           <div id="swap-container">
             <div>{"You send"}</div>
             <AssetInputRow
-              amount={sendAmount}
-              setAmount={setSendAmount}
-              unit={sendUnit}
-              myBalance={props.myBalance}
-              assetBalance={sendAssetBalance}
-              unitLabel={sendAssetUnitLabel}
+              token={sendToken}
+              setToken={setSendToken}
               onUnitClick={() => setShowSendUnitModal(true)}
             />
 
             <button
               onClick={() => {
-                setSendUnit(receiveUnit);
-                setSendAssetId(receiveAssetId);
-                setSendAmount(receiveAmount);
-                setSendAssetBalance(receiveAssetBalance);
-                setSendAssetUnitLabel(receiveAssetUnitLabel);
-
-                setReceiveUnit(sendUnit);
-                setReceiveAssetId(sendAssetId);
-                setReceiveAmount(sendAmount);
-                setReceiveAssetBalance(sendAssetBalance);
-                setReceiveAssetUnitLabel(sendAssetUnitLabel);
+                setSendToken(receiveToken);
+                setReceiveToken(sendToken);
               }}
             >
               {"Invert"}
@@ -88,13 +83,11 @@ export const GenerateLink = (props) => {
 
             <div>{"You receive"}</div>
             <AssetInputRow
-              amount={receiveAmount}
-              setAmount={setReceiveAmount}
-              unit={receiveUnit}
-              myBalance={props.myBalance}
-              assetBalance={receiveAssetBalance}
-              unitLabel={receiveAssetUnitLabel}
-              onUnitClick={() => setShowReceiveUnitModal(true)}
+              token={receiveToken}
+              setToken={setReceiveToken}
+              onUnitClick={() => {
+                setShowReceiveUnitModal(true);
+              }}
             />
           </div>
 
@@ -116,30 +109,19 @@ export const GenerateLink = (props) => {
             disabled={
               props.myAddress === "" ||
               peerAddress === "" ||
-              sendAmount === "" ||
-              receiveAmount === ""
+              !sendToken ||
+              !receiveToken
                 ? true
                 : false
             }
             onClick={async () => {
-              let swapPars = {
-                my_address: props.myAddress,
-                peer_address: peerAddress,
-
-                send_amount: sendAmount,
-                send_asset_id: sendAssetId,
-                send_unit: sendUnit,
-
-                receive_amount: receiveAmount,
-                receive_asset_id: receiveAssetId,
-                receive_unit: receiveUnit,
-
-                my_fee: myFee,
-                peer_fee: peerFee,
-              };
-
               await generateSwapTxs(
-                swapPars,
+                sendToken,
+                receiveToken,
+                props.myAddress,
+                peerAddress,
+                myFee,
+                peerFee,
                 props.statusMsg,
                 props.showProgress,
                 setSwapLink,
@@ -198,46 +180,49 @@ export const GenerateLink = (props) => {
               )}
             </Modal>
           )}
-          {showSendUnitModal && (
-            <Modal
-              title={"Unit"}
-              onCloseClick={() => setShowSendUnitModal(false)}
-            >
-              <SelectUnit
-                statusMsg={props.statusMsg}
-                address={props.myAddress}
-                assetId={sendAssetId}
-                setAssetId={setSendAssetId}
-                setAssetBalance={setSendAssetBalance}
-                setAssetUnitLabel={setSendAssetUnitLabel}
-                onUnitSelected={(unit) => {
-                  setSendUnit(unit);
-                  setShowSendUnitModal(false);
-                }}
-              />
-            </Modal>
-          )}
-          {showReceiveUnitModal && (
-            <Modal
-              title={"Unit"}
-              onCloseClick={() => setShowReceiveUnitModal(false)}
-            >
-              <SelectUnit
-                statusMsg={props.statusMsg}
-                address={props.myAddress}
-                assetId={receiveAssetId}
-                setAssetId={setReceiveAssetId}
-                setAssetBalance={setReceiveAssetBalance}
-                setAssetUnitLabel={setReceiveAssetUnitLabel}
-                onUnitSelected={(unit) => {
-                  setReceiveUnit(unit);
-                  setShowReceiveUnitModal(false);
-                }}
-              />
-            </Modal>
-          )}
+          {showSendUnitModal &&
+            createSelectUnitModal(
+              props.statusMsg,
+              props.showProgress,
+              sendToken?.assetId,
+              setSendToken,
+              updateTokenWithSelectedUnit,
+              setShowSendUnitModal
+            )}
+          {showReceiveUnitModal &&
+            createSelectUnitModal(
+              props.statusMsg,
+              props.showProgress,
+              receiveToken?.assetId,
+              setReceiveToken,
+              updateTokenWithSelectedUnit,
+              setShowReceiveUnitModal
+            )}
         </div>
       </div>
     </div>
+  );
+};
+
+const createSelectUnitModal = (
+  statusMsg,
+  showProgress,
+  assetId,
+  setToken,
+  updateTokenWithSelectedUnit,
+  setShowUnitModal
+) => {
+  return (
+    <Modal title={"Unit"} onCloseClick={() => setShowUnitModal(false)}>
+      <SelectUnit
+        statusMsg={statusMsg}
+        initialAssetId={assetId}
+        showProgress={showProgress}
+        onSelectUnit={async (unit) => {
+          setShowUnitModal(false);
+          await updateTokenWithSelectedUnit(setToken, unit);
+        }}
+      />
+    </Modal>
   );
 };
