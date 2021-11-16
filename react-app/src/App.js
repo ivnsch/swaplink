@@ -7,6 +7,8 @@ import React, { useState } from "react";
 import { connectWallet } from "./MyAlgo";
 import ProgressBar from "./ProgressBar";
 import CopyPasteText from "./CopyPasteText";
+import StatusMsgUpdater from "./StatusMsgUpdater";
+import StatusMsgView from "./StatusMsgView";
 
 /* global __COMMIT_HASH__ */
 
@@ -22,22 +24,7 @@ const App = () => {
   const [statusMsg, setStatusMsg] = useState(null);
   const [showProgress, setShowProgress] = useState(false);
 
-  class StatusMsgUpdater {
-    success(msg) {
-      msg = msg + "";
-      console.log(msg);
-      setStatusMsg({ msg: msg, type: "success" });
-    }
-    error(msg) {
-      msg = msg + "";
-      console.error(msg);
-      setStatusMsg({ msg: msg, type: "error" });
-    }
-    clear() {
-      setStatusMsg(null);
-    }
-  }
-  const [statusMsgUpdater, _] = useState(new StatusMsgUpdater());
+  const [statusMsgUpdater, _] = useState(new StatusMsgUpdater(setStatusMsg));
 
   const connectButtonView = () => {
     if (myAddress === "") {
@@ -99,30 +86,6 @@ const App = () => {
     );
   };
 
-  const statusMsgView = () => {
-    if (statusMsg) {
-      let shortMsg = statusMsg.msg;
-      let maxMsgLength = 200;
-      if (shortMsg.length > maxMsgLength) {
-        shortMsg = shortMsg.substring(0, maxMsgLength) + "...";
-      }
-
-      if (statusMsg.type === "success") {
-        return <div className="success">{statusMsg.msg}</div>;
-      } else if (statusMsg.type === "error") {
-        return (
-          <div className="error">
-            <CopyPasteText text={shortMsg} copyText={statusMsg.msg} />
-          </div>
-        );
-      } else {
-        throw Error("Invalid status msg type: " + statusMsg.type);
-      }
-    } else {
-      return null;
-    }
-  };
-
   if (isIE) {
     return (
       <div style={{ marginLeft: 20, marginRight: 20, marginTop: 20 }}>
@@ -142,8 +105,7 @@ const App = () => {
           <div>{connectButtonView()}</div>
           {yourAddressView()}
           <div id="wrapper">
-            {statusMsgView()}
-
+            {statusMsg && <StatusMsgView statusMsg={statusMsg} />}
             <Router>
               <Route exact path="/">
                 <GenerateLink

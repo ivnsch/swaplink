@@ -3,14 +3,13 @@ import Modal from "../Modal";
 import {
   init,
   generateSwapTxs,
-  updateFeeTotal,
   updateTokenWithUserSelectedUnit,
 } from "./controller";
 import AssetInputRow from "./AssetInputRow";
-import FeeInput from "./FeeInput";
 import SwapLinkView from "./SwapLinkView";
 import SelectUnit from "./select_unit/SelectUnit";
 import { emptyAlgo } from "./TokenFunctions";
+import { FeesModal } from "./FeesModal";
 
 export const GenerateLink = (props) => {
   const [peerAddress, setPeerAddress] = useState("");
@@ -142,43 +141,17 @@ export const GenerateLink = (props) => {
             </Modal>
           )}
           {showFeesModal && (
-            <Modal title={"Fees"} onCloseClick={() => setShowFeesModal(false)}>
-              <FeeInput
-                title={"Your fee"}
-                fee={myFee}
-                setFee={setMyFee}
-                onChange={(input) => {
-                  updateFeeTotal(
-                    props.statusMsg,
-                    input,
-                    peerFee,
-                    setFeeTotal,
-                    setHideFeeTotal
-                  );
-                }}
-              />
-              <FeeInput
-                title={"Peer's fee"}
-                fee={peerFee}
-                setFee={setPeerFee}
-                onChange={(input) =>
-                  updateFeeTotal(
-                    props.statusMsg,
-                    myFee,
-                    input,
-                    setFeeTotal,
-                    setHideFeeTotal
-                  )
-                }
-              />
-              {!hideFeeTotal && (
-                <div>
-                  <span style={{ marginRight: 5 }}>{"Total:"}</span>
-                  <span>{feeTotal}</span>
-                  <span>{" Algo"}</span>
-                </div>
-              )}
-            </Modal>
+            <FeesModal
+              myFee={myFee}
+              setMyFee={setMyFee}
+              peerFee={peerFee}
+              setPeerFee={setPeerFee}
+              feeTotal={feeTotal}
+              setFeeTotal={setFeeTotal}
+              hideFeeTotal={hideFeeTotal}
+              setHideFeeTotal={setHideFeeTotal}
+              setShowFeesModal={setShowFeesModal}
+            />
           )}
           {showSendUnitModal &&
             createSelectUnitModal(

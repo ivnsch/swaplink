@@ -1,7 +1,8 @@
 import * as ReactDOM from "react-dom";
 import React from "react";
+import StatusMsgView from "./StatusMsgView";
 
-const Modal = ({ title, children, onCloseClick }) => {
+const Modal = ({ title, children, statusMsg, onCloseClick }) => {
   const onModalClick = (event) => {
     if (event.target === document.querySelector(".modal")) {
       onCloseClick();
@@ -18,6 +19,7 @@ const Modal = ({ title, children, onCloseClick }) => {
           </p>
         </div>
         <div className="modal-body">
+          {statusMsg && <StatusMsgView statusMsg={statusMsg} />}
           <div style={{ clear: "left" }} />
           {children}
         </div>

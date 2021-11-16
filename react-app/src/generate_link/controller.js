@@ -150,8 +150,6 @@ const getBalanceForToken = async (
 };
 
 const updateTokenWithUnitAndBalance = (token, newUnit, newBalance) => {
-  console.log("??? " + JSON.stringify(token));
-
   var tokenToUpdate = token;
   // if token not set yet (can happen at the beginning, when one of the inupts is unselected - normally meant for an asset)
   // initialize to an empty token
