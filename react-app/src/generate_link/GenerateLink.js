@@ -7,9 +7,9 @@ import {
 } from "./controller";
 import AssetInputRow from "./AssetInputRow";
 import SwapLinkView from "./SwapLinkView";
-import SelectUnit from "./select_unit/SelectUnit";
 import { emptyAlgo } from "./TokenFunctions";
 import { FeesModal } from "./FeesModal";
+import { SelectUnitModal } from "./SelectUnitModal";
 
 export const GenerateLink = (props) => {
   const [peerAddress, setPeerAddress] = useState("");
@@ -153,49 +153,27 @@ export const GenerateLink = (props) => {
               setShowFeesModal={setShowFeesModal}
             />
           )}
-          {showSendUnitModal &&
-            createSelectUnitModal(
-              props.statusMsg,
-              props.showProgress,
-              sendToken?.assetId,
-              setSendToken,
-              updateTokenWithSelectedUnit,
-              setShowSendUnitModal
-            )}
-          {showReceiveUnitModal &&
-            createSelectUnitModal(
-              props.statusMsg,
-              props.showProgress,
-              receiveToken?.assetId,
-              setReceiveToken,
-              updateTokenWithSelectedUnit,
-              setShowReceiveUnitModal
-            )}
+          {showSendUnitModal && (
+            <SelectUnitModal
+              showProgress={props.showProgress}
+              token={sendToken}
+              setToken={setSendToken}
+              updateTokenWithSelectedUnit={updateTokenWithSelectedUnit}
+              setShowModal={setShowSendUnitModal}
+            />
+          )}
+
+          {showReceiveUnitModal && (
+            <SelectUnitModal
+              showProgress={props.showProgress}
+              token={receiveToken}
+              setToken={setReceiveToken}
+              updateTokenWithSelectedUnit={updateTokenWithSelectedUnit}
+              setShowModal={setShowReceiveUnitModal}
+            />
+          )}
         </div>
       </div>
     </div>
-  );
-};
-
-const createSelectUnitModal = (
-  statusMsg,
-  showProgress,
-  assetId,
-  setToken,
-  updateTokenWithSelectedUnit,
-  setShowUnitModal
-) => {
-  return (
-    <Modal title={"Unit"} onCloseClick={() => setShowUnitModal(false)}>
-      <SelectUnit
-        statusMsg={statusMsg}
-        initialAssetId={assetId}
-        showProgress={showProgress}
-        onSelectUnit={async (unit) => {
-          setShowUnitModal(false);
-          await updateTokenWithSelectedUnit(setToken, unit);
-        }}
-      />
-    </Modal>
   );
 };
