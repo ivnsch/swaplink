@@ -8,7 +8,11 @@ use algonaut::{
 use anyhow::{anyhow, Result};
 use rust_decimal::Decimal;
 
-use crate::{conversions::{to_base_units, validate_algos}, dependencies::base_url, model::{SwapRequest, UnsignedSwapTransactions}};
+use crate::{
+    conversions::{to_base_units, validate_algos},
+    dependencies::base_url,
+    model::{SwapRequest, UnsignedSwapTransactions},
+};
 
 use super::{
     bridge::generate_swap_txs::GenerateSwapTxsParJs,
