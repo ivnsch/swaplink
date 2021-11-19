@@ -1,5 +1,3 @@
-import { sign } from "../MyAlgo";
-
 const wasmPromise = import("wasm");
 
 export const init = async (
@@ -52,16 +50,21 @@ export const fetchSwapData = async (
   }
 };
 
-export const submitTxs = async (swapRequest, statusMsg, showProgress) => {
+export const submitTxs = async (
+  swapRequest,
+  statusMsg,
+  showProgress,
+  wallet
+) => {
   try {
     const { bridge_submit_txs } = await wasmPromise;
     statusMsg.clear();
 
-    let signed = await sign(swapRequest.unsigned_my_tx_my_algo_format);
+    const signedTx = await wallet.sign(swapRequest.to_sign_wc);
 
     showProgress(true);
     const txId = await bridge_submit_txs({
-      signed_my_tx_msg_pack: signed,
+      signed_my_tx_msg_pack: signedTx,
       pt: swapRequest.pt, // passthrough
     });
     statusMsg.success("Swap submitted! Tx id: " + txId);

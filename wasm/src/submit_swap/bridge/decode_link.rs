@@ -1,12 +1,15 @@
 use crate::{
     bridge::{parse_bridge_pars, to_bridge_res},
     dependencies::{self, network},
+    generate_swap::bridge::to_sign_wc_js::ToSignWalletConnectJs,
     submit_swap::{
         logic::SubmitSwapLogic,
         model::{SubmitSwapViewData, SubmitTransferViewData},
     },
+    wallet_connect_tx::WalletConnectTx,
 };
 use anyhow::Result;
+use my_algo::to_my_algo_transaction::to_my_algo_transaction_value;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::{fmt::Debug, rc::Rc};
@@ -29,8 +32,15 @@ pub async fn decode_link(pars: DecodeLinkParJs) -> Result<DecodedLinkResJs> {
     let view_data = logic.to_view_data(&request).await?;
 
     Ok(DecodedLinkResJs {
-        unsigned_my_tx_my_algo_format:
-            my_algo::to_my_algo_transaction::to_my_algo_transaction_value(&request.unsigned_tx)?,
+        to_sign_my_algo: ToSignMyAlgoJs {
+            my_tx: to_my_algo_transaction_value(&request.unsigned_tx)?,
+        },
+        to_sign_wc: ToSignWalletConnectJs::new(
+            WalletConnectTx::new(&request.signed_tx.transaction, "I receive", false)?,
+            WalletConnectTx::new(&request.unsigned_tx, "I send", true)?,
+            1,
+        ),
+
         view_data: view_data.into(),
         pt: SignedTxnsPassthroughParJs {
             signed_peer_tx_msg_pack: rmp_serde::to_vec_named(&request.signed_tx)?,
@@ -50,9 +60,17 @@ pub struct DecodeLinkParJs {
 /// Decoded link data: tx to be signed + passthrough peer tx + data to be displayed
 #[derive(Debug, Clone, Serialize)]
 pub struct DecodedLinkResJs {
-    pub unsigned_my_tx_my_algo_format: Value,
+    pub to_sign_my_algo: ToSignMyAlgoJs,
+    pub to_sign_wc: ToSignWalletConnectJs,
+
     pub view_data: SubmitSwapViewDataForJs,
+
     pub pt: SignedTxnsPassthroughParJs,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct ToSignMyAlgoJs {
+    pub my_tx: Value,
 }
 
 #[derive(Debug, Clone, Serialize)]

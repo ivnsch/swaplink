@@ -45,7 +45,12 @@ export const SubmitLink = (props) => {
           className="submit-sign-and-submit-button"
           disabled={!swapViewData}
           onClick={async () => {
-            await submitTxs(swapRequest, props.statusMsg, props.showProgress);
+            await submitTxs(
+              swapRequest,
+              props.statusMsg,
+              props.showProgress,
+              props.wallet
+            );
           }}
         >
           {"Sign and submit"}

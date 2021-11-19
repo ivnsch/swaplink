@@ -3,18 +3,17 @@ import { GenerateLink } from "./generate_link/GenerateLink";
 import { SubmitLink } from "./submit_link/SubmitLink";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import Modal from "./Modal";
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { connectWallet } from "./MyAlgo";
 import ProgressBar from "./ProgressBar";
 import CopyPasteText from "./CopyPasteText";
-
+import { useWalletConnect } from "./WalletConnect";
 /* global __COMMIT_HASH__ */
 
 const isIE = /*@cc_on!@*/ false || !!document.documentMode;
 
 const App = () => {
   const [myAddress, setMyAddress] = useState("");
-  const [myAddressDisplay, setMyAddressDisplay] = useState("");
   const [showLegalModal, setShowLegalModal] = useState(false);
   const [statusMsg, setStatusMsg] = useState(null);
   const [showProgress, setShowProgress] = useState(false);
@@ -35,41 +34,33 @@ const App = () => {
     }
   }
   const [statusMsgUpdater, _] = useState(new StatusMsgUpdater());
+  const wallet = useWalletConnect(statusMsgUpdater, setMyAddress);
+
+  const myAddressDisplay = useMemo(() => {
+    if (myAddress) {
+      const short_chars = 3;
+      const leading = myAddress.substring(0, short_chars);
+      const trailing = myAddress.substring(myAddress.length - short_chars);
+      const shortAddress = leading + "..." + trailing;
+      return shortAddress;
+    }
+  }, [myAddress]);
+
+  useEffect(() => {
+    if (wallet) {
+      wallet.onPageLoad();
+    }
+  }, [wallet]);
 
   const connectButtonView = () => {
-    if (myAddress === "") {
-      return (
-        <button
-          className="connect-button"
-          onClick={async (event) => {
-            try {
-              let address = await connectWallet();
-              setMyAddress(address);
-
-              const short_chars = 3;
-              const leading = address.substring(0, short_chars);
-              const trailing = address.substring(address.length - short_chars);
-              const shortAddress = leading + "..." + trailing;
-              setMyAddressDisplay(shortAddress);
-            } catch (e) {
-              statusMsgUpdater.error(e);
-            }
-          }}
-        >
-          {"Connect My Algo wallet"}
-        </button>
-      );
+    if (wallet) {
+      if (myAddress === "") {
+        return connectButton(statusMsgUpdater, wallet);
+      } else {
+        return disconnectButton(statusMsgUpdater, wallet);
+      }
     } else {
-      return (
-        <button
-          className="connect-button"
-          onClick={() => {
-            setMyAddress("");
-          }}
-        >
-          {"Disconnect"}
-        </button>
-      );
+      return null;
     }
   };
 
@@ -136,6 +127,7 @@ const App = () => {
                   myAddress={myAddress}
                   statusMsg={statusMsgUpdater}
                   showProgress={(show) => setShowProgress(show)}
+                  wallet={wallet}
                 />
               </Route>
 
@@ -144,6 +136,7 @@ const App = () => {
                   myAddress={myAddress}
                   statusMsg={statusMsgUpdater}
                   showProgress={(show) => setShowProgress(show)}
+                  wallet={wallet}
                 />
               </Route>
             </Router>
@@ -180,6 +173,40 @@ const App = () => {
       </div>
     );
   }
+};
+
+const connectButton = (statusMsg, wallet) => {
+  return (
+    <button
+      className="connect-button"
+      onClick={async () => {
+        try {
+          await wallet.connect();
+        } catch (e) {
+          statusMsg.error(e);
+        }
+      }}
+    >
+      {"Connect My Algo wallet"}
+    </button>
+  );
+};
+
+const disconnectButton = (statusMsg, wallet) => {
+  return (
+    <button
+      className="connect-button"
+      onClick={async () => {
+        try {
+          await wallet.disconnect();
+        } catch (e) {
+          statusMsg.error(e);
+        }
+      }}
+    >
+      {"Disconnect"}
+    </button>
+  );
 };
 
 export default App;
