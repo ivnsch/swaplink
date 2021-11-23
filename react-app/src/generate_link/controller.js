@@ -1,4 +1,3 @@
-import { sign } from "../MyAlgo";
 import {
   unitIsAlgo,
   unitIsAsset,
@@ -64,7 +63,6 @@ export const generateSwapTxs = async (
     const signedTx = await wallet.sign(swapTxs.to_sign_wc);
 
     let link = await bridge_generate_link({
-      api_key: swapPars.api_key,
       signed_my_tx_msg_pack: signedTx,
       pt: swapTxs.pt, // passthrough
     });
