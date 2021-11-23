@@ -125,7 +125,8 @@ export const GenerateLink = (props) => {
                 props.showProgress,
                 setSwapLink,
                 setSwapLinkTruncated,
-                setShowLinkModal
+                setShowLinkModal,
+                props.wallet
               );
             }}
           >

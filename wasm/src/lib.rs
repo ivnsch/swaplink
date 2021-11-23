@@ -9,3 +9,4 @@ pub mod generate_swap;
 mod model;
 mod network_util;
 pub mod submit_swap;
+pub mod wallet_connect_tx;

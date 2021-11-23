@@ -50,7 +50,8 @@ export const SubmitLink = (props) => {
               props.statusMsg,
               props.showProgress,
               props.setMyBalance,
-              props.myAddress
+              props.myAddress,
+              props.wallet
             );
           }}
         >

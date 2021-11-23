@@ -3,70 +3,78 @@ import { GenerateLink } from "./generate_link/GenerateLink";
 import { SubmitLink } from "./submit_link/SubmitLink";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import Modal from "./Modal";
-import React, { useState } from "react";
-import { connectWallet } from "./MyAlgo";
+import React, { useState, useEffect, useMemo } from "react";
 import ProgressBar from "./ProgressBar";
 import CopyPasteText from "./CopyPasteText";
-import StatusMsgUpdater from "./StatusMsgUpdater";
 import StatusMsgView from "./StatusMsgView";
+import { fetchBalance } from "./controller";
 
+import { useWalletConnect } from "./WalletConnect";
 /* global __COMMIT_HASH__ */
 
 const isIE = /*@cc_on!@*/ false || !!document.documentMode;
 
-const wasmPromise = import("wasm");
-
 const App = () => {
   const [myAddress, setMyAddress] = useState("");
-  const [myAddressDisplay, setMyAddressDisplay] = useState("");
-  const [myBalance, setMyBalance] = useState("");
   const [showLegalModal, setShowLegalModal] = useState(false);
   const [statusMsg, setStatusMsg] = useState(null);
   const [showProgress, setShowProgress] = useState(false);
+  const [myBalance, setMyBalance] = useState("");
 
-  const [statusMsgUpdater, _] = useState(new StatusMsgUpdater(setStatusMsg));
+  class StatusMsgUpdater {
+    success(msg) {
+      msg = msg + "";
+      console.log(msg);
+      setStatusMsg({ msg: msg, type: "success" });
+    }
+    error(msg) {
+      msg = msg + "";
+      console.error(msg);
+      setStatusMsg({ msg: msg, type: "error" });
+    }
+    clear() {
+      setStatusMsg(null);
+    }
+  }
+  const [statusMsgUpdater, _] = useState(new StatusMsgUpdater());
+  const wallet = useWalletConnect(statusMsgUpdater, setMyAddress);
+
+  const myAddressDisplay = useMemo(() => {
+    if (myAddress) {
+      const short_chars = 3;
+      const leading = myAddress.substring(0, short_chars);
+      const trailing = myAddress.substring(myAddress.length - short_chars);
+      const shortAddress = leading + "..." + trailing;
+      return shortAddress;
+    }
+  }, [myAddress]);
+
+  useEffect(async () => {
+    async function initBalance() {
+      if (myAddress) {
+        let balance = await fetchBalance(statusMsg, myAddress);
+        console.log("Balance: " + balance);
+        setMyBalance(balance);
+      }
+    }
+    initBalance();
+  }, [myAddress]);
+
+  useEffect(() => {
+    if (wallet) {
+      wallet.onPageLoad();
+    }
+  }, [wallet]);
 
   const connectButtonView = () => {
-    if (myAddress === "") {
-      return (
-        <button
-          className="connect-button"
-          onClick={async (event) => {
-            try {
-              const { bridge_balance } = await wasmPromise;
-
-              let address = await connectWallet();
-              setMyAddress(address);
-
-              const short_chars = 3;
-              const leading = address.substring(0, short_chars);
-              const trailing = address.substring(address.length - short_chars);
-              const shortAddress = leading + "..." + trailing;
-              setMyAddressDisplay(shortAddress);
-
-              const balance = await bridge_balance({
-                address: address,
-              });
-              setMyBalance(balance.balance);
-            } catch (e) {
-              statusMsgUpdater.error(e);
-            }
-          }}
-        >
-          {"Connect My Algo wallet"}
-        </button>
-      );
+    if (wallet) {
+      if (myAddress === "") {
+        return connectButton(statusMsgUpdater, wallet);
+      } else {
+        return disconnectButton(statusMsgUpdater, wallet);
+      }
     } else {
-      return (
-        <button
-          className="connect-button"
-          onClick={() => {
-            setMyAddress("");
-          }}
-        >
-          {"Disconnect"}
-        </button>
-      );
+      return null;
     }
   };
 
@@ -113,6 +121,7 @@ const App = () => {
                   statusMsg={statusMsgUpdater}
                   showProgress={(show) => setShowProgress(show)}
                   myBalance={myBalance}
+                  wallet={wallet}
                 />
               </Route>
 
@@ -122,6 +131,7 @@ const App = () => {
                   statusMsg={statusMsgUpdater}
                   showProgress={(show) => setShowProgress(show)}
                   setMyBalance={setMyBalance}
+                  wallet={wallet}
                 />
               </Route>
             </Router>
@@ -158,6 +168,40 @@ const App = () => {
       </div>
     );
   }
+};
+
+const connectButton = (statusMsg, wallet) => {
+  return (
+    <button
+      className="connect-button"
+      onClick={async () => {
+        try {
+          await wallet.connect();
+        } catch (e) {
+          statusMsg.error(e);
+        }
+      }}
+    >
+      {"Connect wallet"}
+    </button>
+  );
+};
+
+const disconnectButton = (statusMsg, wallet) => {
+  return (
+    <button
+      className="connect-button"
+      onClick={async () => {
+        try {
+          await wallet.disconnect();
+        } catch (e) {
+          statusMsg.error(e);
+        }
+      }}
+    >
+      {"Disconnect"}
+    </button>
+  );
 };
 
 export default App;
