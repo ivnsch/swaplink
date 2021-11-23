@@ -5,9 +5,9 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import Modal from "./Modal";
 import React, { useState, useEffect, useMemo } from "react";
 import ProgressBar from "./ProgressBar";
-import CopyPasteText from "./CopyPasteText";
 import StatusMsgView from "./StatusMsgView";
 import { fetchBalance } from "./controller";
+import AddressMenu from "./AddressMenu";
 
 import { useWalletConnect } from "./WalletConnect";
 /* global __COMMIT_HASH__ */
@@ -16,6 +16,7 @@ const isIE = /*@cc_on!@*/ false || !!document.documentMode;
 
 const App = () => {
   const [myAddress, setMyAddress] = useState("");
+  const [showAddressMenu, setShowAddressMenu] = useState(false);
   const [showLegalModal, setShowLegalModal] = useState(false);
   const [statusMsg, setStatusMsg] = useState(null);
   const [showProgress, setShowProgress] = useState(false);
@@ -70,8 +71,6 @@ const App = () => {
     if (wallet) {
       if (myAddress === "") {
         return connectButton(statusMsgUpdater, wallet);
-      } else {
-        return disconnectButton(statusMsgUpdater, wallet);
       }
     } else {
       return null;
@@ -83,7 +82,9 @@ const App = () => {
       myAddress !== "" && (
         <div>
           <div>{"Your address:"}</div>
-          <CopyPasteText text={myAddressDisplay} copyText={myAddress} />
+          <button onClick={() => setShowAddressMenu(!showAddressMenu)}>
+            {myAddressDisplay}
+          </button>
           {myBalance && (
             <div id="my-balance">
               {myBalance} {"algo"}
@@ -163,6 +164,13 @@ const App = () => {
             >
               <p>YOLO 🏳️</p>
             </Modal>
+          )}
+          {showAddressMenu && myAddress && wallet && (
+            <AddressMenu
+              statusMsg={statusMsg}
+              myAddress={myAddress}
+              wallet={wallet}
+            />
           )}
         </div>
       </div>
