@@ -1,3 +1,4 @@
+pub mod account;
 pub mod asset_holdings;
 pub mod asset_infos;
 pub mod balance;

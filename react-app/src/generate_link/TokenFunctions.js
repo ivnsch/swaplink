@@ -16,21 +16,3 @@ export const unitIsAlgo = (unit) => {
 export const unitIsAsset = (unit) => {
   return unit.name === assetUnit;
 };
-
-export const emptyAlgo = () => {
-  return {
-    unit: { name: "algo", label: "algo" },
-    amount: "",
-    assetId: "",
-    balance: "",
-  };
-};
-
-export const emptyAsset = () => {
-  return {
-    unit: { name: "asset", label: "" },
-    amount: "",
-    assetId: "",
-    balance: "",
-  };
-};

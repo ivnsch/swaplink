@@ -3,18 +3,18 @@ import Modal from "../Modal";
 import {
   init,
   generateSwapTxs,
-  updateTokenWithUserSelectedUnit,
+  algoToken,
+  initDefaultToken,
 } from "./controller";
 import AssetInputRow from "./AssetInputRow";
 import SwapLinkView from "./SwapLinkView";
-import { emptyAlgo } from "./TokenFunctions";
 import { FeesModal } from "./FeesModal";
-import { SelectUnitModal } from "./SelectUnitModal";
+import { SelectTokenModal } from "./select_token/SelectTokenModal";
 
 export const GenerateLink = (props) => {
   const [peerAddress, setPeerAddress] = useState("");
 
-  const [sendToken, setSendToken] = useState(emptyAlgo());
+  const [sendToken, setSendToken] = useState(null);
   const [receiveToken, setReceiveToken] = useState(null);
 
   const [myFee, setMyFee] = useState("");
@@ -31,19 +31,12 @@ export const GenerateLink = (props) => {
   const [showReceiveUnitModal, setShowReceiveUnitModal] = useState(false);
 
   useEffect(() => {
-    init(props.statusMsg, setMyFee, setPeerFee, setFeeTotal);
+    init(props.statusMsg, setMyFee, setPeerFee, setFeeTotal, setSendToken);
   }, []);
 
-  const updateTokenWithSelectedUnit = async (setToken, unit) => {
-    updateTokenWithUserSelectedUnit(
-      props.statusMsg,
-      props.showProgress,
-      props.myAddress,
-      props.myBalance,
-      setToken,
-      unit
-    );
-  };
+  useEffect(() => {
+    initDefaultToken(props.statusMsg, setSendToken, props.myBalance);
+  }, [props.myBalance]);
 
   return (
     <div>
@@ -68,7 +61,7 @@ export const GenerateLink = (props) => {
             <AssetInputRow
               token={sendToken}
               setToken={setSendToken}
-              onUnitClick={() => setShowSendUnitModal(true)}
+              onTokenClick={() => setShowSendUnitModal(true)}
             />
 
             <button
@@ -84,7 +77,7 @@ export const GenerateLink = (props) => {
             <AssetInputRow
               token={receiveToken}
               setToken={setReceiveToken}
-              onUnitClick={() => {
+              onTokenClick={() => {
                 setShowReceiveUnitModal(true);
               }}
             />
@@ -155,22 +148,20 @@ export const GenerateLink = (props) => {
             />
           )}
           {showSendUnitModal && (
-            <SelectUnitModal
+            <SelectTokenModal
               showProgress={props.showProgress}
-              token={sendToken}
               setToken={setSendToken}
-              updateTokenWithSelectedUnit={updateTokenWithSelectedUnit}
               setShowModal={setShowSendUnitModal}
+              myAddress={props.myAddress}
             />
           )}
 
           {showReceiveUnitModal && (
-            <SelectUnitModal
+            <SelectTokenModal
               showProgress={props.showProgress}
-              token={receiveToken}
               setToken={setReceiveToken}
-              updateTokenWithSelectedUnit={updateTokenWithSelectedUnit}
               setShowModal={setShowReceiveUnitModal}
+              myAddress={props.myAddress}
             />
           )}
         </div>

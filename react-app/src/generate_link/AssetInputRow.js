@@ -1,9 +1,9 @@
-const AssetInputRow = ({ token, setToken, onUnitClick }) => {
+const AssetInputRow = ({ token, setToken, onTokenClick }) => {
   return (
     <div className="input-row">
       {assetAmountView(token, setToken)}
-      <button onClick={() => onUnitClick()}>
-        {<div>{token?.unit?.label ?? "Select asset"}</div>}
+      <button onClick={() => onTokenClick()}>
+        {<div>{token?.main_label ?? "Select asset"}</div>}
       </button>
       {token && (
         <div>
