@@ -1,7 +1,7 @@
 #[cfg(test)]
 use crate::conversions::to_base_units;
 #[cfg(test)]
-use crate::generate_swap::{logic::GenerateSwapLogic, model::SwapRole};
+use crate::generate_swap::{logic::GenerateSwapLogic};
 #[cfg(test)]
 use rust_decimal::prelude::ToPrimitive;
 #[cfg(test)]
@@ -15,7 +15,6 @@ fn validate_0_asset_amount_fails() {
         0,
         Decimal::from_str("0").unwrap(),
         1,
-        SwapRole::Sender,
     );
     assert!(res.is_err());
 }
@@ -26,7 +25,6 @@ fn validate_0_with_0_fractionals_asset_amount_fails() {
         0,
         Decimal::from_str("0.000000").unwrap(),
         1,
-        SwapRole::Sender,
     );
     assert!(res.is_err());
 }
@@ -37,7 +35,6 @@ fn validate_negative_asset_amount_fails() {
         3,
         Decimal::from_str("-2").unwrap(),
         1,
-        SwapRole::Sender,
     );
     assert!(res.is_err());
 }
@@ -48,7 +45,6 @@ fn validate_negative_asset_amount_with_fractionals_fails() {
         3,
         Decimal::from_str("-2.1").unwrap(),
         1,
-        SwapRole::Sender,
     );
     assert!(res.is_err());
 }
@@ -86,7 +82,6 @@ fn asset_strips_trailing_fractional_0() {
         2,
         Decimal::from_str("1.2000000000000000000000000000000000000000000000000000000000").unwrap(),
         1,
-        SwapRole::Sender,
     );
     assert!(res.is_ok());
 }
@@ -97,7 +92,6 @@ fn asset_amount_fails_if_too_many_fractional_digits() {
         19,
         Decimal::from_str("1.00000000000000000001").unwrap(),
         1,
-        SwapRole::Sender,
     );
     assert!(res.is_err());
 }
@@ -159,7 +153,6 @@ fn validate_0_1_fractional_passes() {
         0,
         Decimal::from_str("1").unwrap(),
         1,
-        SwapRole::Sender,
     );
     assert!(res.is_ok());
 }
@@ -170,7 +163,6 @@ fn validate_1_fractional_passes() {
         1,
         Decimal::from_str("1.1").unwrap(),
         1,
-        SwapRole::Sender,
     );
     assert!(res.is_ok());
 }
@@ -181,7 +173,6 @@ fn validate_u64_max_passes() {
         0,
         Decimal::from_str(&u64::MAX.to_string()).unwrap(),
         1,
-        SwapRole::Sender,
     );
     assert!(res.is_ok());
 }
@@ -192,7 +183,6 @@ fn validate_u64_with_fractionals_fails() {
         1,
         Decimal::from_str(&u64::MAX.to_string()).unwrap(),
         1,
-        SwapRole::Sender,
     );
     assert!(res.is_err());
 }
@@ -211,7 +201,6 @@ fn validate_asset_amount_19_fractionals_passes() {
         19,
         Decimal::from_str("1.0000000000000000001").unwrap(),
         1,
-        SwapRole::Sender,
     );
     println!("res: {:?}", res);
     assert!(res.is_ok());
@@ -224,7 +213,6 @@ fn validate_asset_amount_20_fractionals_fails() {
         20,
         Decimal::from_str("1.00000000000000000001").unwrap(),
         1,
-        SwapRole::Sender,
     );
     assert!(res.is_err());
 }
@@ -235,7 +223,6 @@ fn validate_error_if_exp_overflow() {
         100,
         Decimal::from_str("1").unwrap(),
         1,
-        SwapRole::Sender,
     );
     assert!(res.is_err());
 }
@@ -246,7 +233,6 @@ fn validate_less_than_max_fractional_passes() {
         3,
         Decimal::from_str("1.12").unwrap(),
         1,
-        SwapRole::Sender,
     );
     assert!(res.is_ok());
 }
@@ -257,7 +243,6 @@ fn validate_integer_max_fractional_passes() {
         2,
         Decimal::from_str("21231456").unwrap(),
         1,
-        SwapRole::Sender,
     );
     assert!(res.is_ok());
 }
@@ -268,7 +253,6 @@ fn validate_more_than_max_fractional_fails() {
         2,
         Decimal::from_str("1.234").unwrap(),
         1,
-        SwapRole::Sender,
     );
     assert!(res.is_err());
 }
@@ -279,7 +263,6 @@ fn validate_more_than_max_fractional_with_zeros_passes() {
         1,
         Decimal::from_str("2.10").unwrap(),
         1,
-        SwapRole::Sender,
     );
     assert!(res.is_ok());
 }
@@ -290,7 +273,6 @@ fn validate_more_than_max_fractional_long_number_fails() {
         10,
         Decimal::from_str("2.99999999999").unwrap(),
         1,
-        SwapRole::Sender,
     );
     assert!(res.is_err());
 }

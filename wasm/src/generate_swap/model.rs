@@ -39,12 +39,6 @@ impl ValidatedSwapPars {
 #[derive(Debug, Clone)]
 pub struct SwapLink(pub String);
 
-#[derive(Debug, Clone)]
-pub enum SwapRole {
-    Sender,
-    Receiver,
-}
-
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum SwapInputUnit {
     Algos,

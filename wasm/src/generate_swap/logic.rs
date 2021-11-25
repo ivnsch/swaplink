@@ -16,7 +16,7 @@ use crate::{
 
 use super::{
     bridge::generate_swap_txs::GenerateSwapTxsParJs,
-    model::{SwapInputUnit, SwapIntent, SwapLink, SwapRole, Transfer, ValidatedSwapPars},
+    model::{SwapInputUnit, SwapIntent, SwapLink, Transfer, ValidatedSwapPars},
 };
 
 pub struct GenerateSwapLogic {
@@ -29,30 +29,48 @@ impl GenerateSwapLogic {
     }
 
     async fn validate_swap_pars(&self, pars: GenerateSwapTxsParJs) -> Result<ValidatedSwapPars> {
-        let me = pars.my_address.parse().map_err(anyhow::Error::msg)?;
-        let peer = pars.peer_address.parse().map_err(anyhow::Error::msg)?;
+        let me = pars
+            .my_address
+            .parse()
+            .map_err(|_| anyhow!("Your address ({:?}) is invalid.", pars.my_address))?;
+        let peer = pars
+            .peer_address
+            .parse()
+            .map_err(|_| anyhow!("Peer address ({:?}) is invalid", pars.peer_address))?;
 
-        let send_amount = Decimal::from_str(&pars.send_amount)?;
-        let receive_amount = Decimal::from_str(&pars.receive_amount)?;
+        let send_amount = Decimal::from_str(&pars.send_amount)
+            .map_err(|e| anyhow!("Send amount ({:?}) is invalid: {}", pars.send_amount, e))?;
+        let receive_amount = Decimal::from_str(&pars.receive_amount).map_err(|e| {
+            anyhow!(
+                "Receive amount ({:?}) is invalid: {}",
+                pars.receive_amount,
+                e
+            )
+        })?;
 
-        let send_unit = Self::validate_unit(pars.send_unit)?;
-        let receive_unit = Self::validate_unit(pars.receive_unit)?;
+        let send_unit = Self::validate_unit(&pars.send_unit)
+            .map_err(|e| anyhow!("Send token ({:?}) is invalid: {}", pars.send_unit, e))?;
+        let receive_unit = Self::validate_unit(&pars.receive_unit)
+            .map_err(|e| anyhow!("Receive token ({:?}) is invalid: {}", pars.receive_unit, e))?;
 
         let send = self
-            .validate_transfer(send_unit, send_amount, pars.send_asset_id, SwapRole::Sender)
-            .await?;
+            .validate_transfer(send_unit, send_amount, &pars.send_asset_id)
+            .await
+            .map_err(|e| anyhow!("Send transfer validation failed: {}", e))?;
 
         let receive = self
-            .validate_transfer(
-                receive_unit,
-                receive_amount,
-                pars.receive_asset_id,
-                SwapRole::Receiver,
-            )
-            .await?;
+            .validate_transfer(receive_unit, receive_amount, &pars.receive_asset_id)
+            .await
+            .map_err(|e| anyhow!("Receive transfer validation failed: {}", e))?;
 
-        let my_fee = validate_algos(Decimal::from_str(&pars.my_fee)?)?;
-        let peer_fee = validate_algos(Decimal::from_str(&pars.peer_fee)?)?;
+        let my_fee = validate_algos(
+            Decimal::from_str(&pars.my_fee)
+                .map_err(|e| anyhow!("Your fee ({:?}) couldn't be parsed: {}", pars.my_fee, e))?,
+        )?;
+        let peer_fee =
+            validate_algos(Decimal::from_str(&pars.peer_fee).map_err(|e| {
+                anyhow!("Peer fee ({:?}) couldn't be parsed: {}", pars.peer_fee, e)
+            })?)?;
 
         Ok(ValidatedSwapPars {
             me,
@@ -64,8 +82,8 @@ impl GenerateSwapLogic {
         })
     }
 
-    fn validate_unit(unit_str: String) -> Result<SwapInputUnit> {
-        match unit_str.as_ref() {
+    fn validate_unit(unit_str: &str) -> Result<SwapInputUnit> {
+        match unit_str {
             "algo" => Ok(SwapInputUnit::Algos),
             "asset" => Ok(SwapInputUnit::Asset),
             _ => Err(anyhow!(
@@ -79,14 +97,13 @@ impl GenerateSwapLogic {
         &self,
         input_unit: SwapInputUnit,
         amount: Decimal,
-        asset_id_input: String,
-        role: SwapRole,
+        asset_id_input: &str,
     ) -> Result<Transfer> {
         match input_unit {
             SwapInputUnit::Algos => Self::validate_algos_transfer(amount),
-            SwapInputUnit::Asset => Ok(self
-                .validate_asset_transfer(amount, asset_id_input, role)
-                .await?),
+            SwapInputUnit::Asset => {
+                Ok(self.validate_asset_transfer(amount, asset_id_input).await?)
+            }
         }
     }
 
@@ -99,8 +116,7 @@ impl GenerateSwapLogic {
     async fn validate_asset_transfer(
         &self,
         amount: Decimal,
-        asset_id_input: String,
-        role: SwapRole,
+        asset_id_input: &str,
     ) -> Result<Transfer> {
         let asset_id = asset_id_input.parse()?;
         let asset_config = &self.algod.asset_information(asset_id).await?;
@@ -108,7 +124,6 @@ impl GenerateSwapLogic {
             asset_config.params.decimals,
             amount,
             asset_id,
-            role,
         )
     }
 
@@ -116,7 +131,6 @@ impl GenerateSwapLogic {
         asset_config_max_fractional_digits: u64,
         amount: Decimal,
         asset_id: u64,
-        role: SwapRole,
     ) -> Result<Transfer> {
         let amount = amount.normalize();
 
@@ -133,8 +147,7 @@ impl GenerateSwapLogic {
         let asset_config_max_possible_fractional_digits = 19;
         if input_fractionals > asset_config_max_possible_fractional_digits {
             return Err(anyhow!(
-                "{:?} asset amount has more fractional digits({}) than allowed({})",
-                role,
+                "Asset amount has more fractional digits({}) than allowed({})",
                 input_fractionals,
                 asset_config_max_possible_fractional_digits
             ));
@@ -142,8 +155,7 @@ impl GenerateSwapLogic {
 
         if input_fractionals as u64 > asset_config_max_fractional_digits {
             return Err(anyhow!(
-                "{:?} asset amount has more fractional digits({}) than allowed by asset config({})",
-                role,
+                "Asset amount has more fractional digits({}) than allowed by asset config({})",
                 input_fractionals,
                 asset_config_max_fractional_digits
             ));

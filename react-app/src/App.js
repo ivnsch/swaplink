@@ -6,7 +6,7 @@ import Modal from "./Modal";
 import React, { useState, useEffect, useMemo } from "react";
 import ProgressBar from "./ProgressBar";
 import StatusMsgView from "./StatusMsgView";
-import { fetchBalance } from "./controller";
+import { fetchBalance, toFriendlyError } from "./controller";
 import AddressMenu from "./AddressMenu";
 
 import { useWalletConnect } from "./WalletConnect";
@@ -26,12 +26,22 @@ const App = () => {
     success(msg) {
       msg = msg + "";
       console.log(msg);
-      setStatusMsg({ msg: msg, type: "success" });
+      setStatusMsg({ displayMsg: msg, type: "success" });
     }
     error(msg) {
       msg = msg + "";
+      var displayMsg = msg;
+      try {
+        const friendlyMsg = toFriendlyError(msg);
+        if (friendlyMsg) {
+          msg = friendlyMsg + "\nOriginal error: " + msg;
+          displayMsg = friendlyMsg;
+        }
+      } catch (e) {
+        msg += "\n+Error mapping to friendly error: " + (e + "");
+      }
       console.error(msg);
-      setStatusMsg({ msg: msg, type: "error" });
+      setStatusMsg({ displayMsg: displayMsg, copyMsg: msg, type: "error" });
     }
     clear() {
       setStatusMsg(null);

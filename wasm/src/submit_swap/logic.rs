@@ -4,7 +4,7 @@ use algonaut::{
     algod::v2::Algod,
     transaction::{SignedTransaction, Transaction, TransactionType},
 };
-use anyhow::Result;
+use anyhow::{anyhow, Result};
 use log::debug;
 use rust_decimal::Decimal;
 
@@ -21,7 +21,8 @@ impl SubmitSwapLogic {
     }
 
     pub async fn to_swap_request(&self, encoded_swap: String) -> Result<SwapRequest> {
-        Ok(SwapRequest::from_url_encoded_str(encoded_swap)?)
+        Ok(SwapRequest::from_url_encoded_str(encoded_swap)
+            .map_err(|e| anyhow!("Failed decoding link:\n{}", e))?)
     }
 
     pub async fn to_view_data(&self, request: &SwapRequest) -> Result<SubmitSwapViewData> {
@@ -30,8 +31,14 @@ impl SubmitSwapLogic {
 
         Ok(SubmitSwapViewData {
             peer: peer_tx.transaction.sender().to_string(),
-            send: self.to_tranfer(&my_tx).await?,
-            receive: self.to_tranfer(&peer_tx.transaction).await?,
+            send: self
+                .to_tranfer(&my_tx)
+                .await
+                .map_err(|e| anyhow!("Failed determining sender tx data:\n{}", e))?,
+            receive: self
+                .to_tranfer(&peer_tx.transaction)
+                .await
+                .map_err(|e| anyhow!("Failed determining receiver tx data:\n{}", e))?,
             my_fee: format!("{} Algos", micro_algos_to_algos_str(my_tx.fee)),
         })
     }
