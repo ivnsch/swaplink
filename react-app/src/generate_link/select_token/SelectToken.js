@@ -67,6 +67,7 @@ const SelectToken = ({ statusMsg, showProgress, myAddress, onSelectToken }) => {
               {token.main_label}
             </button>
             <div>{token.secondary_label}</div>
+            <div>{token.balance}</div>
           </div>
         );
       })}
