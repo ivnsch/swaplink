@@ -1,7 +1,7 @@
 #[cfg(test)]
 use crate::conversions::to_base_units;
 #[cfg(test)]
-use crate::generate_swap::{logic::GenerateSwapLogic};
+use crate::generate_swap::logic::GenerateSwapLogic;
 #[cfg(test)]
 use rust_decimal::prelude::ToPrimitive;
 #[cfg(test)]
