@@ -7,15 +7,16 @@ const AssetInputRow = ({ token, setToken, onTokenClick }) => {
       </button>
       {token && (
         <div>
-          <span>{"Balance: " + token.balance}</span>
-          {generateMaxView(token, () => {
-            setToken((t) => {
-              return {
-                ...t,
-                amount: t.balance,
-              };
-            });
-          })}
+          {token.balance && <span>{"Balance: " + token.balance}</span>}
+          {token.balance &&
+            generateMaxView(token, () => {
+              setToken((t) => {
+                return {
+                  ...t,
+                  amount: t.balance,
+                };
+              });
+            })}
         </div>
       )}
     </div>
