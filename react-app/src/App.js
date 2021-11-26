@@ -6,8 +6,9 @@ import Modal from "./Modal";
 import React, { useState, useEffect, useMemo } from "react";
 import ProgressBar from "./ProgressBar";
 import StatusMsgView from "./StatusMsgView";
-import { fetchBalance, toFriendlyError } from "./controller";
+import { fetchBalance } from "./controller";
 import AddressMenu from "./AddressMenu";
+import { toFriendlyError } from "./friendlyErrors";
 
 import { useWalletConnect } from "./WalletConnect";
 /* global __COMMIT_HASH__ */
