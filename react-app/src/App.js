@@ -8,8 +8,7 @@ import ProgressBar from "./ProgressBar";
 import StatusMsgView from "./StatusMsgView";
 import { fetchBalance } from "./controller";
 import AddressMenu from "./AddressMenu";
-import { toFriendlyError } from "./friendlyErrors";
-
+import StatusMsgUpdater from "./StatusMsgUpdater";
 import { useWalletConnect } from "./WalletConnect";
 /* global __COMMIT_HASH__ */
 
@@ -22,33 +21,7 @@ const App = () => {
   const [statusMsg, setStatusMsg] = useState(null);
   const [showProgress, setShowProgress] = useState(false);
   const [myBalance, setMyBalance] = useState("");
-
-  class StatusMsgUpdater {
-    success(msg) {
-      msg = msg + "";
-      console.log(msg);
-      setStatusMsg({ displayMsg: msg, type: "success" });
-    }
-    error(msg) {
-      msg = msg + "";
-      var displayMsg = msg;
-      try {
-        const friendlyMsg = toFriendlyError(msg);
-        if (friendlyMsg) {
-          msg = friendlyMsg + "\nOriginal error: " + msg;
-          displayMsg = friendlyMsg;
-        }
-      } catch (e) {
-        msg += "\n+Error mapping to friendly error: " + (e + "");
-      }
-      console.error(msg);
-      setStatusMsg({ displayMsg: displayMsg, copyMsg: msg, type: "error" });
-    }
-    clear() {
-      setStatusMsg(null);
-    }
-  }
-  const [statusMsgUpdater, _] = useState(new StatusMsgUpdater());
+  const [statusMsgUpdater, _] = useState(new StatusMsgUpdater(setStatusMsg));
   const wallet = useWalletConnect(statusMsgUpdater, setMyAddress);
 
   const myAddressDisplay = useMemo(() => {
