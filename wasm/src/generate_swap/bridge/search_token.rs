@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
 use crate::{
+    account::Holdings,
     bridge::{parse_bridge_pars, to_bridge_res},
     dependencies::{algod, network},
     format::micro_algos_to_algos_str,
@@ -8,7 +9,7 @@ use crate::{
 };
 use algonaut::{
     algod::v2::Algod,
-    model::algod::v2::{Account, Asset, AssetHolding},
+    model::algod::v2::{Asset, AssetHolding},
 };
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
@@ -23,12 +24,12 @@ pub async fn bridge_search_token(pars: JsValue) -> Result<JsValue, JsValue> {
 pub async fn search_token(pars: SearchTokenParJs) -> Result<SearchTokenResJs> {
     let algod = algod(&network());
 
-    let account = rmp_serde::from_slice::<Account>(&pars.account_msg_pack)?;
+    let holdings = rmp_serde::from_slice::<Holdings>(&pars.holdings_msg_pack)?;
 
     let tokens = if pars.input.is_empty() {
-        default_tokens(micro_algos_to_algos_str(account.amount))
+        default_tokens(micro_algos_to_algos_str(holdings.balance))
     } else {
-        let assets_by_id_map = account
+        let assets_by_id_map = holdings
             .assets
             .into_iter()
             .map(|a| (a.asset_id, a))
@@ -100,7 +101,7 @@ fn asset_view_data(asset: &Asset, assets: &HashMap<u64, AssetHolding>) -> TokenV
 #[derive(Debug, Clone, Deserialize)]
 pub struct SearchTokenParJs {
     pub input: String,
-    pub account_msg_pack: Vec<u8>,
+    pub holdings_msg_pack: Vec<u8>,
 }
 
 #[derive(Debug, Clone, Serialize)]

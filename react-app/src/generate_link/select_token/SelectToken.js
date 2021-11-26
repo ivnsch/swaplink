@@ -1,4 +1,4 @@
-import { search, featchAccountMsgPack } from "./controller";
+import { search, fetchHoldingsMsgPack } from "./controller";
 import React, { useState, useEffect } from "react";
 
 let delayTimer;
@@ -6,22 +6,22 @@ let delayTimer;
 const SelectToken = ({ statusMsg, showProgress, myAddress, onSelectToken }) => {
   const [assetId, setAssetId] = useState("");
   const [tokens, setTokens] = useState([]);
-  const [accountMsgPack, setAccountMsgPack] = useState(null);
+  const [holdingsMsgPack, setHoldingsMsgPack] = useState(null);
 
   useEffect(async () => {
     if (myAddress) {
-      let account = await featchAccountMsgPack(
+      let holdings = await fetchHoldingsMsgPack(
         statusMsg,
         showProgress,
         myAddress
       );
-      setAccountMsgPack(account);
+      setHoldingsMsgPack(holdings);
     }
   }, [myAddress]);
 
   const searchToken = async (text) => {
-    console.log("calling search, account: %o", accountMsgPack);
-    const tokens = await search(statusMsg, showProgress, text, accountMsgPack);
+    console.log("calling search, account: %o", holdingsMsgPack);
+    const tokens = await search(statusMsg, showProgress, text, holdingsMsgPack);
     setTokens(tokens);
   };
 
@@ -34,19 +34,19 @@ const SelectToken = ({ statusMsg, showProgress, myAddress, onSelectToken }) => {
 
   const onSearchInput = (text) => {
     setAssetId(text);
-    if (text.length > 2) {
-      searchTokenDelayed(text);
-    } else if (text.length == 0) {
+    if (text.length == 0) {
       searchToken("");
+    } else {
+      searchTokenDelayed(text);
     }
   };
 
   useEffect(() => {
-    if (accountMsgPack) {
-      console.log("accountMsgPack, account: %o", accountMsgPack);
+    if (holdingsMsgPack) {
+      console.log("holdingsMsgPack, account: %o", holdingsMsgPack);
       searchToken("");
     }
-  }, [accountMsgPack]);
+  }, [holdingsMsgPack]);
 
   return (
     <div>

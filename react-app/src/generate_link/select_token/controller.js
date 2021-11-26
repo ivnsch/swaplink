@@ -29,7 +29,7 @@ export const search = async (
   statusMsg,
   showProgress,
   input,
-  accountMsgPack
+  holdingsMsgPack
 ) => {
   try {
     statusMsg.clear();
@@ -39,7 +39,7 @@ export const search = async (
 
     let res = await bridge_search_token({
       input: input,
-      account_msg_pack: accountMsgPack,
+      holdings_msg_pack: holdingsMsgPack,
     });
     console.log("search result: " + JSON.stringify(res));
     showProgress(false);
@@ -48,11 +48,11 @@ export const search = async (
   } catch (e) {
     statusMsg.error(e);
     showProgress(false);
-    return null;
+    return [];
   }
 };
 
-export const featchAccountMsgPack = async (
+export const fetchHoldingsMsgPack = async (
   statusMsg,
   showProgress,
   address
@@ -61,9 +61,9 @@ export const featchAccountMsgPack = async (
     statusMsg.clear();
     showProgress(true);
 
-    const { bridge_account } = await wasmPromise;
+    const { bridge_holdings } = await wasmPromise;
 
-    let account = await bridge_account({
+    let account = await bridge_holdings({
       address: address,
     });
     showProgress(false);
