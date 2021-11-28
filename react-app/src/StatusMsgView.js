@@ -12,7 +12,11 @@ export const StatusMsgView = ({ statusMsgUpdater, statusMsg }) => {
   } else if (statusMsg.type === "error") {
     return (
       <div className="error">
-        <CopyPasteText text={shortMsg} copyText={statusMsg.copyMsg} />
+        <CopyPasteText
+          text={shortMsg}
+          copyText={statusMsg.copyMsg}
+          hideIcon={true}
+        />
 
         <button
           className="error-close"
