@@ -39,7 +39,7 @@ impl SubmitSwapLogic {
                 .to_tranfer(&peer_tx.transaction)
                 .await
                 .map_err(|e| anyhow!("Failed determining receiver tx data:\n{}", e))?,
-            my_fee: format!("{} Algos", micro_algos_to_algos_str(my_tx.fee)),
+            my_fee: format!("{}", micro_algos_to_algos_str(my_tx.fee)),
         })
     }
 
