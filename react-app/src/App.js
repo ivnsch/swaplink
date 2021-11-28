@@ -10,6 +10,7 @@ import { fetchBalance } from "./controller";
 import AddressMenu from "./AddressMenu";
 import StatusMsgUpdater from "./StatusMsgUpdater";
 import { useWalletConnect } from "./WalletConnect";
+import { saveAcceptedTerms, needsToAcceptTerms } from "./termsStorage";
 /* global __COMMIT_HASH__ */
 
 const isIE = /*@cc_on!@*/ false || !!document.documentMode;
@@ -57,7 +58,7 @@ const App = () => {
   const connectButtonView = () => {
     if (wallet) {
       if (myAddress === "") {
-        return connectButton(statusMsgUpdater, wallet);
+        return connectButton(statusMsgUpdater, setShowTerms, wallet);
       }
     } else {
       return null;
@@ -386,7 +387,7 @@ const App = () => {
           {showTerms && (
             <Modal
               title={"Connect a Wallet"}
-              onCloseClick={() => setShowTerms(false)}
+              onCloseClick={() => setShowTerms(null)}
             >
               <p>
                 By connecting a wallet, you acknowledge that you have read and
@@ -394,8 +395,21 @@ const App = () => {
               </p>
 
               <div className="modal-ctas">
-                <button className="btn btn--secondary">cancel</button>
-                <button className="btn btn--primary">continue</button>
+                <button
+                  className="btn btn--secondary"
+                  onClick={() => setShowTerms(false)}
+                >
+                  cancel
+                </button>
+                <button
+                  className="btn btn--primary"
+                  onClick={async () => {
+                    await saveAcceptedTerms();
+                    await wallet.connect();
+                  }}
+                >
+                  continue
+                </button>
               </div>
             </Modal>
           )}
@@ -405,13 +419,17 @@ const App = () => {
   }
 };
 
-const connectButton = (statusMsg, wallet) => {
+const connectButton = (statusMsg, showAcceptTermsModal, wallet) => {
   return (
     <button
       className="btn btn--connect-wallet"
       onClick={async () => {
         try {
-          await wallet.connect();
+          if (await needsToAcceptTerms()) {
+            showAcceptTermsModal(true);
+          } else {
+            await wallet.connect();
+          }
         } catch (e) {
           statusMsg.error(e);
         }
