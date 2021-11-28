@@ -1,0 +1,55 @@
+input {
+  appearance: none;
+}
+
+.input {
+  font-family: inherit;
+  text-transform: capitalize;
+
+  &:focus {
+    outline: none;
+  }
+
+  &::placeholder {
+    font-family: inherit;
+    text-transform: capitalize;
+  }
+
+  &--address {
+    width: 100%;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--clr-text);
+    background: var(--clr-bg);
+    border: var(--border);
+    border-radius: 4px;
+    transition: border-color 0.15s ease-in-out;
+
+    &:focus {
+      border-color: var(--clr-blue-700);
+    }
+
+    &::placeholder {
+      color: var(--clr-text-darker);
+      font-size: 14px;
+      font-weight: 400;
+    }
+  }
+
+  &--amount {
+    flex-shrink: 1;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    font-weight: 600;
+    font-size: 22px;
+    color: var(--clr-blue-700);
+
+    &::placeholder {
+      font-weight: 600;
+      font-size: 22px;
+      color: var(--clr-blue-700);
+    }
+  }
+}

@@ -13,14 +13,35 @@ const Modal = ({ title, children, statusMsg, onCloseClick }) => {
     <div className="modal" onClick={onModalClick}>
       <div className="modal-content modal-content-size">
         <div className="modal-topbar">
-          <p className="modal-topbar-title">{title}</p>
-          <p className="modal-topbar-x" onClick={() => onCloseClick()}>
-            {"Close"}
-          </p>
+          <h2 className="modal-title">{title}</h2>
+          <button className="modal-close" onClick={() => onCloseClick()}>
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M7.75732 7.75732L16.2426 16.2426"
+                stroke="white"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M7.75739 16.2426L16.2427 7.75732"
+                stroke="white"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
         </div>
         <div className="modal-body">
           {statusMsg && <StatusMsgView statusMsg={statusMsg} />}
-          <div style={{ clear: "left" }} />
+
           {children}
         </div>
       </div>

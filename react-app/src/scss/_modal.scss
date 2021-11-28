@@ -1,0 +1,51 @@
+.modal {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.2);
+  z-index: 1201;
+
+  &-content {
+    padding: 20px 20px 20px 20px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    transform: translate(-50%, -50%);
+    background: var(--clr-bg-lighter);
+    border: var(--border);
+    border-radius: 8px;
+    z-index: 2000;
+
+    @media only screen and (max-width: 420px) {
+      width: calc(100% - 20px);
+    }
+
+    &-size {
+      max-width: 400px;
+    }
+  }
+
+  &-topbar {
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &-title {
+    font-weight: bold;
+    font-size: 18px;
+    text-transform: capitalize;
+    color: var(--clr-white);
+  }
+
+  &-close {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+  }
+}

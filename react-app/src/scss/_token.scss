@@ -1,0 +1,73 @@
+.token-list {
+  margin-top: 8px;
+  background: #1a1c22;
+  max-height: 235px;
+  overflow-y: auto;
+
+  /* width */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  /* Track */
+  &::-webkit-scrollbar-track {
+    background: rgb(38, 39, 48);
+    -webkit-box-shadow: inset 0 0 6px rgba(38, 39, 48, 0.3);
+    box-shadow: inset 0 0 6px rgba(38, 39, 48, 0.3);
+    border-radius: 8px;
+  }
+
+  /* Handle */
+  &::-webkit-scrollbar-thumb {
+    background: hsla(0, 0%, 100%, 0.2);
+    border-radius: 8px;
+    -webkit-box-shadow: inset 0 0 6px hsla(0, 0%, 100%, 0.2);
+    box-shadow: inset 0 0 6px hsla(0, 0%, 100%, 0.2);
+  }
+
+  /* Handle on hover */
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgb(167, 167, 167);
+  }
+
+  &__btn {
+    width: 100%;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background-color: transparent;
+    border: none;
+    font-family: inherit;
+  }
+
+  &__img {
+    width: 28px;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+
+  &__main {
+    font-weight: 500;
+    font-size: 14px;
+    text-transform: capitalize;
+    color: #ffffff;
+  }
+
+  &__secondary {
+    font-weight: 400;
+    font-size: 10px;
+    text-transform: capitalize;
+    color: #ffffff;
+    opacity: 0.51;
+  }
+
+  &__balance {
+    margin-left: auto;
+    font-weight: 500;
+    font-size: 14px;
+    text-transform: capitalize;
+    color: #ffffff;
+  }
+}

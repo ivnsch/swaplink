@@ -52,8 +52,7 @@ const SelectToken = ({ statusMsg, showProgress, myAddress, onSelectToken }) => {
     <div>
       <input
         placeholder="Asset id"
-        className="inline"
-        size="16"
+        className="input input--address"
         value={assetId}
         onChange={(event) => {
           onSearchInput(event.target.value);
@@ -62,12 +61,28 @@ const SelectToken = ({ statusMsg, showProgress, myAddress, onSelectToken }) => {
       {tokens.length == 0 && <div>{"No results"}</div>}
       {tokens.map((token) => {
         return (
-          <div key={token.id}>
-            <button onClick={() => onSelectToken(token)}>
-              {token.main_label}
-            </button>
-            <div>{token.secondary_label}</div>
-            <div>{token.balance}</div>
+          <div className="token-list">
+            <div key={token.id}>
+              <button
+                className="token-list__btn"
+                onClick={() => onSelectToken(token)}
+              >
+                <img
+                  className="token-list__img"
+                  src="https://www.pngall.com/wp-content/uploads/10/Algorand-Crypto-Logo-PNG-Pic.png"
+                  alt=""
+                />
+
+                <div>
+                  <div className="token-list__main">{token.main_label}</div>
+
+                  <div className="token-list__secondary">
+                    {token.secondary_label}
+                  </div>
+                </div>
+                <div className="token-list__balance">{token.balance}</div>
+              </button>
+            </div>
           </div>
         );
       })}

@@ -2,11 +2,16 @@ import React from "react";
 
 const AddressMenu = ({ statusMsg, myAddress, wallet }) => {
   return (
-    <div>
-      <a href={"https://algoexplorer.io/address/" + myAddress} target="_blank">
+    <React.Fragment>
+      <a
+        className="btn btn--transparent"
+        href={"https://algoexplorer.io/address/" + myAddress}
+        target="_blank"
+      >
         {"AlgoExplorer"}
       </a>
       <button
+        className="btn btn--transparent btn--warning"
         onClick={async () => {
           try {
             await wallet.disconnect();
@@ -17,7 +22,7 @@ const AddressMenu = ({ statusMsg, myAddress, wallet }) => {
       >
         {"Disconnect"}
       </button>
-    </div>
+    </React.Fragment>
   );
 };
 

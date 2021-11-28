@@ -70,6 +70,7 @@ export const submitTxs = async (
       signed_my_tx_msg_pack: signedTx,
       pt: swapRequest.pt, // passthrough
     });
+
     statusMsg.success("Swap submitted! Tx id: " + txId);
     showProgress(false);
 
