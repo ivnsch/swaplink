@@ -19,10 +19,18 @@ export const initDefaultToken = async (statusMsg, setToken, myBalance) => {
     const { bridge_algo_token } = await wasmPromise;
 
     let token = await bridge_algo_token({ balance: myBalance });
-    setToken(token);
+    setToken(initTokenInputs(token));
   } catch (e) {
     statusMsg.error(e);
   }
+};
+
+export const initEmptyToken = async (setToken) => {
+  setToken(initTokenInputs(null));
+};
+
+const initTokenInputs = (token) => {
+  return { amount: "0", token: token };
 };
 
 export const generateSwapTxs = async (
@@ -50,12 +58,12 @@ export const generateSwapTxs = async (
       peer_address: peerAddress,
 
       send_amount: sendToken.amount,
-      send_asset_id: sendToken.id,
-      send_unit: sendToken.asset_type,
+      send_asset_id: sendToken.token.id,
+      send_unit: sendToken.token.asset_type,
 
       receive_amount: receiveToken.amount,
-      receive_asset_id: receiveToken.id,
-      receive_unit: receiveToken.asset_type,
+      receive_asset_id: receiveToken.token.id,
+      receive_unit: receiveToken.token.asset_type,
 
       my_fee: myFee,
       peer_fee: peerFee,

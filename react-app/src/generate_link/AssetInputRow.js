@@ -1,14 +1,19 @@
-const AssetInputRow = ({ label, token, setToken, onTokenClick }) => {
+const AssetInputRow = ({
+  label,
+  tokenInputs,
+  setTokenInputs,
+  onTokenClick,
+}) => {
   return (
     <div className="swap-field">
       <div>
         <label className="label">{label}</label>
-        {assetAmountView(token, setToken)}
+        {assetAmountView(tokenInputs, setTokenInputs)}
       </div>
 
-      {token &&
-        generateMaxView(token, () => {
-          setToken((t) => {
+      {tokenInputs?.token &&
+        generateMaxView(tokenInputs.token, () => {
+          setTokenInputs((t) => {
             return {
               ...t,
               amount: t.balance,
@@ -17,7 +22,7 @@ const AssetInputRow = ({ label, token, setToken, onTokenClick }) => {
         })}
 
       <button className="btn btn--change-token" onClick={() => onTokenClick()}>
-        {<div>{token?.main_label ?? "Select asset"}</div>}
+        {<div>{tokenInputs?.token?.main_label ?? "Select asset"}</div>}
       </button>
     </div>
   );
@@ -34,15 +39,18 @@ const generateMaxView = (token, onClick) => {
   );
 };
 
-const assetAmountView = (token, setToken) => {
+const assetAmountView = (tokenInputs, setToken) => {
+  // if the amount is 0, use the placeholder - so user doesn't have to delete it
+  let value = tokenInputs?.amount == "0" ? "" : tokenInputs?.amount;
+
   return (
     <input
       className="input input--amount"
       placeholder={"0.0"}
-      value={token?.amount}
+      value={value}
       onChange={(event) => {
         setToken({
-          ...token,
+          ...tokenInputs,
           amount: event.target.value,
         });
       }}

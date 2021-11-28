@@ -5,7 +5,8 @@ import SelectToken from "./SelectToken";
 
 export const SelectTokenModal = ({
   showProgress,
-  setToken,
+  tokenInputs,
+  setTokenInputs,
   setShowModal,
   myAddress,
 }) => {
@@ -22,9 +23,17 @@ export const SelectTokenModal = ({
         statusMsg={statusMsgUpdater}
         showProgress={showProgress}
         myAddress={myAddress}
-        onSelectToken={async (token) => {
+        onSelectToken={async (selectedToken) => {
+          console.log("received token: %o", selectedToken);
+          console.log("setting token: %o", {
+            ...tokenInputs,
+            token: selectedToken,
+          });
           setShowModal(false);
-          setToken(token);
+          setTokenInputs({
+            ...tokenInputs,
+            token: selectedToken,
+          });
         }}
       />
     </Modal>

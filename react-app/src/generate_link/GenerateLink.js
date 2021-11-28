@@ -3,8 +3,8 @@ import Modal from "../Modal";
 import {
   init,
   generateSwapTxs,
-  algoToken,
   initDefaultToken,
+  initEmptyToken,
 } from "./controller";
 import AssetInputRow from "./AssetInputRow";
 import SwapLinkView from "./SwapLinkView";
@@ -14,8 +14,8 @@ import { SelectTokenModal } from "./select_token/SelectTokenModal";
 export const GenerateLink = (props) => {
   const [peerAddress, setPeerAddress] = useState("");
 
-  const [sendToken, setSendToken] = useState(null);
-  const [receiveToken, setReceiveToken] = useState(null);
+  const [sendTokenInputs, setSendTokenInputs] = useState(null);
+  const [receiveTokenInputs, setReceiveTokenInputs] = useState(null);
 
   const [myFee, setMyFee] = useState("");
   const [peerFee, setPeerFee] = useState("");
@@ -31,12 +31,22 @@ export const GenerateLink = (props) => {
   const [showReceiveUnitModal, setShowReceiveUnitModal] = useState(false);
 
   useEffect(() => {
-    init(props.statusMsg, setMyFee, setPeerFee, setFeeTotal, setSendToken);
+    init(
+      props.statusMsg,
+      setMyFee,
+      setPeerFee,
+      setFeeTotal,
+      setSendTokenInputs
+    );
   }, []);
 
   useEffect(() => {
-    initDefaultToken(props.statusMsg, setSendToken, props.myBalance);
+    initDefaultToken(props.statusMsg, setSendTokenInputs, props.myBalance);
   }, [props.myBalance]);
+
+  useEffect(() => {
+    initEmptyToken(setReceiveTokenInputs);
+  }, []);
 
   return (
     <div>
@@ -60,16 +70,16 @@ export const GenerateLink = (props) => {
         <div className="swap-container">
           <AssetInputRow
             label="You send"
-            token={sendToken}
-            setToken={setSendToken}
+            tokenInputs={sendTokenInputs}
+            setTokenInputs={setSendTokenInputs}
             onTokenClick={() => setShowSendUnitModal(true)}
           />
 
           <button
             className="swap-switch"
             onClick={() => {
-              setSendToken(receiveToken);
-              setReceiveToken(sendToken);
+              setSendTokenInputs(receiveTokenInputs);
+              setReceiveTokenInputs(sendTokenInputs);
             }}
           >
             <svg
@@ -112,8 +122,8 @@ export const GenerateLink = (props) => {
 
           <AssetInputRow
             label="You receive"
-            token={receiveToken}
-            setToken={setReceiveToken}
+            tokenInputs={receiveTokenInputs}
+            setTokenInputs={setReceiveTokenInputs}
             onTokenClick={() => {
               setShowReceiveUnitModal(true);
             }}
@@ -169,15 +179,15 @@ export const GenerateLink = (props) => {
           disabled={
             props.myAddress === "" ||
             peerAddress === "" ||
-            !sendToken ||
-            !receiveToken
+            !sendTokenInputs?.token ||
+            !receiveTokenInputs?.token
               ? true
               : false
           }
           onClick={async () => {
             await generateSwapTxs(
-              sendToken,
-              receiveToken,
+              sendTokenInputs,
+              receiveTokenInputs,
               props.myAddress,
               peerAddress,
               myFee,
@@ -221,7 +231,8 @@ export const GenerateLink = (props) => {
         {showSendUnitModal && (
           <SelectTokenModal
             showProgress={props.showProgress}
-            setToken={setSendToken}
+            tokenInput={sendTokenInputs}
+            setTokenInputs={setSendTokenInputs}
             setShowModal={setShowSendUnitModal}
             myAddress={props.myAddress}
           />
@@ -230,7 +241,8 @@ export const GenerateLink = (props) => {
         {showReceiveUnitModal && (
           <SelectTokenModal
             showProgress={props.showProgress}
-            setToken={setReceiveToken}
+            tokenInputs={receiveTokenInputs}
+            setTokenInputs={setReceiveTokenInputs}
             setShowModal={setShowReceiveUnitModal}
             myAddress={props.myAddress}
           />
