@@ -50,10 +50,7 @@ export const GenerateLink = (props) => {
 
   return (
     <div>
-      <div className="description">
-        Generate a link to swap <span>Algos</span>, <span>ASAs</span> <br /> or{" "}
-        <span>NFTs</span> with a peer
-      </div>
+      <div className="description">Swap any Algorand asset with a peer</div>
       <div className="swap-form">
         <div className="address-field">
           <label>{"Peer"}</label>

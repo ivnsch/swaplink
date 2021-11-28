@@ -118,11 +118,7 @@ const App = () => {
       <div>
         <div className="container">
           {showProgress && <ProgressBar />}
-          <div className="warning">
-            {
-              "This site is under development. It operates on TestNet. Use only for testing purposes."
-            }
-          </div>
+          <div className="warning">{"TESTNET"}</div>
 
           <header className="header">
             <div className="logo" aria-label="swaplink logo">
