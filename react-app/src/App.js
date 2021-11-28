@@ -13,6 +13,7 @@ import { useWalletConnect } from "./WalletConnect";
 import { saveAcceptedTerms, needsToAcceptTerms } from "./termsStorage";
 import DisclaimerModal from "./DisclaimerModal";
 import HowItWorksModal from "./HowItWorksModal";
+import CopyPasteText from "./CopyPasteText";
 /* global __COMMIT_HASH__ */
 
 const isIE = /*@cc_on!@*/ false || !!document.documentMode;
@@ -96,7 +97,13 @@ const App = () => {
 
             {showAddressMenu && myAddress && wallet && (
               <div className="dropdown__content">
-                <button className="btn btn--transparent">copy address</button>
+                <button className="btn btn--transparent">
+                  <CopyPasteText
+                    text={"copy address"}
+                    copyText={myAddress}
+                    hideIcon={true}
+                  />
+                </button>
 
                 <AddressMenu
                   statusMsg={statusMsg}
