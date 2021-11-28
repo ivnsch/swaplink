@@ -19,23 +19,23 @@ const AddressMenu = ({ statusMsg, myAddress, wallet }) => {
           <path
             d="M8.66675 7.33337L14.1334 1.8667"
             stroke="white"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
           <path
             d="M14.6666 4.53325V1.33325H11.4666"
             stroke="white"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
           <path
             d="M7.33325 1.33325H5.99992C2.66659 1.33325 1.33325 2.66659 1.33325 5.99992V9.99992C1.33325 13.3333 2.66659 14.6666 5.99992 14.6666H9.99992C13.3333 14.6666 14.6666 13.3333 14.6666 9.99992V8.66659"
             stroke="white"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
         </svg>
       </a>

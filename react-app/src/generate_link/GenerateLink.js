@@ -58,7 +58,7 @@ export const GenerateLink = (props) => {
             placeholder="Peer address"
             className="input input--address"
             value={peerAddress}
-            autocorrect="off"
+            autoCorrect="off"
             onChange={(event) => {
               setPeerAddress(event.target.value);
             }}
