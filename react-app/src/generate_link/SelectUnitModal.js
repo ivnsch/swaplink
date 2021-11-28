@@ -16,6 +16,7 @@ export const SelectUnitModal = ({
   return (
     <Modal
       title={"Unit"}
+      statusMsgUpdater={statusMsgUpdater}
       statusMsg={statusMsg}
       onCloseClick={() => setShowModal(false)}
     >

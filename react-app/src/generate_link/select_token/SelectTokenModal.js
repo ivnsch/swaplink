@@ -16,6 +16,7 @@ export const SelectTokenModal = ({
   return (
     <Modal
       title={"Token"}
+      statusMsgUpdater={statusMsgUpdater}
       statusMsg={statusMsg}
       onCloseClick={() => setShowModal(false)}
     >
@@ -24,11 +25,6 @@ export const SelectTokenModal = ({
         showProgress={showProgress}
         myAddress={myAddress}
         onSelectToken={async (selectedToken) => {
-          console.log("received token: %o", selectedToken);
-          console.log("setting token: %o", {
-            ...tokenInputs,
-            token: selectedToken,
-          });
           setShowModal(false);
           setTokenInputs({
             ...tokenInputs,

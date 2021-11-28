@@ -21,6 +21,7 @@ export const FeesModal = ({
   return (
     <Modal
       title={"Fees"}
+      statusMsgUpdater={statusMsgUpdater}
       statusMsg={statusMsg}
       onCloseClick={() => setShowFeesModal(false)}
     >

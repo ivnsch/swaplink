@@ -156,7 +156,12 @@ const App = () => {
           </header>
 
           <div id="wrapper">
-            {statusMsg && <StatusMsgView statusMsg={statusMsg} />}
+            {statusMsg && (
+              <StatusMsgView
+                statusMsgUpdater={statusMsgUpdater}
+                statusMsg={statusMsg}
+              />
+            )}
             <Router>
               <Route exact path="/">
                 <GenerateLink

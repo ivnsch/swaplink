@@ -1,6 +1,6 @@
 import CopyPasteText from "./CopyPasteText";
 
-export const StatusMsgView = ({ statusMsg }) => {
+export const StatusMsgView = ({ statusMsgUpdater, statusMsg }) => {
   let shortMsg = statusMsg.displayMsg;
   let maxMsgLength = 200;
   if (shortMsg.length > maxMsgLength) {
@@ -14,7 +14,10 @@ export const StatusMsgView = ({ statusMsg }) => {
       <div className="error">
         <CopyPasteText text={shortMsg} copyText={statusMsg.copyMsg} />
 
-        <button className="error-close">
+        <button
+          className="error-close"
+          onClick={() => statusMsgUpdater.clear()}
+        >
           <svg
             width="10"
             height="10"
