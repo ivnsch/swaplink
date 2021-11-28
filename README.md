@@ -1,10 +1,11 @@
-# SwapLink
+
+# ![Logo](img/logo.png)
 
 ![Continuous integration](https://github.com/ivanschuetz/swaplink/actions/workflows/actions.yml/badge.svg)
 
 Site to perform peer to peer atomic swaps on the Algorand blockchain
 
-Live: http://www.swaplink.xyz
+Live: https://test.swaplink.xyz
 
 # Pre-requisites
 
