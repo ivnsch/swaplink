@@ -80,24 +80,12 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: #262730;
-  border-radius: 4px;
-  height: 40px;
-  padding: 0 13px;
 
   .currency {
-    display: flex;
-    align-items: flex-end;
-    gap: 4px;
-    font-weight: 400;
-    font-size: 14px;
-    color: #f8f9ff;
-
     svg {
       display: block;
       width: 12px;
       height: 12px;
-      transform: translateY(-3px);
     }
   }
 }
@@ -274,19 +262,11 @@ dd {
   }
 
   .currency {
-    display: flex;
-    align-items: flex-end;
-    gap: 4px;
-    font-weight: 400;
-    font-size: 18px;
-    line-height: 22px;
-    color: #f8f9ff;
-
     svg {
       display: block;
       width: 16px;
       height: 16px;
-      transform: translateY(-5px);
+      transform: translateY(-2px);
     }
   }
 }
@@ -453,6 +433,21 @@ dd {
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  &__fee {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    font-weight: 600;
+    font-size: 18px;
+    text-transform: capitalize;
+    color: #fbfbff;
+
+    svg {
+      transform: translateY(-1px);
+    }
+  }
 }
 
 .border-bottom {
@@ -479,11 +474,11 @@ dd {
 .warning {
   margin-bottom: 16px;
   padding: 14px 0;
-  font-weight: 500;
+  font-weight: 400;
   font-size: 12px;
-  color: #fea472;
+  color: var(--clr-white);
   text-align: center;
-  background: #373840;
+  background: #ff8e8e;
 }
 
 a {
@@ -514,6 +509,20 @@ a {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  .copy {
+    &.active {
+      transform: translateX(11px);
+      padding: 4px;
+      background: #262730;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+
+      font-weight: 500;
+      font-size: 14px;
+      text-transform: capitalize;
+      color: var(--clr-white);
+    }
+  }
 }
 
 /*********************/

@@ -40,6 +40,35 @@ button {
   cursor: pointer;
   border: none;
 
+  &--primary {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 12px;
+    font-weight: 500;
+    font-size: 12px;
+    text-transform: capitalize;
+    color: #ffffff;
+    background: #2e93f7;
+    border-radius: 4px;
+  }
+
+  &--secondary {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 12px;
+    font-weight: 500;
+    font-size: 12px;
+    text-transform: capitalize;
+    color: #ffffff;
+    background-color: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-sizing: border-box;
+    border-radius: 4px;
+  }
+
   &--connect-wallet {
     padding: 13px 20px;
     color: var(--clr-blue-900);
@@ -82,7 +111,7 @@ button {
   }
 
   &--max {
-    padding: 9px 12px;
+    padding: 8px 12px;
     color: #3897f4;
     background: var(--clr-bg-lighter);
     border: 1px solid var(--clr-blue-900);
@@ -99,6 +128,10 @@ button {
     transition: all 0.2s ease-in-out;
     border-radius: 4px;
     white-space: nowrap;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
 
     &:hover,
     &:focus {

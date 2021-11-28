@@ -61,6 +61,7 @@ export const GenerateLink = (props) => {
             placeholder="Peer address"
             className="input input--address"
             value={peerAddress}
+            autocorrect="off"
             onChange={(event) => {
               setPeerAddress(event.target.value);
             }}
@@ -168,7 +169,6 @@ export const GenerateLink = (props) => {
                     fill="#F8F9FF"
                   />
                 </svg>
-                algo
               </span>
             </span>
           </button>
