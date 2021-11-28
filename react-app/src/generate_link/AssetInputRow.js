@@ -16,7 +16,7 @@ const AssetInputRow = ({
           setTokenInputs((t) => {
             return {
               ...t,
-              amount: t.balance,
+              amount: t.token.balance,
             };
           });
         })}
