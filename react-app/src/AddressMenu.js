@@ -5,7 +5,7 @@ const AddressMenu = ({ statusMsg, myAddress, wallet }) => {
     <React.Fragment>
       <a
         className="btn btn--transparent"
-        href={"https://algoexplorer.io/address/" + myAddress}
+        href={"https://testnet.algoexplorer.io/address/" + myAddress}
         target="_blank"
       >
         {"AlgoExplorer"}
