@@ -42,7 +42,7 @@ pub fn env() -> Env {
 pub fn base_url<'a>() -> &'a str {
     match env() {
         Env::Local => "http://localhost:3000",
-        Env::Prod => "http://swaplink.xyz",
+        Env::Prod => "https://test.swaplink.xyz",
     }
 }
 
