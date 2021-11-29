@@ -96,7 +96,7 @@ const SelectToken = ({ statusMsg, showProgress, myAddress, onSelectToken }) => {
                 </div>
                 <div className="token-list__balance">
                   {!token.balance ? (
-                    <div class="lds-ring">
+                    <div className="lds-ring">
                       <div></div>
                       <div></div>
                       <div></div>
