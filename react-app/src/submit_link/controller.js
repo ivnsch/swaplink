@@ -56,7 +56,8 @@ export const submitTxs = async (
   showProgress,
   setMyBalance,
   myAddress,
-  wallet
+  wallet,
+  setShowTxId
 ) => {
   try {
     const { bridge_submit_txs, bridge_balance, bridge_wait_for_pending_tx } =
@@ -71,7 +72,7 @@ export const submitTxs = async (
       pt: swapRequest.pt, // passthrough
     });
 
-    statusMsg.success("Swap submitted! Tx id: " + txId);
+    setShowTxId(txId);
     showProgress(false);
 
     // wait for pending tx to update user's balance

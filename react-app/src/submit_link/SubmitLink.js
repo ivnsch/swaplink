@@ -2,12 +2,15 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { init, submitTxs } from "./controller";
 import CopyPasteText from "../CopyPasteText";
+import Modal from "../Modal";
+import SubmitTxView from "./SubmitTxView";
 
 export const SubmitLink = (props) => {
   let { link } = useParams();
 
   const [swapRequest, setSwapRequest] = useState(null);
   const [swapViewData, setSwapViewData] = useState(null);
+  const [showTxId, setShowTxId] = useState(null);
 
   useEffect(() => {
     init(
@@ -64,7 +67,8 @@ export const SubmitLink = (props) => {
                 props.showProgress,
                 props.setMyBalance,
                 props.myAddress,
-                props.wallet
+                props.wallet,
+                setShowTxId
               );
             }}
           >
@@ -80,6 +84,14 @@ export const SubmitLink = (props) => {
       <div className="container">
         <div className="submit-swap-title">{"You got a swap request!"}</div>
         {swapViewDataView(swapViewData)}
+        {showTxId && (
+          <Modal
+            title={"Swap submitted!"}
+            onCloseClick={() => setShowTxId(null)}
+          >
+            <SubmitTxView txId={showTxId} />
+          </Modal>
+        )}
       </div>
     </div>
   );
