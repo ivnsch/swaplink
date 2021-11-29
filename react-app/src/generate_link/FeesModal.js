@@ -92,8 +92,6 @@ export const FeesModal = ({
           </span>
         </div>
       )}
-
-      <button className="btn btn--confirm-fees">confirm</button>
     </Modal>
   );
 };
