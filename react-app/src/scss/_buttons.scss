@@ -71,6 +71,7 @@ button {
 
   &--connect-wallet {
     padding: 13px 20px;
+    font-weight: 700;
     color: var(--clr-blue-900);
     background: rgba(46, 147, 247, 0.08);
     border-radius: 4px;
@@ -145,6 +146,23 @@ button {
     &:focus {
       color: var(--clr-white);
     }
+  }
+
+  &--swap-complete {
+    padding: 13px;
+    font-size: 14px;
+    color: var(--clr-white);
+    background: #1a1c22;
+    border: var(--border);
+    box-sizing: border-box;
+    border-radius: 4px;
+  }
+
+  &--truncated {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 

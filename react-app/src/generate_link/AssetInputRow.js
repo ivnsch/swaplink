@@ -45,6 +45,8 @@ const assetAmountView = (tokenInputs, setToken) => {
 
   return (
     <input
+      type="number"
+      step="0.001"
       className="input input--amount"
       placeholder={"0.0"}
       value={value}

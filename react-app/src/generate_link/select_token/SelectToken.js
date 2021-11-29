@@ -68,7 +68,9 @@ const SelectToken = ({ statusMsg, showProgress, myAddress, onSelectToken }) => {
           onSearchInput(event.target.value);
         }}
       />
-      {tokens.length === 0 && <div>{"No results"}</div>}
+      {tokens.length === 0 && (
+        <div className="asset-no-result">{"No results"}</div>
+      )}
       {tokens.map((token) => {
         return (
           <div key={token.id} className="token-list">
@@ -92,7 +94,18 @@ const SelectToken = ({ statusMsg, showProgress, myAddress, onSelectToken }) => {
                     {token.secondary_label}
                   </div>
                 </div>
-                <div className="token-list__balance">{token.balance}</div>
+                <div className="token-list__balance">
+                  {!token.balance ? (
+                    <div class="lds-ring">
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                    </div>
+                  ) : (
+                    token.balance
+                  )}
+                </div>
               </button>
             </div>
           </div>

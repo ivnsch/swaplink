@@ -83,7 +83,7 @@ export const SubmitLink = (props) => {
   return (
     <div>
       <div className="container">
-        <div className="submit-swap-title">{"You got a swap request!"}</div>
+        <div className="app-title">{"You got a swap request!"}</div>
         {swapViewDataView(swapViewData)}
         {showTxId && (
           <Modal

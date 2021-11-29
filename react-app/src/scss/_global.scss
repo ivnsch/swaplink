@@ -68,13 +68,9 @@ a {
 }
 
 .own-balance {
-  display: none;
+  display: flex;
   align-items: center;
   gap: 8px;
-
-  @media only screen and (min-width: 480px) {
-    display: flex;
-  }
 
   .currency {
     svg {
@@ -398,7 +394,7 @@ dd {
   white-space: nowrap;
 }
 
-.submit-swap-title {
+.app-title {
   margin: 22px 0 40px 0;
   font-weight: 600;
   font-size: 22px;
@@ -417,13 +413,17 @@ dd {
   background: #ff8e8e;
 }
 
-@media only screen and (max-width: 460px) {
-  .modal-content-size {
-    max-width: 350px;
-    min-width: 350px;
-    min-height: 350px;
-  }
+.asset-no-result {
+  padding: 16px;
 }
+
+// @media only screen and (max-width: 460px) {
+//   .modal-content-size {
+//     max-width: 350px;
+//     min-width: 350px;
+//     min-height: 350px;
+//   }
+// }
 
 .link-data-container {
   text-align: center;

@@ -50,7 +50,7 @@ export const GenerateLink = (props) => {
 
   return (
     <div>
-      <div className="description">Swap any Algorand asset with a peer</div>
+      <div className="app-title">Swap any Algorand asset with a peer</div>
       <div className="swap-form">
         <div className="address-field">
           <label>{"Peer"}</label>
@@ -59,6 +59,7 @@ export const GenerateLink = (props) => {
             className="input input--address"
             value={peerAddress}
             autoCorrect="off"
+            spellCheck="false"
             onChange={(event) => {
               setPeerAddress(event.target.value);
             }}
