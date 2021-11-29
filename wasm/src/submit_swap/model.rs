@@ -9,6 +9,13 @@ pub struct SubmitSwapViewData {
 
 #[derive(Debug, Clone)]
 pub enum SubmitTransferViewData {
-    Algos { amount: String },
-    Asset { id: String, amount: String },
+    Algos {
+        amount: String,
+    },
+    Asset {
+        id: String,
+        unit: Option<String>,
+        name: Option<String>,
+        amount: String,
+    },
 }

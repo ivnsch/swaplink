@@ -4,6 +4,7 @@ import { init, submitTxs } from "./controller";
 import CopyPasteText from "../CopyPasteText";
 import Modal from "../Modal";
 import SubmitTxView from "./SubmitTxView";
+import ExternalLinkIcon from "../svg/ExternalLinkIcon";
 
 export const SubmitLink = (props) => {
   let { link } = useParams();
@@ -114,9 +115,20 @@ const tranferView = (transfer) => {
       </div>
     );
   } else if (transfer.unit === "asset") {
-    let text =
-      "Asset id: " + transfer.asset_id + ", amount: " + transfer.amount;
-    return <CopyPasteText text={text} />;
+    return (
+      <div>
+        <span className="amount">{transfer.amount}</span>
+        <a
+          className="btn btn--transparent"
+          href={"https://testnet.algoexplorer.io/asset/" + transfer.asset_id}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {transfer.label}
+          <ExternalLinkIcon />
+        </a>
+      </div>
+    );
   } else {
     throw new Error("Invalid transfer type: " + transfer.unit);
   }

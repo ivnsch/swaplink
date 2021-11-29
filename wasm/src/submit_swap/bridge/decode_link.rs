@@ -84,6 +84,7 @@ pub struct SubmitSwapViewDataForJs {
 #[derive(Debug, Clone, Serialize)]
 pub struct SubmitTransferViewDataForJs {
     pub amount: String,
+    pub label: String,
     pub unit: String,
     pub asset_id: String,
 }
@@ -96,21 +97,40 @@ impl From<SubmitSwapViewData> for SubmitSwapViewDataForJs {
                 amount: amount_str(&view_data.send),
                 unit: unit_str(&view_data.send),
                 asset_id: asset_id_str(&view_data.send),
+                label: label(&view_data.send),
             },
             receive: SubmitTransferViewDataForJs {
                 amount: amount_str(&view_data.receive),
                 unit: unit_str(&view_data.receive),
                 asset_id: asset_id_str(&view_data.receive),
+                label: label(&view_data.receive),
             },
             my_fee: view_data.my_fee,
         }
     }
 }
 
+pub fn label(transfer: &SubmitTransferViewData) -> String {
+    match transfer {
+        SubmitTransferViewData::Algos { amount: _ } => "".to_owned(),
+        SubmitTransferViewData::Asset {
+            id,
+            amount: _,
+            unit,
+            name: _,
+        } => unit.clone().unwrap_or_else(|| id.to_owned()),
+    }
+}
+
 pub fn unit_str(transfer: &SubmitTransferViewData) -> String {
     match transfer {
         SubmitTransferViewData::Algos { amount: _ } => "algo",
-        SubmitTransferViewData::Asset { id: _, amount: _ } => "asset",
+        SubmitTransferViewData::Asset {
+            id: _,
+            amount: _,
+            unit: _,
+            name: _,
+        } => "asset",
     }
     .to_owned()
 }
@@ -118,7 +138,12 @@ pub fn unit_str(transfer: &SubmitTransferViewData) -> String {
 pub fn amount_str(transfer: &SubmitTransferViewData) -> String {
     match transfer {
         SubmitTransferViewData::Algos { amount } => amount,
-        SubmitTransferViewData::Asset { id: _, amount } => amount,
+        SubmitTransferViewData::Asset {
+            id: _,
+            amount,
+            unit: _,
+            name: _,
+        } => amount,
     }
     .to_owned()
 }
@@ -126,7 +151,12 @@ pub fn amount_str(transfer: &SubmitTransferViewData) -> String {
 pub fn asset_id_str(transfer: &SubmitTransferViewData) -> String {
     match transfer {
         SubmitTransferViewData::Algos { amount: _ } => "",
-        SubmitTransferViewData::Asset { id, amount: _ } => id,
+        SubmitTransferViewData::Asset {
+            id,
+            amount: _,
+            unit: _,
+            name: _,
+        } => id,
     }
     .to_owned()
 }

@@ -57,6 +57,8 @@ impl SubmitSwapLogic {
                 .normalize();
                 Ok(SubmitTransferViewData::Asset {
                     id: a.xfer.to_string(),
+                    unit: asset_config.params.unit_name.clone(),
+                    name: asset_config.params.name.clone(),
                     amount: decimal.to_string(),
                 })
             }
