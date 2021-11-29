@@ -34,11 +34,9 @@ export const fetchSwapData = async (
     showProgress(true);
 
     const { bridge_decode_link } = await wasmPromise;
-    console.log("will decode!");
     const swapRequest = await bridge_decode_link({
       swap_link: link,
     });
-    console.log("decoded!");
 
     setSwapRequest(swapRequest);
     setSwapViewData(swapRequest.view_data);
