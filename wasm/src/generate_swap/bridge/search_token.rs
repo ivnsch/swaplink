@@ -32,7 +32,10 @@ pub async fn search_token(pars: SearchTokenParJs) -> Result<SearchTokenResJs> {
     let tokens = if pars.input.is_empty() {
         default_tokens(holdings.map(|h| micro_algos_to_algos_str(h.balance)))
     } else {
-        search(&algod, pars.input, holdings).await?
+        match search_with_possible_asset_id(&algod, pars.input, holdings).await? {
+            Some(t) => vec![t],
+            None => vec![],
+        }
     };
 
     Ok(SearchTokenResJs { tokens })
@@ -42,11 +45,11 @@ fn default_tokens(algo_balance: Option<String>) -> Vec<TokenViewData> {
     vec![algo_token_view_data(algo_balance)]
 }
 
-async fn search(
+async fn search_with_possible_asset_id(
     algod: &Algod,
     possible_id: String,
     holdings: Option<Holdings>,
-) -> Result<Vec<TokenViewData>> {
+) -> Result<Option<TokenViewData>> {
     let assets_by_id_map = holdings.map(|holdings| {
         holdings
             .assets
@@ -55,23 +58,9 @@ async fn search(
             .collect()
     });
 
-    let mut tokens = vec![];
-    if let Some(asset) =
-        search_with_possible_asset_id(&algod, possible_id, assets_by_id_map).await?
-    {
-        tokens.push(asset)
-    }
-    Ok(tokens)
-}
-
-async fn search_with_possible_asset_id(
-    algod: &Algod,
-    possible_id: String,
-    assets: Option<HashMap<u64, AssetHolding>>,
-) -> Result<Option<TokenViewData>> {
     let id = possible_id.parse::<u64>();
     match id {
-        Ok(id) => search_asset(algod, id, assets).await,
+        Ok(id) => search_asset(algod, id, assets_by_id_map).await,
         // not an id - no results
         Err(_) => Ok(None),
     }
