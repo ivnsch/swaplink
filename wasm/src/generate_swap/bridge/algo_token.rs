@@ -10,11 +10,11 @@ pub async fn bridge_algo_token(pars: JsValue) -> Result<JsValue, JsValue> {
     to_bridge_res(algo_token_res(parse_bridge_pars(pars)?))
 }
 
-pub fn algo_token_res(pars: AssetTokenParsJs) -> Result<TokenViewData> {
+pub fn algo_token_res(pars: AlgoTokenParsJs) -> Result<TokenViewData> {
     Ok(algo_token_view_data(pars.balance))
 }
 
-pub fn algo_token_view_data(balance: String) -> TokenViewData {
+pub fn algo_token_view_data(balance: Option<String>) -> TokenViewData {
     TokenViewData {
         id: "algo".to_owned(), // just has to be unique
         main_label: "Algo".to_owned(),
@@ -25,7 +25,7 @@ pub fn algo_token_view_data(balance: String) -> TokenViewData {
 }
 
 #[derive(Debug, Clone, Deserialize)]
-pub struct AssetTokenParsJs {
-    // balance is known in react, and we're returning just view data, so passed, to not fetch here again
-    pub balance: String,
+pub struct AlgoTokenParsJs {
+    // if balance is already known in react, use it, to not fetch here again
+    pub balance: Option<String>,
 }

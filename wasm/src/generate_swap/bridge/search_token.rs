@@ -24,37 +24,50 @@ pub async fn bridge_search_token(pars: JsValue) -> Result<JsValue, JsValue> {
 pub async fn search_token(pars: SearchTokenParJs) -> Result<SearchTokenResJs> {
     let algod = algod(&network());
 
-    let holdings = rmp_serde::from_slice::<Holdings>(&pars.holdings_msg_pack)?;
+    let holdings = match pars.holdings_msg_pack {
+        Some(h) => Some(rmp_serde::from_slice::<Holdings>(&h)?),
+        None => None,
+    };
 
     let tokens = if pars.input.is_empty() {
-        default_tokens(micro_algos_to_algos_str(holdings.balance))
+        default_tokens(holdings.map(|h| micro_algos_to_algos_str(h.balance)))
     } else {
-        let assets_by_id_map = holdings
-            .assets
-            .into_iter()
-            .map(|a| (a.asset_id, a))
-            .collect();
-
-        let mut tokens = vec![];
-        if let Some(asset) =
-            search_with_possible_asset_id(&algod, pars.input, &assets_by_id_map).await?
-        {
-            tokens.push(asset)
-        }
-        tokens
+        search(&algod, pars.input, holdings).await?
     };
 
     Ok(SearchTokenResJs { tokens })
 }
 
-fn default_tokens(algo_balance: String) -> Vec<TokenViewData> {
+fn default_tokens(algo_balance: Option<String>) -> Vec<TokenViewData> {
     vec![algo_token_view_data(algo_balance)]
+}
+
+async fn search(
+    algod: &Algod,
+    possible_id: String,
+    holdings: Option<Holdings>,
+) -> Result<Vec<TokenViewData>> {
+    let assets_by_id_map = holdings.map(|holdings| {
+        holdings
+            .assets
+            .into_iter()
+            .map(|a| (a.asset_id, a))
+            .collect()
+    });
+
+    let mut tokens = vec![];
+    if let Some(asset) =
+        search_with_possible_asset_id(&algod, possible_id, assets_by_id_map).await?
+    {
+        tokens.push(asset)
+    }
+    Ok(tokens)
 }
 
 async fn search_with_possible_asset_id(
     algod: &Algod,
     possible_id: String,
-    assets: &HashMap<u64, AssetHolding>,
+    assets: Option<HashMap<u64, AssetHolding>>,
 ) -> Result<Option<TokenViewData>> {
     let id = possible_id.parse::<u64>();
     match id {
@@ -67,7 +80,7 @@ async fn search_with_possible_asset_id(
 async fn search_asset(
     algod: &Algod,
     id: u64,
-    assets: &HashMap<u64, AssetHolding>,
+    assets: Option<HashMap<u64, AssetHolding>>,
 ) -> Result<Option<TokenViewData>> {
     let asset = algod.asset_information(id).await;
     Ok(match asset {
@@ -80,8 +93,13 @@ async fn search_asset(
     })
 }
 
-fn asset_view_data(asset: &Asset, assets: &HashMap<u64, AssetHolding>) -> TokenViewData {
-    let holding = assets.get(&asset.index);
+fn asset_view_data(asset: &Asset, holdings: Option<HashMap<u64, AssetHolding>>) -> TokenViewData {
+    let balance = holdings.map(|holdings| {
+        holdings
+            .get(&asset.index)
+            .map(|a| a.amount.to_string())
+            .unwrap_or_else(|| "0".to_owned())
+    });
 
     TokenViewData {
         id: asset.index.to_string(),
@@ -92,16 +110,14 @@ fn asset_view_data(asset: &Asset, assets: &HashMap<u64, AssetHolding>) -> TokenV
             .unwrap_or(asset.index.to_string()),
         secondary_label: asset.params.name.clone(),
         asset_type: "asset".to_owned(), // TODO from enum - use when validating inputs
-        balance: holding
-            .map(|a| a.amount.to_string())
-            .unwrap_or_else(|| "0".to_owned()),
+        balance,
     }
 }
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct SearchTokenParJs {
     pub input: String,
-    pub holdings_msg_pack: Vec<u8>,
+    pub holdings_msg_pack: Option<Vec<u8>>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -115,5 +131,5 @@ pub struct TokenViewData {
     pub main_label: String,
     pub secondary_label: Option<String>,
     pub asset_type: String,
-    pub balance: String,
+    pub balance: Option<String>,
 }

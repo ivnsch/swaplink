@@ -20,19 +20,9 @@ const SelectToken = ({ statusMsg, showProgress, myAddress, onSelectToken }) => {
   }, [myAddress]);
 
   const searchToken = async (text) => {
-    if (holdingsMsgPack) {
-      console.log("calling search, account: %o", holdingsMsgPack);
-      const tokens = await search(
-        statusMsg,
-        showProgress,
-        text,
-        holdingsMsgPack
-      );
-      setTokens(tokens);
-    } else {
-      // TODO sync with fetch holdings so this can't happen
-      console.error("TODO No holdings - input discarded: " + text);
-    }
+    console.log("calling search, account: %o", holdingsMsgPack);
+    const tokens = await search(statusMsg, showProgress, text, holdingsMsgPack);
+    setTokens(tokens);
   };
 
   const searchTokenDelayed = async (text) => {
@@ -52,10 +42,7 @@ const SelectToken = ({ statusMsg, showProgress, myAddress, onSelectToken }) => {
   };
 
   useEffect(() => {
-    if (holdingsMsgPack) {
-      console.log("holdingsMsgPack, account: %o", holdingsMsgPack);
-      searchToken("");
-    }
+    searchToken("");
   }, [holdingsMsgPack]);
 
   return (
