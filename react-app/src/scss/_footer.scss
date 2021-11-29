@@ -24,19 +24,23 @@
   &__menu {
     position: relative;
 
+    &:hover,
     &:focus-within,
-    &:focus,
-    &:focus-visible {
+    &:focus {
       .footer__menu__list {
         display: flex;
       }
     }
 
-    &__list {
+    &__wrapper {
       position: absolute;
-      bottom: calc(100% + 8px);
+      bottom: calc(100%);
       right: 0;
       width: 180px;
+      padding-bottom: 10px;
+    }
+
+    &__list {
       display: none;
       flex-direction: column;
       padding: 8px;

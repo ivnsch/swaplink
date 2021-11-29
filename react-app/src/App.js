@@ -20,7 +20,6 @@ const isIE = /*@cc_on!@*/ false || !!document.documentMode;
 
 const App = () => {
   const [myAddress, setMyAddress] = useState("");
-  const [showAddressMenu, setShowAddressMenu] = useState(false);
   const [showLegalModal, setShowLegalModal] = useState(false);
   const [showHowItWorksModal, setShowHowItWorksModal] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
@@ -87,14 +86,9 @@ const App = () => {
           )}
 
           <div className="dropdown">
-            <button
-              className="own-address"
-              onClick={() => setShowAddressMenu(!showAddressMenu)}
-            >
-              {myAddressDisplay}
-            </button>
+            <button className="own-address">{myAddressDisplay}</button>
 
-            {showAddressMenu && myAddress && wallet && (
+            {myAddress && wallet && (
               <div className="dropdown__content">
                 <button className="btn btn--transparent">
                   <CopyPasteText
@@ -209,7 +203,7 @@ const App = () => {
             </a>
 
             <div className="footer__menu">
-              <button className="footer__item show-menu">
+              <button className="footer__item">
                 <svg
                   width="16"
                   height="16"
@@ -226,24 +220,26 @@ const App = () => {
                 </svg>
               </button>
 
-              <ul className="footer__menu__list">
-                <li>
-                  <button
-                    onClick={() => {
-                      setShowHowItWorksModal(!showHowItWorksModal);
-                    }}
-                  >
-                    How it works
-                  </button>
-                  <button
-                    onClick={() => {
-                      setShowLegalModal(!showLegalModal);
-                    }}
-                  >
-                    disclaimer
-                  </button>
-                </li>
-              </ul>
+              <div className="footer__menu__wrapper">
+                <ul className="footer__menu__list">
+                  <li>
+                    <button
+                      onClick={() => {
+                        setShowHowItWorksModal(!showHowItWorksModal);
+                      }}
+                    >
+                      How it works
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowLegalModal(!showLegalModal);
+                      }}
+                    >
+                      disclaimer
+                    </button>
+                  </li>
+                </ul>
+              </div>
             </div>
           </footer>
 

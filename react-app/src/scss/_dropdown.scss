@@ -1,11 +1,19 @@
 .dropdown {
   position: relative;
 
+  &:hover,
+  &:focus-within,
+  &:focus {
+    .dropdown__content {
+      display: flex;
+    }
+  }
+
   &__content {
     position: absolute;
     right: 0;
     min-width: 260px;
-    display: flex;
+    display: none;
     flex-direction: column;
     gap: 8px;
     padding: 8px;
