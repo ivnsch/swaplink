@@ -56,7 +56,7 @@ const SelectToken = ({ statusMsg, showProgress, myAddress, onSelectToken }) => {
       searchToken("");
     }
     initSearch();
-  }, [statusMsg, showProgress, holdingsMsgPack]);
+  }, [searchToken, statusMsg, showProgress, holdingsMsgPack]);
 
   return (
     <div>
