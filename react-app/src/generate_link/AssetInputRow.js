@@ -41,7 +41,7 @@ const generateMaxView = (token, onClick) => {
 
 const assetAmountView = (tokenInputs, setToken) => {
   // if the amount is 0, use the placeholder - so user doesn't have to delete it
-  let value = tokenInputs?.amount == "0" ? "" : tokenInputs?.amount;
+  let value = tokenInputs?.amount === "0" ? "" : tokenInputs?.amount ?? "";
 
   return (
     <input

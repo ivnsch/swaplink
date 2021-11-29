@@ -12,7 +12,7 @@ export const tryOverspendError = (msg) => {
   const match = msg.match(regex);
   console.log("in tryOverspendError");
 
-  if (match && match.length == 2) {
+  if (match && match.length === 2) {
     let address = match[1];
     return (
       "Address " + address + " doesn't have enough funds to complete the swap."
@@ -27,7 +27,7 @@ export const tryAssetNotOptedInError = (msg) => {
   const regex = /asset\s(.*)\smissing from\s(.*)$/;
   const match = msg.match(regex);
   console.log("match: %o", match);
-  if (match && match.length == 3) {
+  if (match && match.length === 3) {
     let asset = match[1];
     let address = match[2];
     return (
@@ -43,7 +43,7 @@ export const tryAssetOverspendError = (msg) => {
   const regex = /underflow on subtracting (.*) from sender amount (.*)$/;
   const match = msg.match(regex);
   console.log("match: %o", match);
-  if (match && match.length == 3) {
+  if (match && match.length === 3) {
     let attemptedAmount = match[1];
     let balance = match[2];
     return (

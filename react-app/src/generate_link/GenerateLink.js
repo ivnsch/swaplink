@@ -38,11 +38,11 @@ export const GenerateLink = (props) => {
       setFeeTotal,
       setSendTokenInputs
     );
-  }, []);
+  }, [props.statusMsg]);
 
   useEffect(() => {
     initDefaultToken(props.statusMsg, setSendTokenInputs, props.myBalance);
-  }, [props.myBalance]);
+  }, [props.statusMsg, props.myBalance]);
 
   useEffect(() => {
     initEmptyToken(setReceiveTokenInputs);

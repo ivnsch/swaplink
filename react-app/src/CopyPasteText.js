@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import { MdContentCopy } from "react-icons/md";
 
 const CopyPasteText = ({ text, copyText: copyTextOpt, hideIcon }) => {
   const [isCopied, setIsCopied] = useState(false);

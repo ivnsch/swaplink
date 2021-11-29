@@ -3,7 +3,7 @@ import { GenerateLink } from "./generate_link/GenerateLink";
 import { SubmitLink } from "./submit_link/SubmitLink";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import Modal from "./Modal";
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import ProgressBar from "./ProgressBar";
 import StatusMsgView from "./StatusMsgView";
 import { fetchBalance } from "./controller";
@@ -26,7 +26,7 @@ const App = () => {
   const [statusMsg, setStatusMsg] = useState(null);
   const [showProgress, setShowProgress] = useState(false);
   const [myBalance, setMyBalance] = useState("");
-  const [statusMsgUpdater, _] = useState(new StatusMsgUpdater(setStatusMsg));
+  const [statusMsgUpdater] = useState(new StatusMsgUpdater(setStatusMsg));
   const wallet = useWalletConnect(statusMsgUpdater, setMyAddress);
 
   const myAddressDisplay = useMemo(() => {
@@ -39,7 +39,7 @@ const App = () => {
     }
   }, [myAddress]);
 
-  useEffect(async () => {
+  useEffect(() => {
     async function initBalance() {
       if (myAddress) {
         let balance = await fetchBalance(statusMsg, myAddress);
@@ -48,7 +48,7 @@ const App = () => {
       }
     }
     initBalance();
-  }, [myAddress]);
+  }, [statusMsg, myAddress]);
 
   useEffect(() => {
     if (wallet) {
@@ -65,6 +65,10 @@ const App = () => {
       return null;
     }
   };
+
+  const showProgressCallback = useCallback((show) => {
+    setShowProgress(show);
+  }, []);
 
   const yourAddressView = () => {
     return (
@@ -161,7 +165,7 @@ const App = () => {
                 <GenerateLink
                   myAddress={myAddress}
                   statusMsg={statusMsgUpdater}
-                  showProgress={(show) => setShowProgress(show)}
+                  showProgress={showProgressCallback}
                   myBalance={myBalance}
                   wallet={wallet}
                 />
@@ -171,7 +175,7 @@ const App = () => {
                 <SubmitLink
                   myAddress={myAddress}
                   statusMsg={statusMsgUpdater}
-                  showProgress={(show) => setShowProgress(show)}
+                  showProgress={showProgressCallback}
                   setMyBalance={setMyBalance}
                   wallet={wallet}
                 />
@@ -185,7 +189,7 @@ const App = () => {
                 __COMMIT_HASH__
               }
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noreferrer"
               className="footer__item"
             >
               <svg
@@ -301,23 +305,6 @@ const connectButton = (statusMsg, showAcceptTermsModal, wallet) => {
       }}
     >
       {"Connect wallet"}
-    </button>
-  );
-};
-
-const disconnectButton = (statusMsg, wallet) => {
-  return (
-    <button
-      className="connect-button"
-      onClick={async () => {
-        try {
-          await wallet.disconnect();
-        } catch (e) {
-          statusMsg.error(e);
-        }
-      }}
-    >
-      {"Disconnect"}
     </button>
   );
 };

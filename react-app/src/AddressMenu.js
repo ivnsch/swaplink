@@ -7,6 +7,7 @@ const AddressMenu = ({ statusMsg, myAddress, wallet }) => {
         className="btn btn--transparent"
         href={"https://testnet.algoexplorer.io/address/" + myAddress}
         target="_blank"
+        rel="noreferrer"
       >
         {"AlgoExplorer"}
         <svg

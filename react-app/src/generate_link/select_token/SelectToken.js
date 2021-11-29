@@ -1,5 +1,5 @@
 import { search, fetchHoldingsMsgPack } from "./controller";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 let delayTimer;
 
@@ -8,22 +8,32 @@ const SelectToken = ({ statusMsg, showProgress, myAddress, onSelectToken }) => {
   const [tokens, setTokens] = useState([]);
   const [holdingsMsgPack, setHoldingsMsgPack] = useState(null);
 
-  useEffect(async () => {
-    if (myAddress) {
-      let holdings = await fetchHoldingsMsgPack(
+  useEffect(() => {
+    async function updateHoldings() {
+      if (myAddress) {
+        let holdings = await fetchHoldingsMsgPack(
+          statusMsg,
+          showProgress,
+          myAddress
+        );
+        setHoldingsMsgPack(holdings);
+      }
+    }
+    updateHoldings();
+  }, [statusMsg, showProgress, myAddress]);
+
+  const searchToken = useCallback(
+    async (text) => {
+      const tokens = await search(
         statusMsg,
         showProgress,
-        myAddress
+        text,
+        holdingsMsgPack
       );
-      setHoldingsMsgPack(holdings);
-    }
-  }, [myAddress]);
-
-  const searchToken = async (text) => {
-    console.log("calling search, account: %o", holdingsMsgPack);
-    const tokens = await search(statusMsg, showProgress, text, holdingsMsgPack);
-    setTokens(tokens);
-  };
+      setTokens(tokens);
+    },
+    [statusMsg, showProgress, holdingsMsgPack]
+  );
 
   const searchTokenDelayed = async (text) => {
     clearTimeout(delayTimer);
@@ -32,9 +42,9 @@ const SelectToken = ({ statusMsg, showProgress, myAddress, onSelectToken }) => {
     }, 300);
   };
 
-  const onSearchInput = (text) => {
+  const onSearchInput = async (text) => {
     setAssetId(text);
-    if (text.length == 0) {
+    if (text.length === 0) {
       searchToken("");
     } else {
       searchTokenDelayed(text);
@@ -42,8 +52,11 @@ const SelectToken = ({ statusMsg, showProgress, myAddress, onSelectToken }) => {
   };
 
   useEffect(() => {
-    searchToken("");
-  }, [holdingsMsgPack]);
+    async function initSearch() {
+      searchToken("");
+    }
+    initSearch();
+  }, [statusMsg, showProgress, holdingsMsgPack]);
 
   return (
     <div>
@@ -55,11 +68,11 @@ const SelectToken = ({ statusMsg, showProgress, myAddress, onSelectToken }) => {
           onSearchInput(event.target.value);
         }}
       />
-      {tokens.length == 0 && <div>{"No results"}</div>}
+      {tokens.length === 0 && <div>{"No results"}</div>}
       {tokens.map((token) => {
         return (
-          <div className="token-list">
-            <div key={token.id}>
+          <div key={token.id} className="token-list">
+            <div>
               <button
                 className="token-list__btn"
                 onClick={() => onSelectToken(token)}

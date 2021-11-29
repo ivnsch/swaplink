@@ -16,7 +16,7 @@ export const FeesModal = ({
   setShowFeesModal,
 }) => {
   const [statusMsg, setStatusMsg] = useState(null);
-  const [statusMsgUpdater, _] = useState(new StatusMsgUpdater(setStatusMsg));
+  const [statusMsgUpdater] = useState(new StatusMsgUpdater(setStatusMsg));
 
   return (
     <Modal

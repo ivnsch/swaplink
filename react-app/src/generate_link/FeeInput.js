@@ -1,10 +1,6 @@
-import StatusMsgUpdater from "../StatusMsgUpdater";
-import React, { useState } from "react";
+import React from "react";
 
 const FeeInput = ({ title, fee, setFee, onChange }) => {
-  const [statusMsg, setStatusMsg] = useState(null);
-  const [statusMsgUpdater, _] = useState(new StatusMsgUpdater(setStatusMsg));
-
   return (
     <div className="fee-field">
       <div>

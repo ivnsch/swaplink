@@ -82,14 +82,13 @@ const createConnector = () => {
 const onConnectorConnected = (connector, onAddressUpdate, onDisconnect) => {
   // if account is set in connector, use it, also register to events
   // the field is for when the page is loaded with an active session - currently no events seem to be triggered here
-  if (connector.accounts.length == 1) {
+  if (connector.accounts.length === 1) {
     onAddressUpdate(connector.accounts[0]);
   } else if (connector.accounts.length > 1) {
     throw new Error(
       "Unexpected WalletConnect accounts length (connection): " +
         connector.accounts.length
     );
-    return;
   }
 
   console.log("connector connected: " + JSON.stringify(connector));
@@ -102,11 +101,10 @@ const subscribeToEvents = (connector, onAddressUpdate, onDisconnect) => {
       throw error;
     }
     const { accounts } = payload.params[0];
-    if (accounts.length != 1) {
+    if (accounts.length !== 1) {
       throw new Error(
         "Unexpected WalletConnect accounts length (update): " + accounts.length
       );
-      return;
     }
     onAddressUpdate(accounts[0]);
   });

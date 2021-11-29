@@ -17,7 +17,7 @@ export const SubmitLink = (props) => {
       setSwapViewData,
       props.showProgress
     );
-  }, []);
+  }, [props.statusMsg, props.showProgress, link]);
 
   const swapViewDataView = () => {
     return (
