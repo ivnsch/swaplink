@@ -161,5 +161,11 @@ button {
 
   svg {
     display: block;
+    width: 14px;
+    height: 14px;
+    stroke: var(--clr-white);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
 }

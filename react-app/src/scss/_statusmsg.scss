@@ -1,0 +1,50 @@
+.msg {
+  position: relative;
+  margin: 16px auto;
+  padding: 24px;
+  max-width: 432px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 12px;
+
+  border-radius: 6px;
+
+  &--error {
+    --color: hsl(0, 100%, 78%);
+    --bg: hsla(0, 100%, 78%, 0.102);
+    --border-color: rgba(255, 142, 142, 0.2);
+  }
+
+  &--success {
+    --color: #8dffea;
+    --bg: hsla(169, 100%, 87%, 0.1);
+    --border-color: hsla(169, 88%, 30%, 0.2);
+  }
+
+  color: var(--color);
+  background: var(--bg);
+  border: 1px solid var(--border-color);
+
+  &__close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+
+    svg {
+      display: block;
+      width: 10px;
+      height: 10px;
+      stroke: var(--color);
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+  }
+}

@@ -23,7 +23,6 @@ const App = () => {
   const [showAddressMenu, setShowAddressMenu] = useState(false);
   const [showLegalModal, setShowLegalModal] = useState(false);
   const [showHowItWorksModal, setShowHowItWorksModal] = useState(false);
-  const [showMenu, setShowMenu] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
   const [statusMsg, setStatusMsg] = useState(null);
   const [showProgress, setShowProgress] = useState(false);
@@ -133,13 +132,7 @@ const App = () => {
 
           <header className="header">
             <div className="logo" aria-label="swaplink logo">
-              <svg
-                width="17"
-                height="16"
-                viewBox="0 0 17 16"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
+              <svg viewBox="0 0 17 16" xmlns="http://www.w3.org/2000/svg">
                 <path
                   d="M3.61558 0.0477295V0.925628V8.82671H10.4437V11.1027C10.4112 11.688 10.2811 12.1107 9.53326 12.1107H0.299072L0.331587 6.87583V0.990658C0.331587 0.372877 0.62422 0.0477295 1.27451 0.0477295H3.61558Z"
                   fill="#B3B3B3"
@@ -216,12 +209,7 @@ const App = () => {
             </a>
 
             <div className="footer__menu">
-              <button
-                className="footer__item"
-                onClick={() => {
-                  setShowMenu(!showMenu);
-                }}
-              >
+              <button className="footer__item show-menu">
                 <svg
                   width="16"
                   height="16"
@@ -238,30 +226,27 @@ const App = () => {
                 </svg>
               </button>
 
-              {showMenu && (
-                <div className="footer__menu__list">
-                  <ul>
-                    <li>
-                      <button
-                        onClick={() => {
-                          setShowHowItWorksModal(!showHowItWorksModal);
-                        }}
-                      >
-                        How it works
-                      </button>
-                      <button
-                        onClick={() => {
-                          setShowLegalModal(!showLegalModal);
-                        }}
-                      >
-                        disclaimer
-                      </button>
-                    </li>
-                  </ul>
-                </div>
-              )}
+              <ul className="footer__menu__list">
+                <li>
+                  <button
+                    onClick={() => {
+                      setShowHowItWorksModal(!showHowItWorksModal);
+                    }}
+                  >
+                    How it works
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowLegalModal(!showLegalModal);
+                    }}
+                  >
+                    disclaimer
+                  </button>
+                </li>
+              </ul>
             </div>
           </footer>
+
           {showHowItWorksModal && (
             <HowItWorksModal setShowModal={setShowHowItWorksModal} />
           )}

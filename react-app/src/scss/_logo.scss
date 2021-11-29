@@ -1,0 +1,29 @@
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  &__title {
+    font-family: inherit;
+    font-size: 18px;
+    font-weight: 400;
+    display: none;
+
+    @media only screen and (min-width: 480px) {
+      display: block;
+      font-size: 18px;
+      font-weight: 400;
+    }
+  }
+
+  svg {
+    display: block;
+    width: 32px;
+    height: auto;
+
+    @media only screen and (min-width: 480px) {
+      width: 17px;
+      height: 16px;
+    }
+  }
+}

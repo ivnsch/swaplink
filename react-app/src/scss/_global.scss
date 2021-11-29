@@ -31,12 +31,14 @@ body {
   background: var(--clr-bg);
 }
 
+a {
+  color: gray;
+  text-decoration: none;
+  cursor: pointer;
+}
+
 #wrapper {
   padding: 0 24px;
-
-  @media only screen and (max-width: 420px) {
-    margin-top: 90px;
-  }
 }
 
 .header {
@@ -53,17 +55,6 @@ body {
   }
 }
 
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.logo__title {
-  font-size: 18px;
-  font-weight: 400;
-}
-
 .actions {
   display: flex;
   align-items: center;
@@ -77,9 +68,13 @@ body {
 }
 
 .own-balance {
-  display: flex;
+  display: none;
   align-items: center;
   gap: 8px;
+
+  @media only screen and (min-width: 480px) {
+    display: flex;
+  }
 
   .currency {
     svg {
@@ -177,77 +172,6 @@ dd {
   opacity: 0.8;
 }
 
-.fees {
-  margin: 16px 0;
-}
-
-.fees button,
-.total-fees {
-  display: flex;
-  margin-left: auto;
-  font-family: inherit;
-  font-size: 14px;
-  color: var(--clr-white);
-  background-color: transparent;
-  border: none;
-}
-
-.total-fees {
-  margin-block: 16px;
-  justify-content: flex-end;
-}
-
-.fee-title {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  margin-right: 10px;
-}
-
-.fee-currency {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-
-  span {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-weight: 400;
-    font-size: 14px;
-    color: #f8f9ff;
-    text-transform: capitalize;
-  }
-}
-
-.fee-field {
-  position: relative;
-  padding: 16px 24px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--clr-bg);
-  border: var(--border);
-  box-sizing: border-box;
-  border-radius: 6px;
-}
-
-.fee-field > div {
-  flex-shrink: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.fee-field-currency {
-  display: flex;
-  gap: 8px;
-  flex-grow: 1;
-  font-size: 18px;
-  font-weight: 500;
-}
-
 .calculated-amount {
   display: flex;
   align-items: center;
@@ -303,42 +227,6 @@ dd {
   position: relative;
 } */
 
-.error {
-  margin: 16px auto;
-  max-width: 432px;
-  padding: 14px;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  font-weight: 500;
-  font-size: 12px;
-  color: #ff8e8e;
-  background: rgba(255, 142, 142, 0.1);
-  border: 1px solid rgba(255, 142, 142, 0.2);
-  border-radius: 6px;
-}
-
-.error-close {
-  display: block;
-  background-color: transparent;
-  border: none;
-}
-
-.success {
-  margin: 16px auto;
-  max-width: 432px;
-  padding: 14px;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  font-weight: 500;
-  font-size: 12px;
-  color: hsl(169, 88%, 30%);
-  background: hsla(169, 88%, 30%, 0.1);
-  border: 1px solid hsla(169, 88%, 30%, 0.2);
-  border-radius: 6px;
-}
-
 .submit-msg {
   margin-top: 8px;
   margin-bottom: 16px;
@@ -360,36 +248,10 @@ dd {
 
 .swap-link {
   margin: 16px 0 24px 0;
-  padding: 13px;
-  font-weight: 500;
   font-size: 14px;
-  text-transform: capitalize;
-  color: var(--clr-white);
-  background: var(--clr-bg);
-  border: var(--border);
-  box-sizing: border-box;
-  border-radius: 4px;
-}
-
-.swap-received-container {
-  margin: 0 auto;
-  max-width: 432px;
-  padding: 16px;
-
-  background: var(--clr-bg-lighter);
-  border: var(--border);
-  box-sizing: border-box;
-  border-radius: 8px;
-}
-
-.swap-from {
-  margin-bottom: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
 
   .copyable {
-    padding: 13px;
+    padding: 2px 13px;
     width: 100%;
     height: 40px;
 
@@ -414,7 +276,64 @@ dd {
 
       &.active {
         transform: translateX(11px);
-        padding: 4px;
+        padding: 8px;
+        background: #262730;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+
+        font-weight: 500;
+        font-size: 14px;
+        text-transform: capitalize;
+        color: var(--clr-white);
+      }
+    }
+  }
+}
+
+.swap-received-container {
+  margin: 0 auto;
+  max-width: 432px;
+  padding: 16px;
+
+  background: var(--clr-bg-lighter);
+  border: var(--border);
+  box-sizing: border-box;
+  border-radius: 8px;
+}
+
+.swap-from {
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  .copyable {
+    padding: 2px 13px;
+    width: 100%;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+
+    background: var(--clr-bg);
+    border: var(--border);
+    box-sizing: border-box;
+    border-radius: 4px;
+
+    &__text {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .copy {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+
+      &.active {
+        transform: translateX(11px);
+        padding: 8px;
         background: #262730;
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 4px;
@@ -429,7 +348,8 @@ dd {
 }
 
 .swap-inline {
-  margin: 25px 0;
+  margin: 30px 0;
+  height: 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -448,6 +368,21 @@ dd {
       transform: translateY(-1px);
     }
   }
+
+  .copyable {
+    justify-content: flex-end;
+
+    &__text {
+      font-size: 16px;
+    }
+
+    .copy {
+      &.active {
+        border: none;
+        background: none;
+      }
+    }
+  }
 }
 
 .border-bottom {
@@ -460,6 +395,7 @@ dd {
   font-size: 16px;
   text-transform: capitalize;
   color: var(--clr-text);
+  white-space: nowrap;
 }
 
 .submit-swap-title {
@@ -481,17 +417,6 @@ dd {
   background: #ff8e8e;
 }
 
-a {
-  color: gray;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.copy {
-  margin-left: 6px;
-  cursor: pointer;
-}
-
 @media only screen and (max-width: 460px) {
   .modal-content-size {
     max-width: 350px;
@@ -502,27 +427,6 @@ a {
 
 .link-data-container {
   text-align: center;
-}
-
-.copyable {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  .copy {
-    &.active {
-      transform: translateX(11px);
-      padding: 4px;
-      background: #262730;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 4px;
-
-      font-weight: 500;
-      font-size: 14px;
-      text-transform: capitalize;
-      color: var(--clr-white);
-    }
-  }
 }
 
 /*********************/

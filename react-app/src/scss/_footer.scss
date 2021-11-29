@@ -24,12 +24,20 @@
   &__menu {
     position: relative;
 
+    &:focus-within,
+    &:focus,
+    &:focus-visible {
+      .footer__menu__list {
+        display: flex;
+      }
+    }
+
     &__list {
       position: absolute;
       bottom: calc(100% + 8px);
       right: 0;
       width: 180px;
-      display: flex;
+      display: none;
       flex-direction: column;
       padding: 8px;
       background: #262730;
