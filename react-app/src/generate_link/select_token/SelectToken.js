@@ -45,6 +45,7 @@ const SelectToken = ({ statusMsg, showProgress, myAddress, onSelectToken }) => {
   const onSearchInput = async (text) => {
     setAssetId(text);
     if (text.length === 0) {
+      clearTimeout(delayTimer);
       searchToken("");
     } else {
       searchTokenDelayed(text);
