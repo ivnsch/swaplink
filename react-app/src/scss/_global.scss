@@ -394,6 +394,15 @@ dd {
   white-space: nowrap;
 }
 
+.swap-asset {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--clr-white);
+}
+
 .app-title {
   margin: 22px 0 40px 0;
   font-weight: 600;

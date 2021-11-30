@@ -116,7 +116,7 @@ const tranferView = (transfer) => {
     );
   } else if (transfer.unit === "asset") {
     return (
-      <div>
+      <div className="swap-asset">
         <span className="amount">{transfer.amount}</span>
         <a
           className="btn btn--transparent"
