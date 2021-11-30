@@ -17,6 +17,7 @@
     display: block;
     width: 32px;
     height: auto;
+    fill: var(--clr-white);
 
     @media only screen and (min-width: 480px) {
       width: 17px;

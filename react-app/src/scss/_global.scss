@@ -404,11 +404,19 @@ dd {
 }
 
 .app-title {
-  margin: 22px 0 40px 0;
+  margin: 40px auto 30px auto;
+  line-height: 1.5;
   font-weight: 600;
   font-size: 18px;
   text-align: center;
+  text-transform: capitalize;
   color: var(--clr-white);
+  max-width: 230px;
+
+  @media only screen and (min-width: 480px) {
+    margin: 22px 0 40px 0;
+    max-width: unset;
+  }
 }
 
 .warning {
