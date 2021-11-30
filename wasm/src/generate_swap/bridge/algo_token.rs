@@ -21,6 +21,10 @@ pub fn algo_token_view_data(balance: Option<String>) -> TokenViewData {
         secondary_label: None,
         asset_type: "algo".to_owned(), // TODO from enum - use when validating inputs
         balance: balance.clone(),
+        image_url: Some(
+            "https://www.pngall.com/wp-content/uploads/10/Algorand-Crypto-Logo-PNG-Pic.png"
+                .to_owned(),
+        ),
     }
 }
 

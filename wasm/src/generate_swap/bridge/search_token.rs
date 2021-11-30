@@ -100,6 +100,7 @@ fn asset_view_data(asset: &Asset, holdings: Option<HashMap<u64, AssetHolding>>) 
         secondary_label: asset.params.name.clone(),
         asset_type: "asset".to_owned(), // TODO from enum - use when validating inputs
         balance,
+        image_url: asset.params.url.clone(),
     }
 }
 
@@ -121,4 +122,5 @@ pub struct TokenViewData {
     pub secondary_label: Option<String>,
     pub asset_type: String,
     pub balance: Option<String>,
+    pub image_url: Option<String>,
 }

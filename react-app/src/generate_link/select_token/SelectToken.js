@@ -80,13 +80,14 @@ const SelectToken = ({ statusMsg, showProgress, myAddress, onSelectToken }) => {
                 className="token-list__btn"
                 onClick={() => onSelectToken(token)}
               >
-                {token.asset_type === "algo" && (
-                  <img
-                    className="token-list__img"
-                    src="https://www.pngall.com/wp-content/uploads/10/Algorand-Crypto-Logo-PNG-Pic.png"
-                    alt=""
-                  />
-                )}
+                <img
+                  style={{ display: "block" }}
+                  className="token-list__img"
+                  src={token.image_url}
+                  onError={(event) => {
+                    event.target.style.display = "none";
+                  }}
+                />
 
                 <div>
                   <div className="token-list__main">{token.main_label}</div>
