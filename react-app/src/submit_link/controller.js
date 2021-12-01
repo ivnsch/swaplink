@@ -55,14 +55,17 @@ export const submitTxs = async (
   setMyBalance,
   myAddress,
   wallet,
-  setShowTxId
+  setShowTxId,
+  setShowOpenWalletModal
 ) => {
   try {
     const { bridge_submit_txs, bridge_balance, bridge_wait_for_pending_tx } =
       await wasmPromise;
     statusMsg.clear();
 
+    setShowOpenWalletModal(true);
     const signedTx = await wallet.sign(swapRequest.to_sign_wc);
+    setShowOpenWalletModal(false);
 
     showProgress(true);
     const txId = await bridge_submit_txs({
@@ -82,5 +85,6 @@ export const submitTxs = async (
   } catch (e) {
     statusMsg.error(e);
     showProgress(false);
+    setShowOpenWalletModal(false);
   }
 };

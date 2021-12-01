@@ -10,6 +10,7 @@ import AssetInputRow from "./AssetInputRow";
 import SwapLinkView from "./SwapLinkView";
 import { FeesModal } from "./FeesModal";
 import { SelectTokenModal } from "./select_token/SelectTokenModal";
+import OpenWalletModal from "../OpenWalletModal";
 
 export const GenerateLink = (props) => {
   const [peerAddress, setPeerAddress] = useState("");
@@ -26,6 +27,7 @@ export const GenerateLink = (props) => {
   const [swapLinkTruncated, setSwapLinkTruncated] = useState("");
 
   const [showLinkModal, setShowLinkModal] = useState(false);
+  const [showOpenWalletModal, setShowOpenWalletModal] = useState(false);
   const [showFeesModal, setShowFeesModal] = useState(false);
   const [showSendUnitModal, setShowSendUnitModal] = useState(false);
   const [showReceiveUnitModal, setShowReceiveUnitModal] = useState(false);
@@ -144,7 +146,8 @@ export const GenerateLink = (props) => {
               setSwapLink,
               setSwapLinkTruncated,
               setShowLinkModal,
-              props.wallet
+              props.wallet,
+              setShowOpenWalletModal
             );
           }}
         >
@@ -193,6 +196,10 @@ export const GenerateLink = (props) => {
             setShowModal={setShowReceiveUnitModal}
             myAddress={props.myAddress}
           />
+        )}
+
+        {showOpenWalletModal && (
+          <OpenWalletModal setShowModal={setShowOpenWalletModal} />
         )}
       </div>
     </div>

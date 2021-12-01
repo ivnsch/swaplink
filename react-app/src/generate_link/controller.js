@@ -45,7 +45,8 @@ export const generateSwapTxs = async (
   setSwapLink,
   setSwapLinkTruncated,
   setShowLinkModal,
-  wallet
+  wallet,
+  setShowOpenWalletModal
 ) => {
   try {
     const { bridge_generate_swap_txs, bridge_generate_link } =
@@ -72,8 +73,11 @@ export const generateSwapTxs = async (
     let swapTxs = await bridge_generate_swap_txs(swapPars);
     showProgress(false);
 
+    setShowOpenWalletModal(true);
     const signedTx = await wallet.sign(swapTxs.to_sign_wc);
+    setShowOpenWalletModal(false);
 
+    showProgress(true);
     let link = await bridge_generate_link({
       signed_my_tx_msg_pack: signedTx,
       pt: swapTxs.pt, // passthrough
@@ -81,10 +85,13 @@ export const generateSwapTxs = async (
 
     setSwapLink(link);
     setSwapLinkTruncated(link.replace(/(.*)\/(.*).(?=....)/, "$1/..."));
+
+    showProgress(false);
     setShowLinkModal(true);
   } catch (e) {
     statusMsg.error(e);
     showProgress(false);
+    setShowOpenWalletModal(false);
   }
 };
 
