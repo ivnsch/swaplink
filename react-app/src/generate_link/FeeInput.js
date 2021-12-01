@@ -1,17 +1,13 @@
 import React from "react";
+import NumberInput from "./NumberInput";
 
 const FeeInput = ({ title, fee, setFee, onChange }) => {
   return (
     <div className="swap-field">
       <label className="swap-field__label label">{title}</label>
-      <input
-        type="number"
-        step="0.001"
-        className="input input--amount"
-        placeholder="Fee"
+      <NumberInput
         value={fee}
-        onChange={(event) => {
-          let input = event.target.value;
+        onChange={(input) => {
           setFee(input);
           onChange(input);
         }}

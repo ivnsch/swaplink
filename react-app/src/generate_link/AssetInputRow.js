@@ -1,3 +1,5 @@
+import NumberInput from "./NumberInput";
+
 const AssetInputRow = ({
   label,
   tokenInputs,
@@ -47,18 +49,14 @@ const assetAmountView = (tokenInputs, setToken) => {
   let value = tokenInputs?.amount === "0" ? "" : tokenInputs?.amount ?? "";
 
   return (
-    <input
-      type="number"
-      step="0.001"
-      className="input input--amount"
-      placeholder={"0.0"}
+    <NumberInput
       value={value}
-      onChange={(event) => {
+      onChange={(input) =>
         setToken({
           ...tokenInputs,
-          amount: event.target.value,
-        });
-      }}
+          amount: input,
+        })
+      }
     />
   );
 };
