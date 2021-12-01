@@ -57,13 +57,9 @@
     flex-direction: column;
     gap: 8px;
   }
-
-  input {
-    width: 80%;
-  }
 }
 
-.fee-currency-icon {
+.swap-field__currency-icon {
   display: block;
   width: 16px;
   height: 16px;

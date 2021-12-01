@@ -6,24 +6,27 @@ const AssetInputRow = ({
 }) => {
   return (
     <div className="swap-field">
-      <div>
-        <label className="label">{label}</label>
-        {assetAmountView(tokenInputs, setTokenInputs)}
+      <label className="swap-field__label label">{label}</label>
+      {assetAmountView(tokenInputs, setTokenInputs)}
+
+      <div className="swap-field__btns">
+        {tokenInputs?.token &&
+          generateMaxView(tokenInputs.token, () => {
+            setTokenInputs((t) => {
+              return {
+                ...t,
+                amount: t.token.balance,
+              };
+            });
+          })}
+
+        <button
+          className="btn btn--change-token"
+          onClick={() => onTokenClick()}
+        >
+          {<div>{tokenInputs?.token?.main_label ?? "Select asset"}</div>}
+        </button>
       </div>
-
-      {tokenInputs?.token &&
-        generateMaxView(tokenInputs.token, () => {
-          setTokenInputs((t) => {
-            return {
-              ...t,
-              amount: t.token.balance,
-            };
-          });
-        })}
-
-      <button className="btn btn--change-token" onClick={() => onTokenClick()}>
-        {<div>{tokenInputs?.token?.main_label ?? "Select asset"}</div>}
-      </button>
     </div>
   );
 };

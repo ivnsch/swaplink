@@ -9,26 +9,21 @@
 
 .swap-field {
   position: relative;
-  padding: 16px 16px 16px 24px;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-  background: var(--clr-bg);
-  border: var(--border);
-  border-radius: 6px;
-  transition: border-color 0.15s ease-in-out;
 
-  &:focus {
-    border-color: var(--clr-blue-700);
+  &__label {
+    position: absolute;
+    top: 16px;
+    left: 24px;
+    z-index: 10;
   }
 
-  & > div {
-    flex-shrink: 1;
-    min-width: 0;
+  &__btns,
+  &__currency-icon {
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    transform: translateY(-50%);
     display: flex;
-    flex-direction: column;
     gap: 8px;
   }
 }

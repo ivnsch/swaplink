@@ -2,24 +2,23 @@ import React from "react";
 
 const FeeInput = ({ title, fee, setFee, onChange }) => {
   return (
-    <div className="fee-field">
-      <div>
-        <label className="label">{title}</label>
-        <input
-          type="number"
-          step="0.001"
-          className="input input--amount"
-          placeholder="Fee"
-          value={fee}
-          onChange={(event) => {
-            let input = event.target.value;
-            setFee(input);
-            onChange(input);
-          }}
-        />
-      </div>
+    <div className="swap-field">
+      <label className="swap-field__label label">{title}</label>
+      <input
+        type="number"
+        step="0.001"
+        className="input input--amount"
+        placeholder="Fee"
+        value={fee}
+        onChange={(event) => {
+          let input = event.target.value;
+          setFee(input);
+          onChange(input);
+        }}
+      />
+
       <svg
-        className="fee-currency-icon"
+        className="swap-field__currency-icon"
         viewBox="0 0 16 16"
         xmlns="http://www.w3.org/2000/svg"
       >
