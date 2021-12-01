@@ -130,8 +130,6 @@ export const GenerateLink = (props) => {
             peerAddress === "" ||
             !sendTokenInputs?.token ||
             !receiveTokenInputs?.token
-              ? true
-              : false
           }
           onClick={async () => {
             await generateSwapTxs(
