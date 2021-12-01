@@ -84,6 +84,7 @@ const SelectToken = ({ statusMsg, showProgress, myAddress, onSelectToken }) => {
                   style={{ display: "block" }}
                   className="token-list__img"
                   src={token.image_url}
+                  alt=""
                   onError={(event) => {
                     event.target.style.display = "none";
                   }}

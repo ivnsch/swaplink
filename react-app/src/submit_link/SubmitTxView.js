@@ -1,5 +1,3 @@
-import ExternalLinkIcon from "../svg/ExternalLinkIcon";
-
 const SubmitTxView = ({ txId }) => {
   return (
     <div className="link-data-container">
