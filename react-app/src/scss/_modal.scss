@@ -124,3 +124,107 @@
     gap: 8px;
   }
 }
+
+.open-wallet-modal {
+  background-color: rgba(37, 41, 46, 0.95);
+  animation: fade-in 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+
+  &-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: fade-in-content 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  }
+
+  &-body {
+    background: #ffffff;
+    border-radius: 24px;
+    box-shadow: 0 10px 50px 5px rgb(0 0 0 / 40%);
+    padding: 24px;
+  }
+
+  &-topbar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  &-header {
+    display: flex;
+    img {
+      height: 21px;
+    }
+
+    span {
+      color: #ffffff;
+      font-family: ui-rounded, "SF Pro Rounded", "SF Pro Text",
+        medium-content-sans-serif-font, -apple-system, BlinkMacSystemFont,
+        ui-sans-serif, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
+        "Open Sans", "Helvetica Neue", sans-serif;
+      font-size: 20px;
+      font-weight: 600;
+      margin: 0;
+      align-items: flex-start;
+      display: flex;
+      flex: 1;
+      margin-left: 5px;
+    }
+  }
+
+  &-msg {
+    color: rgba(60, 66, 82, 0.6);
+    font-family: ui-rounded, "SF Pro Rounded", "SF Pro Text",
+      medium-content-sans-serif-font, -apple-system, BlinkMacSystemFont,
+      ui-sans-serif, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
+      "Helvetica Neue", sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 1.1875em;
+    text-align: center;
+    width: 100%;
+  }
+
+  &-close {
+    background: white;
+    border: none;
+    border-radius: 26px;
+    padding: 6px;
+    width: 26px;
+    height: 26px;
+    cursor: pointer;
+    display: grid;
+    place-content: center;
+
+    svg {
+      display: block;
+      width: 24px;
+      height: 24px;
+      stroke: rgb(48, 52, 59);
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    background-color: rgba(37, 41, 46, 0);
+  }
+
+  100% {
+    background-color: rgba(37, 41, 46, 0.95);
+  }
+}
+
+@keyframes fade-in-content {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}

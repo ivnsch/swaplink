@@ -5,6 +5,7 @@ import CopyPasteText from "../CopyPasteText";
 import Modal from "../Modal";
 import SubmitTxView from "./SubmitTxView";
 import ExternalLinkIcon from "../svg/ExternalLinkIcon";
+import OpenWalletModal from "../OpenWalletModal";
 
 export const SubmitLink = (props) => {
   let { link } = useParams();
@@ -12,6 +13,7 @@ export const SubmitLink = (props) => {
   const [swapRequest, setSwapRequest] = useState(null);
   const [swapViewData, setSwapViewData] = useState(null);
   const [showTxId, setShowTxId] = useState(null);
+  const [showOpenWalletModal, setShowOpenWalletModal] = useState(false);
 
   useEffect(() => {
     init(
@@ -69,7 +71,8 @@ export const SubmitLink = (props) => {
                 props.setMyBalance,
                 props.myAddress,
                 props.wallet,
-                setShowTxId
+                setShowTxId,
+                setShowOpenWalletModal
               );
             }}
           >
@@ -92,6 +95,9 @@ export const SubmitLink = (props) => {
           >
             <SubmitTxView txId={showTxId} />
           </Modal>
+        )}
+        {showOpenWalletModal && (
+          <OpenWalletModal setShowModal={setShowOpenWalletModal} />
         )}
       </div>
     </div>
