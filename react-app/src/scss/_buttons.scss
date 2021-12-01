@@ -90,6 +90,11 @@ button {
     &:disabled {
       opacity: 0.5;
     }
+
+    &:focus {
+      outline: none;
+      background: var(--clr-blue-900);
+    }
   }
 
   &--change-token {
@@ -98,6 +103,11 @@ button {
     background: var(--clr-blue-900);
     border-radius: 6px;
     white-space: nowrap;
+
+    &:focus {
+      outline: none;
+      background: var(--clr-blue-700);
+    }
   }
 
   &--finalise-exchange {
@@ -117,6 +127,12 @@ button {
     background: var(--clr-bg-lighter);
     border: 1px solid var(--clr-blue-900);
     border-radius: 6px;
+
+    &:focus {
+      outline: none;
+      color: var(--clr-white);
+      background: var(--clr-blue-900);
+    }
   }
 
   &--transparent {
@@ -134,9 +150,13 @@ button {
     align-items: center;
     gap: 10px;
 
+    &:focus {
+      outline: none;
+    }
+
     &:hover,
     &:focus {
-      background: #2e93f7;
+      background-color: #2e93f7;
     }
   }
 
@@ -149,13 +169,38 @@ button {
   }
 
   &--swap-complete {
+    position: relative;
     padding: 13px;
+    padding-right: 24px;
     font-size: 14px;
     color: var(--clr-white);
-    background: #1a1c22;
+    background-color: #1a1c22;
     border: var(--border);
     box-sizing: border-box;
     border-radius: 4px;
+    transition: background-color 0.2s ease-in-out;
+
+    &:focus {
+      outline: none;
+    }
+
+    &:hover,
+    &:focus {
+      background-color: var(--clr-blue-900);
+    }
+
+    svg {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      stroke: var(--clr-white);
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
   }
 
   &--truncated {
@@ -177,6 +222,11 @@ button {
   border-radius: 24px;
   z-index: 1;
 
+  &:focus {
+    outline: none;
+    background: var(--clr-blue-700);
+  }
+
   svg {
     display: block;
     width: 14px;
@@ -185,5 +235,34 @@ button {
     stroke-width: 1.5;
     stroke-linecap: round;
     stroke-linejoin: round;
+  }
+}
+
+.own-address {
+  padding: 0 8px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: var(--clr-bg-lighter);
+  border: none;
+  border-radius: 4px;
+
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--clr-white);
+  transition: all 0.1s ease-in-out;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus,
+  &:focus-within,
+  &:focus-visible,
+  &:hover {
+    color: #236ab0;
+    background-color: var(--clr-white);
   }
 }

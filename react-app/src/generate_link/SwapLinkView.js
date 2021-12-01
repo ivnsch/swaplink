@@ -9,7 +9,7 @@ const SwapLinkView = ({ swapLink, swapLinkTruncated }) => {
         }
       </div>
 
-      <div className="swap-link">
+      <div className="swap-link" tabIndex="0">
         <CopyPasteText text={swapLinkTruncated} copyText={swapLink} />
       </div>
 

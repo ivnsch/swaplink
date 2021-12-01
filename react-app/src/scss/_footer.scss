@@ -70,6 +70,10 @@
         white-space: nowrap;
         transition: background-color 0.2s ease-in-out;
 
+        &:focus {
+          outline: none;
+        }
+
         &:hover,
         &:focus {
           background: #2e93f7;

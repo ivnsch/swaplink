@@ -61,12 +61,6 @@ a {
   gap: 20px;
 }
 
-.own-address {
-  border: none;
-  padding: 0 8px;
-  gap: 12px;
-}
-
 .own-balance {
   display: flex;
   align-items: center;
@@ -79,19 +73,6 @@ a {
       height: 12px;
     }
   }
-}
-
-.own-address {
-  height: 40px;
-  display: flex;
-  align-items: center;
-  background: var(--clr-bg-lighter);
-  border-radius: 4px;
-
-  font-family: inherit;
-  font-weight: 500;
-  font-size: 14px;
-  color: var(--clr-white);
 }
 
 .description {
@@ -213,6 +194,17 @@ dd {
 .swap-link {
   margin: 16px 0 24px 0;
   font-size: 14px;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:hover,
+  &:focus {
+    .copyable {
+      background-color: var(--clr-blue-900);
+    }
+  }
 
   .copyable {
     padding: 2px 13px;
