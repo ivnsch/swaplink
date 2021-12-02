@@ -52,7 +52,7 @@ export const GenerateLink = (props) => {
 
   return (
     <div>
-      <div className="app-title">Swap Algorand assets directly with a peer</div>
+      <div className="app-title">Swap Algorand assets with a peer</div>
       <div className="swap-form">
         <div className="address-field">
           <label>{"Peer"}</label>
