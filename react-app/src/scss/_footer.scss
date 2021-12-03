@@ -16,6 +16,11 @@
     border: none;
     border: var(--border);
     border-radius: 32px;
+    transition: border-color 0.2s ease-in-out;
+
+    &:hover {
+      border-color: var(--clr-white);
+    }
 
     svg {
       display: block;
@@ -30,25 +35,37 @@
     &:hover,
     &:focus-within,
     &:focus {
+      .footer__menu__wrapper {
+        pointer-events: all;
+      }
       .footer__menu__list {
-        display: flex;
+        opacity: 1;
+        pointer-events: all;
       }
     }
 
     &__wrapper {
       position: absolute;
       bottom: calc(100%);
-      right: 0;
+      left: 0;
       width: 180px;
       padding-bottom: 10px;
+      pointer-events: none;
+
+      @media only screen and (min-width: 500px) {
+        right: 0;
+        left: unset;
+      }
     }
 
     &__list {
-      display: none;
+      display: flex;
       flex-direction: column;
       padding: 8px;
       background: #262730;
       border-radius: 4px;
+      opacity: 0;
+      transition: opacity 0.2s ease-in-out;
 
       li {
         list-style: none;
