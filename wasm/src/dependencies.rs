@@ -19,7 +19,7 @@ pub fn network() -> Network {
     let str = option_env!("NETWORK");
     log::debug!("Network str: {:?}", str);
 
-    let network = match str.as_deref() {
+    let network = match str {
         Some("test") => Network::Test,
         _ => Network::Private,
     };
@@ -31,7 +31,7 @@ pub fn env() -> Env {
     let str = option_env!("ENV");
     log::debug!("env str: {:?}", str);
 
-    let env = match str.as_deref() {
+    let env = match str {
         Some("prod") => Env::Prod,
         _ => Env::Local,
     };

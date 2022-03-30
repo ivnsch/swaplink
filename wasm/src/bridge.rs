@@ -29,10 +29,10 @@ pub fn to_js_value<T: Debug>(t: T) -> JsValue {
 }
 
 pub fn parse_bridge_pars<T: DeserializeOwned>(pars: JsValue) -> Result<T, JsValue> {
-    Ok(pars.into_serde::<T>().map_err(to_js_value)?)
+    pars.into_serde::<T>().map_err(to_js_value)
 }
 
 pub fn to_bridge_res<T: Serialize>(res: Result<T>) -> Result<JsValue, JsValue> {
     let res = res.map_err(to_js_value)?;
-    Ok(JsValue::from_serde(&res).map_err(to_js_value)?)
+    JsValue::from_serde(&res).map_err(to_js_value)
 }

@@ -96,7 +96,7 @@ fn asset_view_data(asset: &Asset, holdings: Option<HashMap<u64, AssetHolding>>) 
             .params
             .unit_name
             .clone()
-            .unwrap_or(asset.index.to_string()),
+            .unwrap_or_else(|| asset.index.to_string()),
         secondary_label: asset.params.name.clone(),
         asset_type: "asset".to_owned(), // TODO from enum - use when validating inputs
         balance,
