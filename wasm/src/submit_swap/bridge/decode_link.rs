@@ -112,25 +112,17 @@ impl From<SubmitSwapViewData> for SubmitSwapViewDataForJs {
 
 pub fn label(transfer: &SubmitTransferViewData) -> String {
     match transfer {
-        SubmitTransferViewData::Algos { amount: _ } => "".to_owned(),
-        SubmitTransferViewData::Asset {
-            id,
-            amount: _,
-            unit,
-            name: _,
-        } => unit.clone().unwrap_or_else(|| id.to_owned()),
+        SubmitTransferViewData::Algos { .. } => "".to_owned(),
+        SubmitTransferViewData::Asset { id, unit, .. } => {
+            unit.clone().unwrap_or_else(|| id.to_owned())
+        }
     }
 }
 
 pub fn unit_str(transfer: &SubmitTransferViewData) -> String {
     match transfer {
-        SubmitTransferViewData::Algos { amount: _ } => "algo",
-        SubmitTransferViewData::Asset {
-            id: _,
-            amount: _,
-            unit: _,
-            name: _,
-        } => "asset",
+        SubmitTransferViewData::Algos { .. } => "algo",
+        SubmitTransferViewData::Asset { .. } => "asset",
     }
     .to_owned()
 }
@@ -138,25 +130,15 @@ pub fn unit_str(transfer: &SubmitTransferViewData) -> String {
 pub fn amount_str(transfer: &SubmitTransferViewData) -> String {
     match transfer {
         SubmitTransferViewData::Algos { amount } => amount,
-        SubmitTransferViewData::Asset {
-            id: _,
-            amount,
-            unit: _,
-            name: _,
-        } => amount,
+        SubmitTransferViewData::Asset { amount, .. } => amount,
     }
     .to_owned()
 }
 
 pub fn asset_id_str(transfer: &SubmitTransferViewData) -> String {
     match transfer {
-        SubmitTransferViewData::Algos { amount: _ } => "",
-        SubmitTransferViewData::Asset {
-            id,
-            amount: _,
-            unit: _,
-            name: _,
-        } => id,
+        SubmitTransferViewData::Algos { .. } => "",
+        SubmitTransferViewData::Asset { id, .. } => id,
     }
     .to_owned()
 }
