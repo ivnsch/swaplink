@@ -42,13 +42,13 @@ const App = () => {
   useEffect(() => {
     async function initBalance() {
       if (myAddress) {
-        let balance = await fetchBalance(statusMsg, myAddress);
+        let balance = await fetchBalance(statusMsgUpdater, myAddress);
         console.log("Balance: " + balance);
         setMyBalance(balance);
       }
     }
     initBalance();
-  }, [statusMsg, myAddress]);
+  }, [statusMsgUpdater, myAddress]);
 
   useEffect(() => {
     if (wallet) {
