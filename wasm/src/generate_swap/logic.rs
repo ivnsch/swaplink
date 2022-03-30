@@ -2,8 +2,10 @@ use std::{convert::TryInto, rc::Rc, str::FromStr};
 
 use algonaut::{
     algod::v2::Algod,
-    core::{Address, MicroAlgos, SuggestedTransactionParams},
-    transaction::{tx_group::TxGroup, Pay, Transaction, TransferAsset, TxnBuilder},
+    core::{Address, MicroAlgos},
+    transaction::{
+        builder::TxnFee, tx_group::TxGroup, Pay, Transaction, TransferAsset, TxnBuilder,
+    },
 };
 use anyhow::{anyhow, Result};
 use rust_decimal::Decimal;
@@ -195,7 +197,7 @@ impl GenerateSwapLogic {
         let mut peer_tx = self
             .generate_tx(swap.peer, swap.me, swap.receive, swap.peer_fee)
             .await?;
-        TxGroup::assign_group_id(vec![&mut my_tx, &mut peer_tx])?;
+        TxGroup::assign_group_id(&mut [&mut my_tx, &mut peer_tx])?;
 
         Ok(UnsignedSwapTransactions { my_tx, peer_tx })
     }
@@ -207,11 +209,10 @@ impl GenerateSwapLogic {
         unit: Transfer,
         fee: MicroAlgos,
     ) -> Result<Transaction> {
-        Ok(TxnBuilder::with(
-            SuggestedTransactionParams {
-                fee,
-                ..self.algod.suggested_transaction_params().await?
-            },
+        let params = self.algod.suggested_transaction_params().await?;
+        Ok(TxnBuilder::with_fee(
+            &params,
+            TxnFee::Fixed(fee),
             match unit {
                 Transfer::Algos { amount } => {
                     Pay::new(sender, receiver, MicroAlgos(amount)).build()
@@ -221,6 +222,6 @@ impl GenerateSwapLogic {
                 }
             },
         )
-        .build())
+        .build()?)
     }
 }

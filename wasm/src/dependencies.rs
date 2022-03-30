@@ -1,7 +1,7 @@
 use std::rc::Rc;
 
 use crate::{generate_swap::logic::GenerateSwapLogic, submit_swap::logic::SubmitSwapLogic};
-use algonaut::algod::{v2::Algod, AlgodBuilder, AlgodCustomEndpointBuilder};
+use algonaut::algod::v2::Algod;
 
 #[derive(Debug)]
 pub enum Network {
@@ -62,23 +62,23 @@ pub fn submit_swap_logic(algod: Rc<Algod>) -> SubmitSwapLogic {
 }
 
 fn testnet_algod() -> Algod {
-    AlgodCustomEndpointBuilder::new()
-        // .bind("https://node.testnet.algoexplorerapi.io") // doesn't work anymore to fetch asset infos etc. expects to use indexer.
-        .bind("https://testnet-algorand.api.purestake.io/ps2/")
-        .headers(vec![("x-api-key", "<PURESTAKE API KEY>")])
-        .build_v2()
-        // expect: build returns an error if the URL or token are not provided or have an invalid format,
-        // we are passing verified hardcoded values.
-        .expect("Couldn't initialize algod")
+    // Algod::new("https://node.testnet.algoexplorerapi.io")
+    Algod::with_headers(
+        "https://testnet-algorand.api.purestake.io/ps2/",
+        vec![("x-api-key", "<PURESTAKE API KEY>")],
+    )
+    // expect: build returns an error if the URL or token are not provided or have an invalid format,
+    // we are passing verified hardcoded values.
+    .expect("Couldn't initialize algod")
 }
 
 #[allow(dead_code)]
 fn private_network_algod() -> Algod {
-    AlgodBuilder::new()
-        .bind("http://127.0.0.1:4001")
-        .auth("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-        .build_v2()
-        // expect: build returns an error if the URL or token are not provided or have an invalid format,
-        // we are passing verified hardcoded values.
-        .expect("Couldn't initialize algod")
+    Algod::new(
+        "http://127.0.0.1:4001",
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    )
+    // expect: build returns an error if the URL or token are not provided or have an invalid format,
+    // we are passing verified hardcoded values.
+    .expect("Couldn't initialize algod")
 }
