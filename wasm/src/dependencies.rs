@@ -63,7 +63,9 @@ pub fn submit_swap_logic(algod: Rc<Algod>) -> SubmitSwapLogic {
 
 fn testnet_algod() -> Algod {
     AlgodCustomEndpointBuilder::new()
-        .bind("https://node.testnet.algoexplorerapi.io")
+        // .bind("https://node.testnet.algoexplorerapi.io") // doesn't work anymore to fetch asset infos etc. expects to use indexer.
+        .bind("https://testnet-algorand.api.purestake.io/ps2/")
+        .headers(vec![("x-api-key", "<PURESTAKE API KEY>")])
         .build_v2()
         // expect: build returns an error if the URL or token are not provided or have an invalid format,
         // we are passing verified hardcoded values.
