@@ -63,7 +63,7 @@ pub fn submit_swap_logic(algod: Rc<Algod>) -> SubmitSwapLogic {
 
 fn testnet_algod() -> Algod {
     AlgodCustomEndpointBuilder::new()
-        .bind("https://testnet.algoexplorerapi.io")
+        .bind("https://node.testnet.algoexplorerapi.io")
         .build_v2()
         // expect: build returns an error if the URL or token are not provided or have an invalid format,
         // we are passing verified hardcoded values.
